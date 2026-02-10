@@ -1,0 +1,44 @@
+{
+  "name": "superconstruct-ai-testing",
+  "version": "1.0.0",
+  "description": "AI-powered automation testing framework for SuperConstruct",
+  "main": "index.js",
+  "scripts": {
+    "setup": "node scripts/setup.js",
+    "postinstall": "node scripts/setup.js",
+    "test:smoke": "playwright test tests/smoke-test.spec.js --headed",
+    "test:functional": "playwright test tests/comprehensive-functional.spec.js --headed",
+    "test:data-driven": "playwright test tests/data-driven-tests.spec.js --headed",
+    "test:all": "playwright test",
+    "test:auth": "playwright test tests/auth/",
+    "test:users": "playwright test tests/modules/users.spec.js",
+    "test:modules": "playwright test tests/modules/",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "report": "playwright show-report reports/html-report",
+    "dashboard": "node dashboard/server.js",
+    "install:browsers": "playwright install chromium"
+  },
+  "keywords": [
+    "automation",
+    "testing",
+    "playwright",
+    "ai",
+    "smoke-tests"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@playwright/test": "^1.40.1",
+    "axios": "^1.6.2",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "imap-simple": "^5.1.0",
+    "nodemailer": "^8.0.1",
+    "openai": "^4.20.1",
+    "tesseract.js": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.5"
+  }
+}

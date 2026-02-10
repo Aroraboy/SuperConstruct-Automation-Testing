@@ -1,0 +1,54 @@
+{
+  "app": {
+    "webUrl": "https://app.superconstruct.io/",
+    "mobileUrl": "https://play.google.com/store/apps/details?id=com.superconstruct.sc",
+    "apiUrl": "https://app.superconstruct.io"
+  },
+  "testUser": {
+    "email": "YOUR_TEST_EMAIL@gmail.com",
+    "password": "YOUR_TEST_PASSWORD",
+    "gmailAppPassword": "YOUR_GMAIL_APP_PASSWORD",
+    "firstName": "Test",
+    "lastName": "User"
+  },
+  "newUser": {
+    "email": "your.test+signup@gmail.com",
+    "password": "YOUR_TEST_PASSWORD",
+    "firstName": "Test",
+    "lastName": "User",
+    "role": "Project Manager"
+  },
+  "timeouts": {
+    "short": 5000,
+    "medium": 15000,
+    "long": 30000
+  },
+  "ai": {
+    "enabled": true,
+    "provider": "openai",
+    "model": "gpt-4",
+    "apiKey": "YOUR_OPENAI_API_KEY_HERE"
+  },
+  "testData": {
+    "project": {
+      "name": "Smoke Test Project",
+      "description": "Automated smoke test project"
+    },
+    "scheduleOfValues": {
+      "name": "SOV Smoke Test",
+      "lineItems": 3
+    },
+    "rfi": {
+      "title": "Test RFI",
+      "description": "Automated RFI smoke test"
+    },
+    "submittal": {
+      "title": "Test Submittal",
+      "type": "Material"
+    },
+    "inspection": {
+      "title": "Test Inspection",
+      "type": "Safety"
+    }
+  }
+}
