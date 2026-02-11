@@ -11,6 +11,7 @@
     "test:data-driven": "playwright test tests/data-driven-tests.spec.js --headed",
     "test:all": "playwright test",
     "test:auth": "playwright test tests/auth/",
+    "test:registration": "playwright test tests/auth/registration-with-otp.spec.js --headed",
     "test:users": "playwright test tests/modules/users.spec.js",
     "test:modules": "playwright test tests/modules/",
     "test:headed": "playwright test --headed",

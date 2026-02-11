@@ -26,8 +26,15 @@ const config = require('../utils/config-manager');
 /**
  * Global setup handler
  * Called once before all tests
+ * SKIPPED for: registration, auth tests
  */
 async function globalSetup() {
+  // Skip setup for registration and auth tests
+  if (process.env.SKIP_GLOBAL_SETUP || process.argv.some(arg => arg.includes('registration') || arg.includes('auth'))) {
+    console.log('\n⏭️  Skipping global authentication setup for auth/registration tests\n');
+    return;
+  }
+
   console.log('\n🔐 Running global authentication setup...\n');
   
   const browser = await chromium.launch({ headless: false });

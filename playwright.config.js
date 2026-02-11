@@ -7,8 +7,9 @@ module.exports = defineConfig({
   retries: process.env.CI ? 2 : 1,
   workers: 1, // Single worker for smoke tests
   
-  // Global setup - runs once before all tests
+  // Global setup - runs once before all tests EXCEPT auth and registration tests
   globalSetup: require.resolve('./tests/global-setup'),
+  globalTeardown: undefined,
   
   reporter: [
     ['html', { outputFolder: 'reports/html-report', open: 'never' }],
@@ -32,12 +33,22 @@ module.exports = defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
     // Auth tests don't use global setup - they test login itself
+    // IMPORTANT: This project must NOT load ANY authentication state
     {
       name: 'auth',
       testMatch: '**/auth/**',
+      globalSetup: undefined, // Don't run global setup for auth tests
       use: { 
+        baseURL: process.env.BASE_URL || 'https://app.superconstruct.io',
+        trace: 'retain-on-failure',
+        screenshot: 'on',
+        video: 'retain-on-failure',
+        actionTimeout: 15000,
+        navigationTimeout: 30000,
         ...devices['Desktop Chrome'],
-        storageState: undefined, // Don't use saved auth state for auth tests
+        // CRITICAL: Explicitly set storageState to false to prevent any auth loading
+        storageState: false,
+        httpCredentials: undefined,
       },
     },
     // Uncomment for mobile testing

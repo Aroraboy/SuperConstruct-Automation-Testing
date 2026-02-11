@@ -1,12 +1,22 @@
-const MailSlurp = require('mailslurp-client').default;
-const { createWorker } = require('tesseract.js');
 const axios = require('axios');
+const { createWorker } = require('tesseract.js');
 
 require('dotenv').config();
 
-const mailslurp = new MailSlurp({
-  apiKey: process.env.MAILSLURP_API_KEY
+// MailSlurp API configuration
+const apiKey = process.env.MAILSLURP_API_KEY;
+if (!apiKey) {
+  throw new Error('MAILSLURP_API_KEY not found in environment variables. Check your .env file.');
+}
+
+const mailslurpAPI = axios.create({
+  baseURL: 'https://api.mailslurp.com',
+  params: {
+    apiKey: apiKey
+  }
 });
+
+console.log('✅ MailSlurp REST API initialized');
 
 /**
  * Extract OTP from image using Tesseract.js OCR
@@ -52,11 +62,8 @@ async function extractOTPFromEmailAttachment(email) {
     const attachment = email.attachments[0];
     console.log(`📎 Found attachment: ${attachment.filename}`);
     
-    // Download attachment
-    const attachmentData = await mailslurp.emailControllerApi.downloadAttachment(
-      attachment.id,
-      email.id
-    );
+    // Download attachment using correct API
+    const attachmentData = await mailslurp.downloadAttachment(attachment.id, email.id);
 
     // Convert to buffer
     const imageBuffer = Buffer.from(attachmentData);
@@ -71,41 +78,85 @@ async function extractOTPFromEmailAttachment(email) {
 }
 
 /**
- * Wait for OTP email and extract OTP from image
+ * Wait for OTP email and extract OTP from email body
  * @param {string} inboxId - MailSlurp inbox ID
  * @param {number} maxWaitTime - Max wait time in milliseconds (default 60s)
  * @returns {Promise<string>} - OTP code
  */
 async function getOTPFromEmail(inboxId, maxWaitTime = 60000) {
   const startTime = Date.now();
-  const pollInterval = 2000; // Check every 2 seconds
+  const pollInterval = 3000; // Check every 3 seconds
 
-  console.log('⏳ Waiting for OTP email with image attachment...');
+  console.log('⏳ Waiting for OTP email...');
+  console.log(`   Inbox ID: ${inboxId}`);
+  console.log(`   Max wait: ${maxWaitTime / 1000} seconds`);
 
+  let pollCount = 0;
   while (Date.now() - startTime < maxWaitTime) {
     try {
-      const emails = await mailslurp.emailControllerApi.getEmails(inboxId, {
-        size: 1,
-        sort: 'DESC'
+      pollCount++;
+      console.log(`   📍 Poll #${pollCount}`);
+      
+      // Get emails from inbox using REST API
+      const response = await mailslurpAPI.get(`/inboxes/${inboxId}/emails`, {
+        params: {
+          size: 10,
+          sort: 'DESC'
+        }
       });
+
+      const emails = response.data;
+      console.log(`   📬 Found ${emails ? emails.length : 0} emails`);
 
       if (emails && emails.length > 0) {
         const latestEmail = emails[0];
-        
-        // Check if email has attachments
-        if (latestEmail.attachments && latestEmail.attachments.length > 0) {
-          console.log(`📧 Email received with ${latestEmail.attachments.length} attachment(s)`);
+        console.log(`   📧 Latest email:`);
+        console.log(`      From: ${latestEmail.from}`);
+        console.log(`      Subject: ${latestEmail.subject}`);
+
+        try {
+          // Get full email content
+          const emailResponse = await mailslurpAPI.get(`/emails/${latestEmail.id}`);
+          const fullEmail = emailResponse.data;
           
-          const otp = await extractOTPFromEmailAttachment(latestEmail);
-          return otp;
+          const bodyText = fullEmail.text || '';
+          const bodyHtml = fullEmail.html || '';
+          const body = fullEmail.body || '';
+          
+          console.log(`   📝 Email fields - text: ${bodyText ? 'yes' : 'no'}, html: ${bodyHtml ? 'yes' : 'no'}, body: ${body ? 'yes' : 'no'}`);
+          console.log(`   📄 Full email object keys: ${Object.keys(fullEmail).join(', ')}`);
+          
+          // Try different field names that might contain the body
+          const contentToSearch = bodyText || bodyHtml || body || fullEmail.textHtml || '';
+          
+          if (contentToSearch) {
+            console.log(`   📝 Email body found, searching for OTP...`);
+            console.log(`      Content preview: ${contentToSearch.substring(0, 300)}`);
+            
+            // Try to extract OTP from body text or HTML
+            const otp = extractOTPFromText(contentToSearch);
+            
+            if (otp) {
+              console.log(`   ✅ OTP extracted: ${otp}`);
+              return otp;
+            } else {
+              console.log(`   ⚠️  No OTP pattern found in email`);
+            }
+          } else {
+            console.log(`   ⚠️  Email body is empty`);
+          }
+        } catch (error) {
+          console.log(`   ⚠️  Error fetching full email: ${error.message}`);
         }
+      } else {
+        console.log(`   ⏳ No emails yet, waiting...`);
       }
 
       // Wait before polling again
       await new Promise(resolve => setTimeout(resolve, pollInterval));
       
     } catch (error) {
-      console.error('Error polling emails:', error.message);
+      console.error(`   ❌ Error: ${error.message}`);
       await new Promise(resolve => setTimeout(resolve, pollInterval));
     }
   }
@@ -119,11 +170,26 @@ async function getOTPFromEmail(inboxId, maxWaitTime = 60000) {
  */
 async function createTemporaryInbox() {
   try {
-    const inbox = await mailslurp.inboxControllerApi.createInbox();
+    const response = await mailslurpAPI.post(`/inboxes`);
+    const inbox = response.data;
     console.log(`✅ Temporary inbox created: ${inbox.emailAddress}`);
     return inbox;
   } catch (error) {
     console.error('❌ Error creating inbox:', error.message);
+    throw error;
+  }
+}
+
+/**
+ * Get full email content
+ * @param {string} emailId - Email ID
+ * @returns {Promise<Object>} - Full email object
+ */
+async function getEmail(emailId) {
+  try {
+    return await mailslurp.getEmail(emailId);
+  } catch (error) {
+    console.error('Error getting email:', error.message);
     throw error;
   }
 }
@@ -142,7 +208,7 @@ async function getLatestEmail(inboxId, maxWaitTime = 60000) {
 
   while (Date.now() - startTime < maxWaitTime) {
     try {
-      const emails = await mailslurp.emailControllerApi.getEmails(inboxId, {
+      const emails = await mailslurp.getEmails(inboxId, {
         size: 1,
         sort: 'DESC'
       });
@@ -171,22 +237,43 @@ async function getLatestEmail(inboxId, maxWaitTime = 60000) {
  * @returns {string|null} - OTP if found
  */
 function extractOTPFromText(emailBody) {
-  // Common OTP patterns
+  // Remove HTML tags and decode HTML entities for easier parsing
+  let cleanBody = emailBody
+    .replace(/<[^>]*>/g, ' ') // Remove HTML tags
+    .replace(/&nbsp;/g, ' ')  // Replace nbsp
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#(\d+);/g, (match, code) => String.fromCharCode(parseInt(code, 10)))
+    .replace(/&#x([a-fA-F0-9]+);/g, (match, code) => String.fromCharCode(parseInt(code, 16)));
+
+  // Common OTP patterns - CHECK 6 DIGITS FIRST, THEN 4 DIGITS
   const patterns = [
-    /\b(\d{4})\b/, // 4 digits
-    /\b(\d{6})\b/, // 6 digits
-    /code[:\s]+(\d{4,6})/i,
-    /otp[:\s]+(\d{4,6})/i,
-    /verification[:\s]+(\d{4,6})/i
+    /verification\s+code\s+is[:\s]+(\d{6})/i,  // "verification code is: 123456"
+    /verification[:\s]+(\d{6})/i,              // 6-digit verification code
+    /otp[:\s]+(\d{6})/i,                       // 6-digit OTP
+    /code[:\s]+(\d{6})/i,                      // 6-digit code
+    /(\d{6})/,                                 // Any 6 consecutive digits
+    /verification\s+code\s+is[:\s]+(\d{4})/i,  // "verification code is: 1234"
+    /verification[:\s]+(\d{4})/i,              // 4-digit verification code
+    /otp[:\s]+(\d{4})/i,                       // 4-digit OTP
+    /code[:\s]+(\d{4})/i,                      // 4-digit code
+    /(\d{4})/,                                 // Any 4 consecutive digits
   ];
 
   for (const pattern of patterns) {
-    const match = emailBody.match(pattern);
+    const match = cleanBody.match(pattern);
     if (match) {
-      return match[1];
+      const otp = match[1];
+      console.log(`   ✅ Pattern matched: ${pattern.toString()}`);
+      console.log(`   ✅ Extracted OTP: ${otp}`);
+      return otp;
     }
   }
 
+  console.log(`   ❌ No OTP pattern matched in body`);
+  console.log(`   📄 Cleaned body preview: ${cleanBody.substring(0, 500)}`);
   return null;
 }
 
@@ -196,7 +283,7 @@ function extractOTPFromText(emailBody) {
  */
 async function deleteInbox(inboxId) {
   try {
-    await mailslurp.inboxControllerApi.deleteInbox(inboxId);
+    await mailslurpAPI.delete(`/inboxes/${inboxId}`);
     console.log(`✅ Temporary inbox deleted: ${inboxId}`);
   } catch (error) {
     console.error('⚠️  Error deleting inbox:', error.message);
