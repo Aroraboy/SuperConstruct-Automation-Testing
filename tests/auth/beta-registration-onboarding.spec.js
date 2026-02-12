@@ -1,5 +1,6 @@
 const { test, expect } = require('@playwright/test');
 const { getOTPFromEmail } = require('../../utils/test-email-service');
+const { generateTestEmail, getOTPFromGmail } = require('../../utils/gmail-otp-reader');
 
 test.describe('Beta Registration and Onboarding', () => {
   test.beforeAll(async () => {
@@ -7,15 +8,18 @@ test.describe('Beta Registration and Onboarding', () => {
   });
 
   test('should register contractor and complete full onboarding on beta', async ({ page }) => {
-    // Increase test timeout to 180 seconds for full onboarding + project creation flow
+    // Increase test timeout to 180 seconds for full onboarding flow
     test.setTimeout(180000);
 
-    // Use an existing MailSlurp inbox (fresh/unused on beta.superconstruct.io)
-    const inboxId = '4a996dae-8d21-4670-9eec-8a7be2df0afe';
-    const testEmail = '4a996dae-8d21-4670-9eec-8a7be2df0afe@mailslurp.biz';
+    // Generate a unique Gmail +alias for this test run (infinite supply)
+    const testEmail = generateTestEmail();
     const testPassword = 'TestPassword@123';
 
-    console.log(`\n[EMAIL] Using MailSlurp email: ${testEmail}`);
+    // Determine which OTP reader to use based on email provider
+    const useGmail = testEmail.includes('@gmail.com');
+
+    console.log(`\n[EMAIL] Using email: ${testEmail}`);
+    console.log(`[EMAIL] OTP reader: ${useGmail ? 'Gmail IMAP' : 'MailSlurp'}`);
 
     // ============================
     // STEP 1: Registration Form
@@ -29,48 +33,35 @@ test.describe('Beta Registration and Onboarding', () => {
     console.log('   Filling registration form...');
 
     // First Name
-    const firstNameInput = page.locator('input[placeholder*="first"i], input[name*="first"i], input[name*="firstName"i]').first();
-    if (await firstNameInput.isVisible({ timeout: 5000 }).catch(() => false)) {
-      await firstNameInput.fill('John');
-      console.log('   [DONE] First Name: John');
-    }
+    const firstNameInput = page.locator('input[placeholder="First name"]');
+    await firstNameInput.waitFor({ timeout: 5000 });
+    await firstNameInput.fill('John');
+    console.log('   [DONE] First Name: John');
 
     // Last Name
-    const lastNameInput = page.locator('input[placeholder*="last"i], input[name*="last"i], input[name*="lastName"i]').first();
-    if (await lastNameInput.isVisible({ timeout: 3000 }).catch(() => false)) {
-      await lastNameInput.fill('Doe');
-      console.log('   [DONE] Last Name: Doe');
-    }
+    const lastNameInput = page.locator('input[placeholder="Last name"]');
+    await lastNameInput.fill('Doe');
+    console.log('   [DONE] Last Name: Doe');
 
     // Email
-    const emailInput = page.locator('input[type="email"], input[placeholder*="email"i], input[name*="email"i]').first();
-    if (await emailInput.isVisible({ timeout: 3000 }).catch(() => false)) {
-      await emailInput.fill(testEmail);
-      console.log(`   [DONE] Email: ${testEmail}`);
-    }
+    const emailInput = page.locator('input[type="email"]');
+    await emailInput.fill(testEmail);
+    console.log(`   [DONE] Email: ${testEmail}`);
 
-    // Phone Number
-    const phoneInput = page.locator('input[type="tel"], input[placeholder*="phone"i], input[name*="phone"i], input[placeholder*="number"i]').first();
-    if (await phoneInput.isVisible({ timeout: 3000 }).catch(() => false)) {
-      await phoneInput.fill('5551234567');
-      console.log('   [DONE] Phone: 5551234567');
-    }
+    // Phone Number (type=text, not tel)
+    const phoneInput = page.locator('input[placeholder="Phone Number"]');
+    await phoneInput.fill('5551234567');
+    console.log('   [DONE] Phone: 5551234567');
 
     // Password
-    const passwordInputs = page.locator('input[type="password"]');
-    const passwordFields = await passwordInputs.all();
-    if (passwordFields.length >= 2) {
-      await passwordFields[0].fill(testPassword);
-      console.log('   [DONE] Password entered');
-      await page.waitForTimeout(300);
+    const passwordInput = page.locator('input[name="password"]');
+    await passwordInput.fill(testPassword);
+    console.log('   [DONE] Password entered');
 
-      // Confirm Password
-      await passwordFields[1].fill(testPassword);
-      console.log('   [DONE] Confirm Password entered');
-    } else if (passwordFields.length === 1) {
-      await passwordFields[0].fill(testPassword);
-      console.log('   [DONE] Password entered (single field)');
-    }
+    // Confirm Password
+    const confirmPasswordInput = page.locator('input[name="confirmPassword"]');
+    await confirmPasswordInput.fill(testPassword);
+    console.log('   [DONE] Confirm Password entered');
 
     await page.waitForTimeout(500);
     await page.screenshot({ path: `test-results/beta-register-filled-${Date.now()}.png` }).catch(() => {});
@@ -97,7 +88,14 @@ test.describe('Beta Registration and Onboarding', () => {
 
       let otp;
       try {
-        otp = await getOTPFromEmail(inboxId, 60000);
+        if (useGmail) {
+          // Gmail IMAP - search by the +alias address
+          otp = await getOTPFromGmail(testEmail, 60000);
+        } else {
+          // MailSlurp fallback
+          const inboxId = testEmail.split('@')[0];
+          otp = await getOTPFromEmail(inboxId, 60000);
+        }
         console.log(`   [OK] OTP extracted: ${otp}`);
       } catch (error) {
         console.error(`   [ERROR] Failed to get OTP: ${error.message}`);
