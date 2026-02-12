@@ -1,4 +1,4 @@
-const BasePage = require('./base.page');
+﻿const BasePage = require('./base.page');
 
 class DashboardPage extends BasePage {
   constructor(page, config) {
@@ -62,7 +62,7 @@ class DashboardPage extends BasePage {
   }
 
   async selectCompany(companyName = null) {
-    console.log('🏢 Looking for company to select...');
+    console.log('[COMPANY] Looking for company to select...');
     
     await this.page.waitForLoadState('networkidle').catch(() => {});
     await this.page.waitForTimeout(2000);
@@ -91,7 +91,7 @@ class DashboardPage extends BasePage {
       if (!companyName) {
         const companyHeading = await this.page.locator('h3').first().isVisible().catch(() => false);
         if (companyHeading) {
-          console.log('📍 Found company heading, clicking parent container...');
+          console.log('[PIN] Found company heading, clicking parent container...');
           // Click the parent container of the h3 (the company card)
           await this.page.locator('h3').first().locator('..').locator('..').click({ timeout: 5000 });
           await this.waitForPageLoad();
@@ -111,7 +111,7 @@ class DashboardPage extends BasePage {
   }
 
   async createProject(projectData = {}) {
-    console.log('🏗️ Creating new project...');
+    console.log('[BUILD] Creating new project...');
     
     await this.page.waitForLoadState('networkidle').catch(() => {});
     await this.page.waitForTimeout(2000);
@@ -142,7 +142,7 @@ class DashboardPage extends BasePage {
       const projectName = projectData.name || `Test Project ${timestamp}`;
       const projectAddress = projectData.address || '123 Test Street, Test City';
       
-      console.log(`📝 Filling project form: ${projectName}`);
+      console.log(`[NOTE] Filling project form: ${projectName}`);
       
       // Try to find and fill project name field
       const nameSelectors = [
@@ -198,7 +198,7 @@ class DashboardPage extends BasePage {
   }
 
   async selectProject(projectName = null) {
-    console.log('🎯 Selecting project...');
+    console.log('[TARGET] Selecting project...');
     
     await this.page.waitForLoadState('networkidle').catch(() => {});
     await this.page.waitForTimeout(2000);
@@ -260,7 +260,7 @@ class DashboardPage extends BasePage {
   }
 
   async navigateToModule(moduleName) {
-    console.log(`🔍 Looking for ${moduleName} navigation...`);
+    console.log(`[SEARCH] Looking for ${moduleName} navigation...`);
     
     // Wait for dashboard to load
     await this.page.waitForLoadState('networkidle').catch(() => {});
@@ -308,5 +308,6 @@ class DashboardPage extends BasePage {
 }
 
 module.exports = DashboardPage;
+
 
 

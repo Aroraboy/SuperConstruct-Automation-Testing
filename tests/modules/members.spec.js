@@ -1,4 +1,4 @@
-/**
+﻿/**
  * MEMBERS MODULE TESTS
  * 
  * Purpose: Test Members/Users tab functionality
@@ -39,18 +39,18 @@ test.describe('Members Module Tests', () => {
     await test.step('Verify page loaded', async () => {
       const currentUrl = page.url();
       expect(currentUrl).toContain('/tools/members');
-      console.log('✅ Members page loaded');
+      console.log('[OK] Members page loaded');
     });
 
     await test.step('Verify page has content', async () => {
       const pageContent = await page.content();
       expect(pageContent.length).toBeGreaterThan(500);
-      console.log('✅ Page has content');
+      console.log('[OK] Page has content');
     });
 
     await test.step('Take screenshot of Members page', async () => {
       await page.screenshot({ path: 'reports/screenshots/members-main.png', fullPage: true });
-      console.log('📸 Screenshot taken: members-main.png');
+      console.log('[CAMERA] Screenshot taken: members-main.png');
     });
   });
 
@@ -79,7 +79,7 @@ test.describe('Members Module Tests', () => {
           const isVisible = await button.isVisible({ timeout: 3000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`✅ Found Add Member button: ${selector}`);
+            console.log(`[OK] Found Add Member button: ${selector}`);
             buttonFound = true;
             addButton = button;
             
@@ -109,7 +109,7 @@ test.describe('Members Module Tests', () => {
   // Test 3: Find existing members and their Edit buttons
   test('03 - Member list displays with Edit buttons', async ({ page }) => {
     await test.step('Look for member list items', async () => {
-      console.log('🔍 Analyzing member list...');
+      console.log('[SEARCH] Analyzing member list...');
       
       // Common patterns for member list items
       const memberListSelectors = [
@@ -128,7 +128,7 @@ test.describe('Members Module Tests', () => {
           const items = await page.locator(selector).all();
           
           if (items.length > 0) {
-            console.log(`✅ Found ${items.length} items using: ${selector}`);
+            console.log(`[OK] Found ${items.length} items using: ${selector}`);
             membersFound = true;
             
             // Analyze first few members
@@ -165,7 +165,7 @@ test.describe('Members Module Tests', () => {
           const buttons = await page.locator(selector).all();
           
           if (buttons.length > 0) {
-            console.log(`✅ Found ${buttons.length} edit buttons/menus: ${selector}`);
+            console.log(`[OK] Found ${buttons.length} edit buttons/menus: ${selector}`);
             editButtonsFound = buttons.length;
             
             // Log details of first button
@@ -188,7 +188,7 @@ test.describe('Members Module Tests', () => {
         }
       }
 
-      console.log(`\n📊 Edit buttons/actions found: ${editButtonsFound}`);
+      console.log(`\n[CHART] Edit buttons/actions found: ${editButtonsFound}`);
     });
   });
 
@@ -211,7 +211,7 @@ test.describe('Members Module Tests', () => {
           const isVisible = await button.isVisible({ timeout: 2000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`📍 Clicking Add Member: ${selector}`);
+            console.log(`[PIN] Clicking Add Member: ${selector}`);
             await button.click();
             await page.waitForTimeout(2000); // Wait for form/modal to appear
             formOpened = true;
@@ -226,7 +226,7 @@ test.describe('Members Module Tests', () => {
     });
 
     await test.step('Verify member form/modal appeared', async () => {
-      console.log('🔍 Checking if member form appeared...');
+      console.log('[SEARCH] Checking if member form appeared...');
       
       // Take screenshot after clicking
       await page.screenshot({ path: 'reports/screenshots/members-form-opened.png', fullPage: true });
@@ -248,7 +248,7 @@ test.describe('Members Module Tests', () => {
           const fields = await page.locator(selector).all();
           if (fields.length > 0) {
             const fieldCount = fields.length;
-            console.log(`✅ Found ${fieldCount} form fields: ${selector}`);
+            console.log(`[OK] Found ${fieldCount} form fields: ${selector}`);
             formFieldsFound += fieldCount;
           }
         } catch (e) {
@@ -256,7 +256,7 @@ test.describe('Members Module Tests', () => {
         }
       }
 
-      console.log(`\n📊 Total form fields found: ${formFieldsFound}`);
+      console.log(`\n[CHART] Total form fields found: ${formFieldsFound}`);
       
       // Check for modal/dialog
       const hasModal = await page.locator('[role="dialog"], .modal, [data-testid*="modal"]').isVisible().catch(() => false);
@@ -275,7 +275,7 @@ test.describe('Members Module Tests', () => {
       if (isVisible) {
         await button.click();
         await page.waitForTimeout(2000);
-        console.log('✅ Clicked Add Member button');
+        console.log('[OK] Clicked Add Member button');
       }
     });
 
@@ -287,7 +287,7 @@ test.describe('Members Module Tests', () => {
         role: 'Project Manager'
       };
 
-      console.log(`📝 Filling form for: ${testMember.name}`);
+      console.log(`[NOTE] Filling form for: ${testMember.name}`);
 
       // Fill name field
       try {
@@ -303,12 +303,12 @@ test.describe('Members Module Tests', () => {
           const isVisible = await field.isVisible({ timeout: 2000 }).catch(() => false);
           if (isVisible) {
             await field.fill(testMember.name);
-            console.log(`✅ Filled name: ${selector}`);
+            console.log(`[OK] Filled name: ${selector}`);
             break;
           }
         }
       } catch (e) {
-        console.log('⚠️ Could not fill name field');
+        console.log('[WARNING] Could not fill name field');
       }
 
       // Fill email field
@@ -324,12 +324,12 @@ test.describe('Members Module Tests', () => {
           const isVisible = await field.isVisible({ timeout: 2000 }).catch(() => false);
           if (isVisible) {
             await field.fill(testMember.email);
-            console.log(`✅ Filled email: ${selector}`);
+            console.log(`[OK] Filled email: ${selector}`);
             break;
           }
         }
       } catch (e) {
-        console.log('⚠️ Could not fill email field');
+        console.log('[WARNING] Could not fill email field');
       }
 
       // Select role if dropdown exists
@@ -345,12 +345,12 @@ test.describe('Members Module Tests', () => {
           const isVisible = await field.isVisible({ timeout: 2000 }).catch(() => false);
           if (isVisible) {
             await field.selectOption({ label: testMember.role }).catch(() => {});
-            console.log(`✅ Selected role: ${selector}`);
+            console.log(`[OK] Selected role: ${selector}`);
             break;
           }
         }
       } catch (e) {
-        console.log('⚠️ No role selector found or failed');
+        console.log('[WARNING] No role selector found or failed');
       }
 
       // Take screenshot of filled form
@@ -375,7 +375,7 @@ test.describe('Members Module Tests', () => {
           const isVisible = await button.isVisible({ timeout: 2000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`📍 Clicking submit: ${selector}`);
+            console.log(`[PIN] Clicking submit: ${selector}`);
             await button.click();
             await page.waitForTimeout(3000); // Wait for submission
             submitted = true;
@@ -411,3 +411,5 @@ test.describe('Members Module Tests', () => {
     });
   });
 });
+
+

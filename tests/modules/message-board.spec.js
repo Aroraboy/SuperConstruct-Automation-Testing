@@ -1,4 +1,4 @@
-/**
+﻿/**
  * MESSAGE BOARD MODULE TESTS
  * 
  * Purpose: Test Message Board functionality
@@ -38,19 +38,19 @@ test.describe('Message Board Module Tests', () => {
     await test.step('Verify page loaded', async () => {
       const currentUrl = page.url();
       expect(currentUrl).toContain('/tools/message-board');
-      console.log('✅ Message Board page loaded');
+      console.log('[OK] Message Board page loaded');
     });
 
     await test.step('Take screenshot of Message Board page', async () => {
       await page.screenshot({ path: 'reports/screenshots/message-board-main.png', fullPage: true });
-      console.log('📸 Screenshot taken: message-board-main.png');
+      console.log('[CAMERA] Screenshot taken: message-board-main.png');
     });
   });
 
   // Test 2: Find New message button
   test('02 - New message button is visible', async ({ page }) => {
     await test.step('Look for New message button', async () => {
-      console.log('🔍 Looking for New message button...');
+      console.log('[SEARCH] Looking for New message button...');
       
       const newMessageSelectors = [
         'button:has-text("New Message")',
@@ -70,7 +70,7 @@ test.describe('Message Board Module Tests', () => {
           const isVisible = await element.isVisible({ timeout: 3000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`✅ Found New message button: ${selector}`);
+            console.log(`[OK] Found New message button: ${selector}`);
             buttonFound = true;
             buttonElement = element;
             
@@ -93,7 +93,7 @@ test.describe('Message Board Module Tests', () => {
   // Test 3: Click New message button and verify navigation/form
   test('03 - New message button is clickable', async ({ page }) => {
     await test.step('Click New message button', async () => {
-      console.log('🔍 Looking for New message button...');
+      console.log('[SEARCH] Looking for New message button...');
       
       const newMessageSelectors = [
         'button:has-text("New Message")',
@@ -110,13 +110,13 @@ test.describe('Message Board Module Tests', () => {
           const isVisible = await element.isVisible({ timeout: 3000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`✅ Found button, clicking: ${selector}`);
+            console.log(`[OK] Found button, clicking: ${selector}`);
             
             await element.click();
             await page.waitForTimeout(2000);
             
             clicked = true;
-            console.log('✅ Clicked New message button');
+            console.log('[OK] Clicked New message button');
             
             const currentUrl = page.url();
             console.log(`   Current URL: ${currentUrl}`);
@@ -136,7 +136,7 @@ test.describe('Message Board Module Tests', () => {
   // Test 4: Check for message board content/list
   test('04 - Message board has content area', async ({ page }) => {
     await test.step('Check for message content', async () => {
-      console.log('🔍 Looking for message board content...');
+      console.log('[SEARCH] Looking for message board content...');
       
       const pageContent = await page.content();
       const hasMessageContent = pageContent.length > 10000;
@@ -153,7 +153,7 @@ test.describe('Message Board Module Tests', () => {
   // Test 5: Check for message elements
   test('05 - Check for message elements', async ({ page }) => {
     await test.step('Look for message-related elements', async () => {
-      console.log('🔍 Looking for message elements...');
+      console.log('[SEARCH] Looking for message elements...');
       
       // Check for common message-related text
       const messageTexts = [
@@ -171,7 +171,7 @@ test.describe('Message Board Module Tests', () => {
           const count = await page.locator(textSelector).count();
           if (count > 0) {
             const keyword = textSelector.replace('text=', '');
-            console.log(`✅ Found: ${keyword} (${count})`);
+            console.log(`[OK] Found: ${keyword} (${count})`);
             foundElements++;
           }
         } catch (e) {
@@ -188,7 +188,7 @@ test.describe('Message Board Module Tests', () => {
   // Test 6: Complete page analysis
   test('06 - Analyze complete Message Board structure', async ({ page }) => {
     await test.step('Comprehensive page analysis', async () => {
-      console.log('\n📊 MESSAGE BOARD PAGE ANALYSIS');
+      console.log('\n[CHART] MESSAGE BOARD PAGE ANALYSIS');
       console.log('================================\n');
 
       // Count buttons
@@ -219,3 +219,5 @@ test.describe('Message Board Module Tests', () => {
     });
   });
 });
+
+

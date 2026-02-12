@@ -1,4 +1,4 @@
-const express = require('express');
+﻿const express = require('express');
 const path = require('path');
 const { exec } = require('child_process');
 const fs = require('fs');
@@ -66,7 +66,7 @@ app.listen(PORT, () => {
 ╔═══════════════════════════════════════════════════════╗
 ║   SuperConstruct AI Testing Dashboard                 ║
 ║                                                       ║
-║   🌐 Dashboard running at:                           ║
+║   [WEB] Dashboard running at:                           ║
 ║   http://localhost:${PORT}                                  ║
 ║                                                       ║
 ║   Open this URL in your browser to:                  ║
@@ -76,3 +76,4 @@ app.listen(PORT, () => {
 ╚═══════════════════════════════════════════════════════╝
   `);
 });
+

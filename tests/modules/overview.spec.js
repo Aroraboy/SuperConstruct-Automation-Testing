@@ -1,4 +1,4 @@
-/**
+﻿/**
  * OVERVIEW MODULE TESTS
  * 
  * Purpose: Test Overview page actions
@@ -38,18 +38,18 @@ test.describe('Overview Module Tests', () => {
     await test.step('Verify page loaded', async () => {
       const currentUrl = page.url();
       expect(currentUrl).toContain('/tools/overview');
-      console.log('✅ Overview page loaded');
+      console.log('[OK] Overview page loaded');
     });
 
     await test.step('Verify page has content', async () => {
       const pageContent = await page.content();
       expect(pageContent.length).toBeGreaterThan(500);
-      console.log('✅ Page has content');
+      console.log('[OK] Page has content');
     });
 
     await test.step('Take screenshot of Overview page', async () => {
       await page.screenshot({ path: 'reports/screenshots/overview-main.png', fullPage: true });
-      console.log('📸 Screenshot taken: overview-main.png');
+      console.log('[CAMERA] Screenshot taken: overview-main.png');
     });
   });
 
@@ -73,7 +73,7 @@ test.describe('Overview Module Tests', () => {
           const isVisible = await button.isVisible({ timeout: 3000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`✅ Found Complete Project button: ${selector}`);
+            console.log(`[OK] Found Complete Project button: ${selector}`);
             buttonFound = true;
             
             // Log button text
@@ -101,11 +101,11 @@ test.describe('Overview Module Tests', () => {
   // Test 3: Find and interact with three-dot menu button (PROJECT MENU, NOT ASSISTANT)
   test('03 - Three-dot menu button is visible', async ({ page }) => {
     await test.step('Look for three-dot menu (NOT Assistant button)', async () => {
-      console.log('🔍 Finding the PROJECT three-dot menu (not AI Assistant button)...');
+      console.log('[SEARCH] Finding the PROJECT three-dot menu (not AI Assistant button)...');
       
       // Get all buttons on page
       const buttons = await page.locator('button').all();
-      console.log(`📊 Total buttons found: ${buttons.length}`);
+      console.log(`[CHART] Total buttons found: ${buttons.length}`);
 
       let menuButton = null;
       let buttonDetails = [];
@@ -148,7 +148,7 @@ test.describe('Overview Module Tests', () => {
           !ariaLabel.toLowerCase().includes('assistant') &&  // Exclude AI Assistant
           !text.toLowerCase().includes('complete')  // Exclude Complete button
         ) {
-          console.log(`\n✅ FOUND PROJECT MENU: Button ${i}`);
+          console.log(`\n[OK] FOUND PROJECT MENU: Button ${i}`);
           menuButton = buttons[i];
           break;
         }
@@ -156,7 +156,7 @@ test.describe('Overview Module Tests', () => {
 
       // If still not found, check for button adjacent to Complete button
       if (!menuButton) {
-        console.log('\n🔍 Menu not found by labels, checking position near Complete button...');
+        console.log('\n[SEARCH] Menu not found by labels, checking position near Complete button...');
         for (let i = 0; i < buttonDetails.length; i++) {
           if (buttonDetails[i].text.includes('Complete')) {
             console.log(`Found Complete button at index ${i}`);
@@ -174,7 +174,7 @@ test.describe('Overview Module Tests', () => {
         }
       }
 
-      console.log(`\n✅ Menu button ${menuButton ? 'FOUND' : 'NOT FOUND'}`);
+      console.log(`\n[OK] Menu button ${menuButton ? 'FOUND' : 'NOT FOUND'}`);
       expect(menuButton !== null).toBeTruthy();
     });
   });
@@ -197,7 +197,7 @@ test.describe('Overview Module Tests', () => {
           const isVisible = await menu.isVisible({ timeout: 2000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`📍 Clicking menu: ${selector}`);
+            console.log(`[PIN] Clicking menu: ${selector}`);
             await menu.click();
             await page.waitForTimeout(1000); // Wait for menu to open
             menuClicked = true;
@@ -230,7 +230,7 @@ test.describe('Overview Module Tests', () => {
           const isVisible = await option.isVisible({ timeout: 2000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`✅ Found Edit Project option: ${selector}`);
+            console.log(`[OK] Found Edit Project option: ${selector}`);
             const optionText = await option.textContent();
             console.log(`   Option text: "${optionText}"`);
             editOptionFound = true;
@@ -258,7 +258,7 @@ test.describe('Overview Module Tests', () => {
       if (isVisible) {
         await menuButton.click();
         await page.waitForTimeout(1000);
-        console.log('📍 Clicked menu button');
+        console.log('[PIN] Clicked menu button');
       }
     });
 
@@ -272,7 +272,7 @@ test.describe('Overview Module Tests', () => {
       if (isVisible) {
         await editOption.click();
         await page.waitForTimeout(2000); // Wait for form/modal to load
-        console.log('🔧 Clicked Edit Project option');
+        console.log('[TOOL] Clicked Edit Project option');
         
         // Take screenshot of edit form
         await page.screenshot({ path: 'reports/screenshots/overview-edit-form.png', fullPage: true });
@@ -287,7 +287,7 @@ test.describe('Overview Module Tests', () => {
       const hasEditIndicators = pageContent.toLowerCase().includes('edit') || pageContent.toLowerCase().includes('save');
       
       expect(hasFormFields || hasEditIndicators).toBeTruthy();
-      console.log('✅ Edit form/modal detected');
+      console.log('[OK] Edit form/modal detected');
     });
   });
 
@@ -296,7 +296,7 @@ test.describe('Overview Module Tests', () => {
     await test.step('Summary of Overview page buttons', async () => {
       // Get all buttons on page
       const allButtons = await page.locator('button').all();
-      console.log(`\n📊 OVERVIEW PAGE BUTTON ANALYSIS`);
+      console.log(`\n[CHART] OVERVIEW PAGE BUTTON ANALYSIS`);
       console.log(`================================`);
       console.log(`Total buttons found: ${allButtons.length}\n`);
 
@@ -317,11 +317,13 @@ test.describe('Overview Module Tests', () => {
         }
       }
 
-      console.log(`\n✅ Complete Project button: ${completeFound ? 'FOUND' : 'NOT FOUND'}`);
-      console.log(`✅ Menu button: ${menuFound ? 'FOUND' : 'NOT FOUND'}`);
+      console.log(`\n[OK] Complete Project button: ${completeFound ? 'FOUND' : 'NOT FOUND'}`);
+      console.log(`[OK] Menu button: ${menuFound ? 'FOUND' : 'NOT FOUND'}`);
       console.log(`================================\n`);
 
       expect(completeFound || menuFound).toBeTruthy();
     });
   });
 });
+
+

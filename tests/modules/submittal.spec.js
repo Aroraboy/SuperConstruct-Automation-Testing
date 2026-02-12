@@ -1,4 +1,4 @@
-/**
+﻿/**
  * SUBMITTALS MODULE TESTS
  * 
  * Purpose: Test Submittals tab functionality
@@ -40,19 +40,19 @@ test.describe('Submittals Module Tests', () => {
     await test.step('Verify page loaded', async () => {
       const currentUrl = page.url();
       expect(currentUrl).toContain('/tools/submittals');
-      console.log('✅ Submittals page loaded');
+      console.log('[OK] Submittals page loaded');
     });
 
     await test.step('Take screenshot of Submittals page', async () => {
       await page.screenshot({ path: 'reports/screenshots/submittals-main.png', fullPage: true });
-      console.log('📸 Screenshot taken: submittals-main.png');
+      console.log('[CAMERA] Screenshot taken: submittals-main.png');
     });
   });
 
   // Test 2: Search bar is functional
   test('02 - Search bar is functional', async ({ page }) => {
     await test.step('Look for search bar and test functionality', async () => {
-      console.log('🔍 Looking for search bar...');
+      console.log('[SEARCH] Looking for search bar...');
       
       const searchSelectors = [
         'input[type="search"]',
@@ -70,7 +70,7 @@ test.describe('Submittals Module Tests', () => {
           const isVisible = await element.isVisible({ timeout: 3000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`✅ Found search bar: ${selector}`);
+            console.log(`[OK] Found search bar: ${selector}`);
             searchFound = true;
             
             const placeholder = await element.getAttribute('placeholder').catch(() => '');
@@ -80,7 +80,7 @@ test.describe('Submittals Module Tests', () => {
             const initialContent = await page.content();
             await element.fill('Test Submittal Search');
             await page.waitForTimeout(2000);
-            console.log('✅ Search text entered');
+            console.log('[OK] Search text entered');
             
             const searchedContent = await page.content();
             console.log(`   Page updated: ${initialContent.length !== searchedContent.length}`);
@@ -88,7 +88,7 @@ test.describe('Submittals Module Tests', () => {
             // Clear search
             await element.fill('');
             await page.waitForTimeout(1000);
-            console.log('✅ Search cleared');
+            console.log('[OK] Search cleared');
             
             await page.screenshot({ path: 'reports/screenshots/submittals-search.png', fullPage: true });
             break;
@@ -105,7 +105,7 @@ test.describe('Submittals Module Tests', () => {
   // Test 3: Find "Created by" field
   test('03 - Created by field is visible', async ({ page }) => {
     await test.step('Look for Created by field', async () => {
-      console.log('🔍 Looking for "Created by" field...');
+      console.log('[SEARCH] Looking for "Created by" field...');
       
       const createdBySelectors = [
         'input[placeholder*="created by" i]',
@@ -124,12 +124,12 @@ test.describe('Submittals Module Tests', () => {
           const isVisible = await element.isVisible({ timeout: 3000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`✅ Found "Created by" field: ${selector}`);
+            console.log(`[OK] Found "Created by" field: ${selector}`);
             fieldFound = true;
             
             await element.fill('Test User');
             await page.waitForTimeout(500);
-            console.log('✅ Created by text entered');
+            console.log('[OK] Created by text entered');
             
             await page.screenshot({ path: 'reports/screenshots/submittals-created-by.png', fullPage: true });
             break;
@@ -140,7 +140,7 @@ test.describe('Submittals Module Tests', () => {
       }
 
       if (!fieldFound) {
-        console.log('⚠️  Created by field not found with standard selectors');
+        console.log('[WARNING]  Created by field not found with standard selectors');
         await page.screenshot({ path: 'reports/screenshots/submittals-no-created-by.png', fullPage: true });
       }
 
@@ -151,7 +151,7 @@ test.describe('Submittals Module Tests', () => {
   // Test 4: Find calendar dropdown
   test('04 - Calendar dropdown is visible', async ({ page }) => {
     await test.step('Look for calendar dropdown', async () => {
-      console.log('🔍 Looking for calendar dropdown...');
+      console.log('[SEARCH] Looking for calendar dropdown...');
       
       const calendarSelectors = [
         'input[type="date"]',
@@ -171,7 +171,7 @@ test.describe('Submittals Module Tests', () => {
           const isVisible = await element.isVisible({ timeout: 3000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`✅ Found calendar dropdown: ${selector}`);
+            console.log(`[OK] Found calendar dropdown: ${selector}`);
             calendarFound = true;
             
             const elementType = await element.evaluate(el => el.tagName);
@@ -193,7 +193,7 @@ test.describe('Submittals Module Tests', () => {
   // Test 5: Find dropdown menu
   test('05 - Dropdown menu is visible', async ({ page }) => {
     await test.step('Look for dropdown menu', async () => {
-      console.log('🔍 Looking for dropdown menu...');
+      console.log('[SEARCH] Looking for dropdown menu...');
       
       const dropdownSelectors = [
         'select',
@@ -218,7 +218,7 @@ test.describe('Submittals Module Tests', () => {
         }
       }
 
-      console.log(`✅ Found ${allDropdowns.length} total dropdowns`);
+      console.log(`[OK] Found ${allDropdowns.length} total dropdowns`);
       
       if (allDropdowns.length >= 1) {
         for (let i = 0; i < Math.min(2, allDropdowns.length); i++) {
@@ -236,13 +236,13 @@ test.describe('Submittals Module Tests', () => {
   // Test 6: Find Export button
   test('06 - Export button is visible', async ({ page }) => {
     await test.step('Look for Export button', async () => {
-      console.log('🔍 Looking for Export button...');
+      console.log('[SEARCH] Looking for Export button...');
       
       const exportButton = page.locator('button:has-text("Export")').first();
       const isVisible = await exportButton.isVisible({ timeout: 5000 }).catch(() => false);
       
       if (isVisible) {
-        console.log('✅ Found Export button');
+        console.log('[OK] Found Export button');
         
         const buttonText = await exportButton.textContent();
         console.log(`   Button text: "${buttonText.trim()}"`);
@@ -250,7 +250,7 @@ test.describe('Submittals Module Tests', () => {
         await page.screenshot({ path: 'reports/screenshots/submittals-export-button.png', fullPage: true });
         expect(isVisible).toBeTruthy();
       } else {
-        console.log('⚠️  Export button not found with text selector');
+        console.log('[WARNING]  Export button not found with text selector');
         
         // Try to find any export-related button
         const allButtons = await page.locator('button').all();
@@ -272,11 +272,11 @@ test.describe('Submittals Module Tests', () => {
       const dropdowns = await page.locator('[role="combobox"]').all();
       
       if (dropdowns.length >= 1) {
-        console.log(`✅ Found ${dropdowns.length} dropdowns`);
+        console.log(`[OK] Found ${dropdowns.length} dropdowns`);
         
         await dropdowns[0].click();
         await page.waitForTimeout(1000);
-        console.log('✅ Clicked dropdown');
+        console.log('[OK] Clicked dropdown');
         
         const menuItems = await page.locator('[role="menuitem"]').all();
         console.log(`   Menu items: ${menuItems.length}`);
@@ -296,7 +296,7 @@ test.describe('Submittals Module Tests', () => {
   // Test 8: Complete page analysis
   test('08 - Analyze complete page structure', async ({ page }) => {
     await test.step('Comprehensive page analysis', async () => {
-      console.log('\n📊 SUBMITTALS PAGE ANALYSIS');
+      console.log('\n[CHART] SUBMITTALS PAGE ANALYSIS');
       console.log('================================\n');
 
       // Count dropdowns
@@ -339,3 +339,5 @@ test.describe('Submittals Module Tests', () => {
     });
   });
 });
+
+

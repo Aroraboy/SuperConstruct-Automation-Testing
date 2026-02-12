@@ -1,8 +1,8 @@
-## Tests Folder - Test Suites
+﻿## Tests Folder - Test Suites
 
 This folder contains all test files organized by test type and module.
 
-### 📂 Structure
+### ### Structure
 
 ```
 tests/
@@ -25,7 +25,7 @@ tests/
     └── [additional tests]
 ```
 
-### 🧪 Test Types
+### ### Test Types
 
 | File                                 | Type        | Duration  | Purpose                                  | When to Run                   |
 | ------------------------------------ | ----------- | --------- | ---------------------------------------- | ----------------------------- |
@@ -35,7 +35,7 @@ tests/
 | **auth/**                            | Unit        | ~1-2 min  | Login/signup only                        | Before auth changes           |
 | **modules/**                         | Feature     | ~2-3 min  | Individual module tests                  | After module changes          |
 
-### 📋 Test Files
+### ### Test Files
 
 #### global-setup.js
 
@@ -72,7 +72,7 @@ tests/
 - RFI creation, Submittal management, etc.
 - Used for focused testing on specific modules
 
-### 📊 Test Coverage Summary
+### ### Test Coverage Summary
 
 | Module         | Smoke | Data-Driven | Functional | Total |
 | -------------- | ----- | ----------- | ---------- | ----- |
@@ -85,7 +85,7 @@ tests/
 | And 8 more...  | ✅    | ✅          | -          | ✅    |
 | **TOTAL**      | 14    | 39          | TBD        | 53+   |
 
-### 🚀 Running Tests
+### ### Running Tests
 
 ```bash
 # Run all tests
@@ -113,7 +113,7 @@ npm run test:debug
 npm run report
 ```
 
-### 💡 Best Practices
+### ### Best Practices
 
 1. **Keep tests independent** - Each test should work alone
 2. **Use page objects** - Don't write selectors in tests
@@ -122,7 +122,7 @@ npm run report
 5. **Log important data** - Help with debugging
 6. **Use test-data.json** - Centralize test data, don't hardcode
 
-### 🧬 Example: Writing a New Test
+### ### Example: Writing a New Test
 
 ```javascript
 const { test, expect } = require("@playwright/test");
@@ -153,8 +153,9 @@ test.describe("My Feature", () => {
 });
 ```
 
-### 📚 Resources
+### ### Resources
 
 - [Playwright Documentation](https://playwright.dev)
 - [Best Practices](../../TECHNICAL_GUIDE.md)
 - [Test Execution Guide](../../TEST_EXECUTION_GUIDE.md)
+

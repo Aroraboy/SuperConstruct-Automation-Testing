@@ -1,4 +1,4 @@
-/**
+﻿/**
  * INSPECTIONS MODULE TESTS
  * 
  * Purpose: Test Inspections tab functionality
@@ -41,19 +41,19 @@ test.describe('Inspections Module Tests', () => {
     await test.step('Verify page loaded', async () => {
       const currentUrl = page.url();
       expect(currentUrl).toContain('/tools/inspections');
-      console.log('✅ Inspections page loaded');
+      console.log('[OK] Inspections page loaded');
     });
 
     await test.step('Take screenshot of Inspections page', async () => {
       await page.screenshot({ path: 'reports/screenshots/inspections-main.png', fullPage: true });
-      console.log('📸 Screenshot taken: inspections-main.png');
+      console.log('[CAMERA] Screenshot taken: inspections-main.png');
     });
   });
 
   // Test 2: Expand All button is functional
   test('02 - Expand All button is functional', async ({ page }) => {
     await test.step('Look for and click Expand All button', async () => {
-      console.log('🔍 Looking for Expand All button...');
+      console.log('[SEARCH] Looking for Expand All button...');
       
       const expandSelectors = [
         'button:has-text("Expand All")',
@@ -71,7 +71,7 @@ test.describe('Inspections Module Tests', () => {
           const isVisible = await element.isVisible({ timeout: 3000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`✅ Found Expand All button: ${selector}`);
+            console.log(`[OK] Found Expand All button: ${selector}`);
             expandFound = true;
             
             const buttonText = await element.textContent();
@@ -82,7 +82,7 @@ test.describe('Inspections Module Tests', () => {
             // Click button
             await element.click();
             await page.waitForTimeout(1500);
-            console.log('✅ Expand All button clicked');
+            console.log('[OK] Expand All button clicked');
             
             // Check if text changed
             const newText = await element.textContent();
@@ -103,7 +103,7 @@ test.describe('Inspections Module Tests', () => {
   // Test 3: Find search bar
   test('03 - Search bar is visible and functional', async ({ page }) => {
     await test.step('Look for search bar', async () => {
-      console.log('🔍 Looking for search bar...');
+      console.log('[SEARCH] Looking for search bar...');
       
       const searchSelectors = [
         'input[type="search"]',
@@ -121,7 +121,7 @@ test.describe('Inspections Module Tests', () => {
           const isVisible = await element.isVisible({ timeout: 3000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`✅ Found search bar: ${selector}`);
+            console.log(`[OK] Found search bar: ${selector}`);
             searchFound = true;
             
             const placeholder = await element.getAttribute('placeholder').catch(() => '');
@@ -130,7 +130,7 @@ test.describe('Inspections Module Tests', () => {
             // Test search functionality
             await element.fill('Test Inspection Search');
             await page.waitForTimeout(1000);
-            console.log('✅ Search text entered');
+            console.log('[OK] Search text entered');
             
             await page.screenshot({ path: 'reports/screenshots/inspections-search.png', fullPage: true });
             break;
@@ -147,7 +147,7 @@ test.describe('Inspections Module Tests', () => {
   // Test 4: Find all three dropdowns
   test('04 - Three dropdown menus are visible', async ({ page }) => {
     await test.step('Look for all dropdowns', async () => {
-      console.log('🔍 Looking for dropdowns...');
+      console.log('[SEARCH] Looking for dropdowns...');
       
       const dropdownSelectors = [
         'select',
@@ -172,7 +172,7 @@ test.describe('Inspections Module Tests', () => {
         }
       }
 
-      console.log(`✅ Found ${allDropdowns.length} total dropdowns`);
+      console.log(`[OK] Found ${allDropdowns.length} total dropdowns`);
       
       // List all found dropdowns
       for (let i = 0; i < Math.min(3, allDropdowns.length); i++) {
@@ -189,7 +189,7 @@ test.describe('Inspections Module Tests', () => {
   // Test 5: Find sort order button
   test('05 - Sort order button is visible', async ({ page }) => {
     await test.step('Look for sort button (asc/desc)', async () => {
-      console.log('🔍 Looking for sort order button...');
+      console.log('[SEARCH] Looking for sort order button...');
       
       const sortSelectors = [
         'button[aria-label*="sort" i]',
@@ -208,7 +208,7 @@ test.describe('Inspections Module Tests', () => {
           const isVisible = await element.isVisible({ timeout: 3000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`✅ Found sort button: ${selector}`);
+            console.log(`[OK] Found sort button: ${selector}`);
             sortFound = true;
             
             const ariaLabel = await element.getAttribute('aria-label').catch(() => '');
@@ -225,7 +225,7 @@ test.describe('Inspections Module Tests', () => {
       }
 
       if (!sortFound) {
-        console.log('⚠️  Sort button not found - analyzing all buttons');
+        console.log('[WARNING]  Sort button not found - analyzing all buttons');
         const allButtons = await page.locator('button').all();
         console.log(`   Total buttons on page: ${allButtons.length}`);
       }
@@ -235,7 +235,7 @@ test.describe('Inspections Module Tests', () => {
   // Test 6: Find Create Inspection button
   test('06 - Create Inspection button is visible', async ({ page }) => {
     await test.step('Look for Create Inspection button', async () => {
-      console.log('🔍 Looking for Create Inspection button...');
+      console.log('[SEARCH] Looking for Create Inspection button...');
       
       const createSelectors = [
         'button:has-text("Create Inspection")',
@@ -253,7 +253,7 @@ test.describe('Inspections Module Tests', () => {
           const isVisible = await element.isVisible({ timeout: 3000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`✅ Found Create Inspection button: ${selector}`);
+            console.log(`[OK] Found Create Inspection button: ${selector}`);
             createFound = true;
             
             const buttonText = await element.textContent();
@@ -274,7 +274,7 @@ test.describe('Inspections Module Tests', () => {
   // Test 7: Click Create Inspection and navigate to form
   test('07 - Create Inspection button opens new form', async ({ page }) => {
     await test.step('Find and click Create Inspection button', async () => {
-      console.log('🔍 Looking for Create Inspection button...');
+      console.log('[SEARCH] Looking for Create Inspection button...');
       
       const createSelectors = [
         'button:has-text("Create Inspection")',
@@ -291,10 +291,10 @@ test.describe('Inspections Module Tests', () => {
           const isVisible = await element.isVisible({ timeout: 3000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`✅ Found Create button: ${selector}`);
+            console.log(`[OK] Found Create button: ${selector}`);
             await element.click();
             await page.waitForTimeout(2000);
-            console.log('✅ Create button clicked');
+            console.log('[OK] Create button clicked');
             clicked = true;
             break;
           }
@@ -314,9 +314,9 @@ test.describe('Inspections Module Tests', () => {
                         (currentUrl.includes('/new') || currentUrl.includes('/create'));
       
       if (isFormPage) {
-        console.log('✅ Navigated to Inspection creation form');
+        console.log('[OK] Navigated to Inspection creation form');
       } else {
-        console.log(`⚠️  Current URL: ${currentUrl}`);
+        console.log(`[WARNING]  Current URL: ${currentUrl}`);
       }
       
       await page.screenshot({ path: 'reports/screenshots/inspections-new-form.png', fullPage: true });
@@ -332,17 +332,17 @@ test.describe('Inspections Module Tests', () => {
       if (isVisible) {
         await createButton.click();
         await page.waitForTimeout(2000);
-        console.log('✅ Navigated via Create button');
+        console.log('[OK] Navigated via Create button');
       } else {
         // Try direct navigation
         await page.goto(`/app/projects/${projectId}/tools/inspections/new`, { waitUntil: 'domcontentloaded' });
         await page.waitForTimeout(2000);
-        console.log('✅ Navigated directly to form');
+        console.log('[OK] Navigated directly to form');
       }
     });
 
     await test.step('Analyze form structure', async () => {
-      console.log('\n📊 INSPECTION FORM STRUCTURE ANALYSIS');
+      console.log('\n[CHART] INSPECTION FORM STRUCTURE ANALYSIS');
       console.log('================================\n');
 
       // Count inputs
@@ -391,13 +391,13 @@ test.describe('Inspections Module Tests', () => {
       const isVisible = await expandButton.isVisible({ timeout: 5000 }).catch(() => false);
       
       if (isVisible) {
-        console.log('✅ Found Expand All button');
+        console.log('[OK] Found Expand All button');
         
         await page.screenshot({ path: 'reports/screenshots/inspections-before-expand.png', fullPage: true });
         
         await expandButton.click();
         await page.waitForTimeout(1500);
-        console.log('✅ Clicked Expand All button');
+        console.log('[OK] Clicked Expand All button');
         
         await page.screenshot({ path: 'reports/screenshots/inspections-after-expand.png', fullPage: true });
         
@@ -405,7 +405,7 @@ test.describe('Inspections Module Tests', () => {
         const newText = await expandButton.textContent().catch(() => '');
         console.log(`   Button text after click: "${newText.trim()}"`);
       } else {
-        console.log('⚠️  Expand All button not found');
+        console.log('[WARNING]  Expand All button not found');
       }
     });
   });
@@ -416,11 +416,11 @@ test.describe('Inspections Module Tests', () => {
       const dropdowns = await page.locator('[role="combobox"]').all();
       
       if (dropdowns.length >= 1) {
-        console.log(`✅ Found ${dropdowns.length} dropdowns`);
+        console.log(`[OK] Found ${dropdowns.length} dropdowns`);
         
         await dropdowns[0].click();
         await page.waitForTimeout(1000);
-        console.log('✅ Clicked first dropdown');
+        console.log('[OK] Clicked first dropdown');
         
         const menuItems = await page.locator('[role="menuitem"]').all();
         console.log(`   Menu items: ${menuItems.length}`);
@@ -437,3 +437,5 @@ test.describe('Inspections Module Tests', () => {
     });
   });
 });
+
+

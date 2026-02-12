@@ -1,76 +1,76 @@
-## PROJECT STRUCTURE
+﻿## PROJECT STRUCTURE
 
 A clean, readable organization for the SuperConstruct test automation framework.
 
 ```
 SuperConstruct/
 │
-├── 📄 README.md                    ← START HERE (Project overview)
-├── 📄 package.json                 ← Dependencies & NPM scripts
-├── 📄 playwright.config.js         ← Playwright configuration
-├── 📄 .env.example                 ← Environment variables template
-├── 📄 .gitignore                   ← Git ignore rules
+├── ### README.md                    ← START HERE (Project overview)
+├── ### package.json                 ← Dependencies & NPM scripts
+├── ### playwright.config.js         ← Playwright configuration
+├── ### .env.example                 ← Environment variables template
+├── ### .gitignore                   ← Git ignore rules
 │
-├── 📁 config/
+├── ### config/
 │   └── test.config.json            ← Test configuration (URLs, credentials, test data)
 │
-├── 📁 tests/                       ← All test files
-│   ├── 📄 README.md                ← Test suite documentation
-│   ├── 📄 global-setup.js          ← Global setup (runs once before all tests)
-│   ├── 📄 smoke-test.spec.js       ← Smoke tests (14 modules, ~2 min)
-│   ├── 📄 data-driven-tests.spec.js ← Data-driven tests (39 tests, ~4 min)
-│   ├── 📄 comprehensive-functional.spec.js ← Full end-to-end tests
-│   ├── 📄 test-data.json           ← Test data for all modules
-│   ├── 📁 auth/                    ← Authentication tests
+├── ### tests/                       ← All test files
+│   ├── ### README.md                ← Test suite documentation
+│   ├── ### global-setup.js          ← Global setup (runs once before all tests)
+│   ├── ### smoke-test.spec.js       ← Smoke tests (14 modules, ~2 min)
+│   ├── ### data-driven-tests.spec.js ← Data-driven tests (39 tests, ~4 min)
+│   ├── ### comprehensive-functional.spec.js ← Full end-to-end tests
+│   ├── ### test-data.json           ← Test data for all modules
+│   ├── ### auth/                    ← Authentication tests
 │   │   ├── login.spec.js
 │   │   └── signup.spec.js
-│   ├── 📁 modules/                 ← Individual module tests
+│   ├── ### modules/                 ← Individual module tests
 │   │   ├── rfi.spec.js
 │   │   ├── submittal.spec.js
 │   │   ├── inspection.spec.js
 │   │   ├── sov.spec.js
 │   │   ├── change-request.spec.js
 │   │   └── users.spec.js
-│   └── 📁 comprehensive/           ← Advanced test scenarios
+│   └── ### comprehensive/           ← Advanced test scenarios
 │
-├── 📁 pages/                       ← Page Objects (POM pattern)
-│   ├── 📄 README.md                ← Page object documentation
-│   ├── 📄 base.page.js             ← Base class (common functionality)
-│   ├── 📄 login.page.js            ← Login & authentication
-│   ├── 📄 signup.page.js           ← User registration
-│   ├── 📄 dashboard.page.js        ← Project dashboard
-│   └── 📄 create-module.page.js    ← Generic module creation
+├── ### pages/                       ← Page Objects (POM pattern)
+│   ├── ### README.md                ← Page object documentation
+│   ├── ### base.page.js             ← Base class (common functionality)
+│   ├── ### login.page.js            ← Login & authentication
+│   ├── ### signup.page.js           ← User registration
+│   ├── ### dashboard.page.js        ← Project dashboard
+│   └── ### create-module.page.js    ← Generic module creation
 │
-├── 📁 utils/                       ← Helper utilities
-│   ├── 📄 README.md                ← Utils documentation
-│   ├── 📄 config-manager.js        ← Configuration loader
-│   ├── 📄 test-helper.js           ← Smart element interactions
-│   ├── 📄 otp-reader.js            ← Gmail OTP reader
-│   └── 📄 constants.js             ← Centralized constants
+├── ### utils/                       ← Helper utilities
+│   ├── ### README.md                ← Utils documentation
+│   ├── ### config-manager.js        ← Configuration loader
+│   ├── ### test-helper.js           ← Smart element interactions
+│   ├── ### otp-reader.js            ← Gmail OTP reader
+│   └── ### constants.js             ← Centralized constants
 │
-├── 📁 scripts/
+├── ### scripts/
 │   └── setup.js                    ← Initial setup script
 │
-├── 📁 reports/                     ← Test results (generated)
+├── ### reports/                     ← Test results (generated)
 │   ├── html-report/                ← HTML report with screenshots
 │   ├── test-results.json           ← JSON results for CI/CD
 │   ├── screenshots/                ← Failure screenshots
 │   ├── videos/                     ← Test recordings
 │   └── traces/                     ← Playwright traces
 │
-├── 📁 test-results/                ← Detailed test artifacts (generated)
+├── ### test-results/                ← Detailed test artifacts (generated)
 │
-├── 📁 screenshots/                 ← Additional screenshots
+├── ### screenshots/                 ← Additional screenshots
 │
-├── 📁 .auth/                       ← Authentication state (git ignored)
+├── ### .auth/                       ← Authentication state (git ignored)
 │   └── user.json                   ← Session cookies (DO NOT COMMIT)
 │
-└── 📁 .github/
+└── ### .github/
     └── workflows/                  ← CI/CD workflows
         └── tests.yml               ← GitHub Actions configuration
 ```
 
-## 📊 Quick Reference
+## ### Quick Reference
 
 ### What Each Folder Does
 
@@ -102,7 +102,7 @@ SuperConstruct/
 | `test-helper.js`            | Code     | Smart element interactions             |
 | `constants.js`              | Code     | Centralized constants                  |
 
-## 🎯 Where to Start
+## ### Where to Start
 
 1. **First time?** → Read [README.md](../README.md)
 2. **Setting up?** → Read [tests/README.md](../tests/README.md)
@@ -110,7 +110,7 @@ SuperConstruct/
 4. **Running tests?** → Use `npm run test:smoke` or `npm run test:data-driven`
 5. **Debugging?** → Run `npm run test:headed` or `npm run test:debug`
 
-## 🔍 Finding Things
+## ### Finding Things
 
 - **Need to add/edit test?** → Look in `tests/` folder
 - **Need to update login?** → Edit `pages/login.page.js`
@@ -119,7 +119,7 @@ SuperConstruct/
 - **Need reusable function?** → Check `utils/test-helper.js`
 - **Need helper constant?** → Check `utils/constants.js`
 
-## 📈 Code Quality
+## ### Code Quality
 
 - ✅ No AI branding in code
 - ✅ Clear variable names
@@ -128,3 +128,4 @@ SuperConstruct/
 - ✅ Page Object Pattern (DRY principle)
 - ✅ Centralized constants
 - ✅ Professional naming conventions
+

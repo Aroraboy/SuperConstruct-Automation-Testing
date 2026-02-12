@@ -1,4 +1,4 @@
-/**
+﻿/**
  * RFI (REQUEST FOR INFORMATION) MODULE TESTS
  * 
  * Purpose: Test RFI tab functionality
@@ -41,19 +41,19 @@ test.describe('RFI Module Tests', () => {
     await test.step('Verify page loaded', async () => {
       const currentUrl = page.url();
       expect(currentUrl).toContain('/tools/rfi');
-      console.log('✅ RFI page loaded');
+      console.log('[OK] RFI page loaded');
     });
 
     await test.step('Take screenshot of RFI page', async () => {
       await page.screenshot({ path: 'reports/screenshots/rfi-main.png', fullPage: true });
-      console.log('📸 Screenshot taken: rfi-main.png');
+      console.log('[CAMERA] Screenshot taken: rfi-main.png');
     });
   });
 
   // Test 2: Find and test search bar functionality
   test('02 - Search bar is functional', async ({ page }) => {
     await test.step('Look for search bar and test search', async () => {
-      console.log('🔍 Looking for search bar...');
+      console.log('[SEARCH] Looking for search bar...');
       
       const searchSelectors = [
         'input[type="search"]',
@@ -71,7 +71,7 @@ test.describe('RFI Module Tests', () => {
           const isVisible = await element.isVisible({ timeout: 3000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`✅ Found search bar: ${selector}`);
+            console.log(`[OK] Found search bar: ${selector}`);
             searchFound = true;
             
             const placeholder = await element.getAttribute('placeholder').catch(() => '');
@@ -85,19 +85,19 @@ test.describe('RFI Module Tests', () => {
             // Test search functionality
             await element.fill('Test RFI Search');
             await page.waitForTimeout(2000);
-            console.log('✅ Search text entered');
+            console.log('[OK] Search text entered');
             
             // Verify page updated
             const searchedContent = await page.content();
             console.log(`   After search length: ${searchedContent.length}`);
-            console.log('✅ Search functionality verified');
+            console.log('[OK] Search functionality verified');
             
             await page.screenshot({ path: 'reports/screenshots/rfi-search.png', fullPage: true });
             
             // Clear search
             await element.fill('');
             await page.waitForTimeout(1000);
-            console.log('✅ Search cleared');
+            console.log('[OK] Search cleared');
             break;
           }
         } catch (e) {
@@ -112,7 +112,7 @@ test.describe('RFI Module Tests', () => {
   // Test 3: Find "Created by" field
   test('03 - Created by field is visible', async ({ page }) => {
     await test.step('Look for Created by field', async () => {
-      console.log('🔍 Looking for "Created by" field...');
+      console.log('[SEARCH] Looking for "Created by" field...');
       
       const createdBySelectors = [
         'input[placeholder*="created by" i]',
@@ -131,12 +131,12 @@ test.describe('RFI Module Tests', () => {
           const isVisible = await element.isVisible({ timeout: 3000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`✅ Found "Created by" field: ${selector}`);
+            console.log(`[OK] Found "Created by" field: ${selector}`);
             fieldFound = true;
             
             await element.fill('Test User');
             await page.waitForTimeout(500);
-            console.log('✅ Created by text entered');
+            console.log('[OK] Created by text entered');
             
             await page.screenshot({ path: 'reports/screenshots/rfi-created-by.png', fullPage: true });
             break;
@@ -147,7 +147,7 @@ test.describe('RFI Module Tests', () => {
       }
 
       if (!fieldFound) {
-        console.log('⚠️  Created by field not found with standard selectors');
+        console.log('[WARNING]  Created by field not found with standard selectors');
         // Still take screenshot to analyze
         await page.screenshot({ path: 'reports/screenshots/rfi-no-created-by.png', fullPage: true });
       }
@@ -157,7 +157,7 @@ test.describe('RFI Module Tests', () => {
   // Test 4: Find calendar date filter
   test('04 - Calendar date filter is visible', async ({ page }) => {
     await test.step('Look for date filter calendar', async () => {
-      console.log('🔍 Looking for calendar date filter...');
+      console.log('[SEARCH] Looking for calendar date filter...');
       
       const calendarSelectors = [
         'input[type="date"]',
@@ -178,7 +178,7 @@ test.describe('RFI Module Tests', () => {
           const isVisible = await element.isVisible({ timeout: 3000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`✅ Found calendar filter: ${selector}`);
+            console.log(`[OK] Found calendar filter: ${selector}`);
             calendarFound = true;
             
             const elementType = await element.evaluate(el => el.tagName);
@@ -193,7 +193,7 @@ test.describe('RFI Module Tests', () => {
       }
 
       if (!calendarFound) {
-        console.log('⚠️  Calendar filter not found - will analyze page buttons');
+        console.log('[WARNING]  Calendar filter not found - will analyze page buttons');
         const buttons = await page.locator('button').all();
         console.log(`   Total buttons on page: ${buttons.length}`);
       }
@@ -203,7 +203,7 @@ test.describe('RFI Module Tests', () => {
   // Test 5: Find and test dropdown menu
   test('05 - Dropdown menu is visible and functional', async ({ page }) => {
     await test.step('Look for dropdown menu', async () => {
-      console.log('🔍 Looking for dropdown menu...');
+      console.log('[SEARCH] Looking for dropdown menu...');
       
       const dropdownSelectors = [
         'select',
@@ -222,13 +222,13 @@ test.describe('RFI Module Tests', () => {
           const isVisible = await element.isVisible({ timeout: 3000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`✅ Found dropdown: ${selector}`);
+            console.log(`[OK] Found dropdown: ${selector}`);
             dropdownFound = true;
             
             // Click to open dropdown
             await element.click();
             await page.waitForTimeout(1000);
-            console.log('✅ Dropdown opened');
+            console.log('[OK] Dropdown opened');
             
             // Check for menu items
             const menuItems = await page.locator('[role="menuitem"]').all();
@@ -244,7 +244,7 @@ test.describe('RFI Module Tests', () => {
               
               await firstItem.click();
               await page.waitForTimeout(1000);
-              console.log('✅ Dropdown option selected');
+              console.log('[OK] Dropdown option selected');
               
               await page.screenshot({ path: 'reports/screenshots/rfi-dropdown-selected.png', fullPage: true });
             }
@@ -263,13 +263,13 @@ test.describe('RFI Module Tests', () => {
   // Test 6: Find and click Export button
   test('06 - Export button is clickable', async ({ page }) => {
     await test.step('Look for Export button', async () => {
-      console.log('🔍 Looking for Export button...');
+      console.log('[SEARCH] Looking for Export button...');
       
       const exportButton = page.locator('button:has-text("Export")').first();
       const isVisible = await exportButton.isVisible({ timeout: 5000 }).catch(() => false);
       
       if (isVisible) {
-        console.log('✅ Found Export button');
+        console.log('[OK] Found Export button');
         
         const buttonText = await exportButton.textContent();
         console.log(`   Button text: "${buttonText.trim()}"`);
@@ -279,12 +279,12 @@ test.describe('RFI Module Tests', () => {
         // Click Export button
         await exportButton.click();
         await page.waitForTimeout(1500);
-        console.log('✅ Export button clicked');
+        console.log('[OK] Export button clicked');
         
         await page.screenshot({ path: 'reports/screenshots/rfi-export-clicked.png', fullPage: true });
         expect(isVisible).toBeTruthy();
       } else {
-        console.log('⚠️  Export button not found with text selector');
+        console.log('[WARNING]  Export button not found with text selector');
         
         // Try to find any export-related button
         const allButtons = await page.locator('button').all();
@@ -303,7 +303,7 @@ test.describe('RFI Module Tests', () => {
   // Test 7: Find and click Create button
   test('07 - Create button opens new RFI form', async ({ page }) => {
     await test.step('Look for Create button', async () => {
-      console.log('🔍 Looking for Create button...');
+      console.log('[SEARCH] Looking for Create button...');
       
       const createSelectors = [
         'button:has-text("Create")',
@@ -321,7 +321,7 @@ test.describe('RFI Module Tests', () => {
           const isVisible = await element.isVisible({ timeout: 3000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`✅ Found Create button: ${selector}`);
+            console.log(`[OK] Found Create button: ${selector}`);
             createFound = true;
             
             await page.screenshot({ path: 'reports/screenshots/rfi-create-button.png', fullPage: true });
@@ -329,7 +329,7 @@ test.describe('RFI Module Tests', () => {
             // Click Create button
             await element.click();
             await page.waitForTimeout(2000);
-            console.log('✅ Create button clicked');
+            console.log('[OK] Create button clicked');
             
             break;
           }
@@ -346,7 +346,7 @@ test.describe('RFI Module Tests', () => {
       console.log(`Current URL: ${currentUrl}`);
       
       expect(currentUrl).toContain('/rfi/new');
-      console.log('✅ Navigated to RFI creation form');
+      console.log('[OK] Navigated to RFI creation form');
       
       await page.screenshot({ path: 'reports/screenshots/rfi-new-form.png', fullPage: true });
     });
@@ -369,7 +369,7 @@ test.describe('RFI Module Tests', () => {
     });
 
     await test.step('Analyze form structure', async () => {
-      console.log('\n📊 RFI FORM STRUCTURE ANALYSIS');
+      console.log('\n[CHART] RFI FORM STRUCTURE ANALYSIS');
       console.log('================================\n');
 
       // Count inputs
@@ -424,11 +424,11 @@ test.describe('RFI Module Tests', () => {
       if (isVisible) {
         await createButton.click();
         await page.waitForTimeout(2000);
-        console.log('✅ Navigated via Create button');
+        console.log('[OK] Navigated via Create button');
       } else {
         await page.goto(`/app/projects/${projectId}/tools/rfi/new`, { waitUntil: 'domcontentloaded' });
         await page.waitForTimeout(2000);
-        console.log('✅ Navigated directly to form');
+        console.log('[OK] Navigated directly to form');
       }
     });
 
@@ -450,7 +450,7 @@ test.describe('RFI Module Tests', () => {
           
           if (isVisible) {
             await element.fill(`Test RFI ${timestamp}`);
-            console.log(`✅ Filled title field: ${selector}`);
+            console.log(`[OK] Filled title field: ${selector}`);
             break;
           }
         } catch (e) {
@@ -472,7 +472,7 @@ test.describe('RFI Module Tests', () => {
           
           if (isVisible) {
             await element.fill('This is an automated test RFI created by Playwright');
-            console.log(`✅ Filled description field: ${selector}`);
+            console.log(`[OK] Filled description field: ${selector}`);
             break;
           }
         } catch (e) {
@@ -501,11 +501,11 @@ test.describe('RFI Module Tests', () => {
           const isVisible = await element.isVisible({ timeout: 2000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`✅ Found submit button: ${selector}`);
+            console.log(`[OK] Found submit button: ${selector}`);
             submitFound = true;
             
             // NOTE: Not actually clicking to avoid creating test data
-            console.log('⚠️  Skipping actual submission to avoid test data creation');
+            console.log('[WARNING]  Skipping actual submission to avoid test data creation');
             break;
           }
         } catch (e) {
@@ -518,3 +518,5 @@ test.describe('RFI Module Tests', () => {
     });
   });
 });
+
+

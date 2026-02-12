@@ -1,4 +1,4 @@
-/**
+﻿/**
  * DATA-DRIVEN TEST SUITE
  * 
  * Purpose: Run multiple test scenarios for each module using test data from test-data.json
@@ -59,7 +59,7 @@ test.describe('Data-Driven Functional Tests', () => {
         });
 
         await test.step(`Verify RFI data: ${rfiData.id}`, async () => {
-          console.log(`📝 Testing RFI: ${rfiData.title}`);
+          console.log(`[NOTE] Testing RFI: ${rfiData.title}`);
           console.log(`   Priority: ${rfiData.priority}`);
           console.log(`   Description: ${rfiData.description}`);
           
@@ -71,7 +71,7 @@ test.describe('Data-Driven Functional Tests', () => {
           const pageContent = await page.content();
           expect(pageContent.length).toBeGreaterThan(500);
           
-          console.log(`✅ RFI scenario ${index + 1} validated`);
+          console.log(`[OK] RFI scenario ${index + 1} validated`);
         });
       });
     });
@@ -87,7 +87,7 @@ test.describe('Data-Driven Functional Tests', () => {
         });
 
         await test.step(`Verify Submittal: ${submittalData.id}`, async () => {
-          console.log(`📦 Testing Submittal: ${submittalData.title}`);
+          console.log(`[PACKAGE] Testing Submittal: ${submittalData.title}`);
           console.log(`   Vendor: ${submittalData.vendor}`);
           console.log(`   Status: ${submittalData.status}`);
           console.log(`   Certifications: ${submittalData.certifications.join(', ')}`);
@@ -99,7 +99,7 @@ test.describe('Data-Driven Functional Tests', () => {
           const pageContent = await page.content();
           expect(pageContent.length).toBeGreaterThan(500);
           
-          console.log(`✅ Submittal scenario ${index + 1} validated`);
+          console.log(`[OK] Submittal scenario ${index + 1} validated`);
         });
       });
     });
@@ -115,7 +115,7 @@ test.describe('Data-Driven Functional Tests', () => {
         });
 
         await test.step(`Verify Inspection: ${inspectionData.id}`, async () => {
-          console.log(`🔍 Testing Inspection: ${inspectionData.type}`);
+          console.log(`[SEARCH] Testing Inspection: ${inspectionData.type}`);
           console.log(`   Location: ${inspectionData.location}`);
           console.log(`   Status: ${inspectionData.status}`);
           console.log(`   Inspector: ${inspectionData.inspector}`);
@@ -128,7 +128,7 @@ test.describe('Data-Driven Functional Tests', () => {
           const pageContent = await page.content();
           expect(pageContent.length).toBeGreaterThan(500);
           
-          console.log(`✅ Inspection scenario ${index + 1} validated`);
+          console.log(`[OK] Inspection scenario ${index + 1} validated`);
         });
       });
     });
@@ -144,7 +144,7 @@ test.describe('Data-Driven Functional Tests', () => {
         });
 
         await test.step(`Verify SOV Line Item: ${sovData.id}`, async () => {
-          console.log(`💰 Testing SOV Item: ${sovData.lineItem}`);
+          console.log(`[MONEY] Testing SOV Item: ${sovData.lineItem}`);
           console.log(`   Estimated Value: $${sovData.estimatedValue.toLocaleString()}`);
           console.log(`   Percent Complete: ${sovData.percentComplete}%`);
           console.log(`   Current Amount: ${sovData.currencyAmount}`);
@@ -157,7 +157,7 @@ test.describe('Data-Driven Functional Tests', () => {
           const pageContent = await page.content();
           expect(pageContent.length).toBeGreaterThan(500);
           
-          console.log(`✅ SOV scenario ${index + 1} validated`);
+          console.log(`[OK] SOV scenario ${index + 1} validated`);
         });
       });
     });
@@ -173,7 +173,7 @@ test.describe('Data-Driven Functional Tests', () => {
         const totalSpent = testData.sovTestData.reduce((sum, item) => sum + (item.estimatedValue * item.percentComplete / 100), 0);
         const remainingBudget = totalEstimated - totalSpent;
         
-        console.log(`💰 SOV Summary:`);
+        console.log(`[MONEY] SOV Summary:`);
         console.log(`   Total Estimated: $${totalEstimated.toLocaleString()}`);
         console.log(`   Total Spent: $${totalSpent.toLocaleString()}`);
         console.log(`   Remaining Budget: $${remainingBudget.toLocaleString()}`);
@@ -194,7 +194,7 @@ test.describe('Data-Driven Functional Tests', () => {
         });
 
         await test.step(`Verify Change Request: ${crData.id}`, async () => {
-          console.log(`📋 Testing Change Request: ${crData.title}`);
+          console.log(`[LIST] Testing Change Request: ${crData.title}`);
           console.log(`   Impact Area: ${crData.impactedArea}`);
           console.log(`   Estimated Cost: $${crData.estimatedCost.toLocaleString()}`);
           console.log(`   Timeline: ${crData.timeline}`);
@@ -207,7 +207,7 @@ test.describe('Data-Driven Functional Tests', () => {
           const pageContent = await page.content();
           expect(pageContent.length).toBeGreaterThan(500);
           
-          console.log(`✅ Change Request scenario ${index + 1} validated`);
+          console.log(`[OK] Change Request scenario ${index + 1} validated`);
         });
       });
     });
@@ -223,7 +223,7 @@ test.describe('Data-Driven Functional Tests', () => {
         });
 
         await test.step(`Verify Daily Log: ${logData.id}`, async () => {
-          console.log(`📝 Testing Daily Log: ${logData.date}`);
+          console.log(`[NOTE] Testing Daily Log: ${logData.date}`);
           console.log(`   Weather: ${logData.weather}`);
           console.log(`   Workers on Site: ${logData.workersOnSite}`);
           console.log(`   Safety Incidents: ${logData.safetyIncidents}`);
@@ -236,7 +236,7 @@ test.describe('Data-Driven Functional Tests', () => {
           const pageContent = await page.content();
           expect(pageContent.length).toBeGreaterThan(500);
           
-          console.log(`✅ Daily Log scenario ${index + 1} validated`);
+          console.log(`[OK] Daily Log scenario ${index + 1} validated`);
         });
       });
     });
@@ -252,7 +252,7 @@ test.describe('Data-Driven Functional Tests', () => {
         });
 
         await test.step(`Verify Expense: ${expenseData.id}`, async () => {
-          console.log(`💵 Testing Expense: ${expenseData.description}`);
+          console.log(`[CASH] Testing Expense: ${expenseData.description}`);
           console.log(`   Category: ${expenseData.category}`);
           console.log(`   Amount: $${expenseData.amount.toLocaleString()}`);
           console.log(`   Date: ${expenseData.date}`);
@@ -265,7 +265,7 @@ test.describe('Data-Driven Functional Tests', () => {
           const pageContent = await page.content();
           expect(pageContent.length).toBeGreaterThan(500);
           
-          console.log(`✅ Expense scenario ${index + 1} validated`);
+          console.log(`[OK] Expense scenario ${index + 1} validated`);
         });
       });
     });
@@ -285,7 +285,7 @@ test.describe('Data-Driven Functional Tests', () => {
           .filter(exp => exp.status === 'Pending Approval')
           .reduce((sum, exp) => sum + exp.amount, 0);
         
-        console.log(`💰 Expense Summary:`);
+        console.log(`[MONEY] Expense Summary:`);
         console.log(`   Total Expenses: $${totalExpenses.toLocaleString()}`);
         console.log(`   Approved: $${approvedExpenses.toLocaleString()}`);
         console.log(`   Pending: $${pendingExpenses.toLocaleString()}`);
@@ -306,7 +306,7 @@ test.describe('Data-Driven Functional Tests', () => {
         });
 
         await test.step(`Verify Message: ${messageData.id}`, async () => {
-          console.log(`💬 Testing Message: ${messageData.title}`);
+          console.log(`[CHAT] Testing Message: ${messageData.title}`);
           console.log(`   Author: ${messageData.author}`);
           console.log(`   Type: ${messageData.type}`);
           console.log(`   Priority: ${messageData.priority}`);
@@ -319,7 +319,7 @@ test.describe('Data-Driven Functional Tests', () => {
           const pageContent = await page.content();
           expect(pageContent.length).toBeGreaterThan(500);
           
-          console.log(`✅ Message scenario ${index + 1} validated`);
+          console.log(`[OK] Message scenario ${index + 1} validated`);
         });
       });
     });
@@ -335,7 +335,7 @@ test.describe('Data-Driven Functional Tests', () => {
         });
 
         await test.step(`Verify Member: ${memberData.id}`, async () => {
-          console.log(`👤 Testing Member: ${memberData.name}`);
+          console.log(`[USER] Testing Member: ${memberData.name}`);
           console.log(`   Email: ${memberData.email}`);
           console.log(`   Role: ${memberData.role}`);
           console.log(`   Department: ${memberData.department}`);
@@ -347,7 +347,7 @@ test.describe('Data-Driven Functional Tests', () => {
           const pageContent = await page.content();
           expect(pageContent.length).toBeGreaterThan(500);
           
-          console.log(`✅ Member scenario ${index + 1} validated`);
+          console.log(`[OK] Member scenario ${index + 1} validated`);
         });
       });
     });
@@ -363,7 +363,7 @@ test.describe('Data-Driven Functional Tests', () => {
         });
 
         await test.step(`Test: ${edgeCaseData.scenario}`, async () => {
-          console.log(`⚠️ Testing Edge Case: ${edgeCaseData.scenario}`);
+          console.log(`[WARNING] Testing Edge Case: ${edgeCaseData.scenario}`);
           console.log(`   Description: ${edgeCaseData.description}`);
           console.log(`   Expected: ${edgeCaseData.expectedBehavior}`);
           
@@ -374,7 +374,7 @@ test.describe('Data-Driven Functional Tests', () => {
           const currentUrl = page.url();
           expect(currentUrl).toContain('/rfi');
           
-          console.log(`✅ Edge case ${index + 1} handled gracefully`);
+          console.log(`[OK] Edge case ${index + 1} handled gracefully`);
         });
       });
     });
@@ -396,23 +396,24 @@ test.describe('Data-Driven Functional Tests', () => {
         testData.edgeCaseTestData.length;
 
       console.log(`\n${'='.repeat(60)}`);
-      console.log(`📊 DATA-DRIVEN TEST SUMMARY`);
+      console.log(`[CHART] DATA-DRIVEN TEST SUMMARY`);
       console.log(`${'='.repeat(60)}`);
-      console.log(`✅ RFI Scenarios: ${testData.rfiTestData.length}`);
-      console.log(`✅ Submittal Scenarios: ${testData.submittalTestData.length}`);
-      console.log(`✅ Inspection Scenarios: ${testData.inspectionTestData.length}`);
-      console.log(`✅ SOV Scenarios: ${testData.sovTestData.length}`);
-      console.log(`✅ Change Request Scenarios: ${testData.changeRequestTestData.length}`);
-      console.log(`✅ Daily Log Scenarios: ${testData.dailyLogTestData.length}`);
-      console.log(`✅ Expense Scenarios: ${testData.expenseTestData.length}`);
-      console.log(`✅ Message Board Scenarios: ${testData.messageBoardTestData.length}`);
-      console.log(`✅ Member Scenarios: ${testData.memberTestData.length}`);
-      console.log(`✅ Edge Case Scenarios: ${testData.edgeCaseTestData.length}`);
+      console.log(`[OK] RFI Scenarios: ${testData.rfiTestData.length}`);
+      console.log(`[OK] Submittal Scenarios: ${testData.submittalTestData.length}`);
+      console.log(`[OK] Inspection Scenarios: ${testData.inspectionTestData.length}`);
+      console.log(`[OK] SOV Scenarios: ${testData.sovTestData.length}`);
+      console.log(`[OK] Change Request Scenarios: ${testData.changeRequestTestData.length}`);
+      console.log(`[OK] Daily Log Scenarios: ${testData.dailyLogTestData.length}`);
+      console.log(`[OK] Expense Scenarios: ${testData.expenseTestData.length}`);
+      console.log(`[OK] Message Board Scenarios: ${testData.messageBoardTestData.length}`);
+      console.log(`[OK] Member Scenarios: ${testData.memberTestData.length}`);
+      console.log(`[OK] Edge Case Scenarios: ${testData.edgeCaseTestData.length}`);
       console.log(`${'='.repeat(60)}`);
-      console.log(`📈 TOTAL TEST SCENARIOS: ${totalScenarios}`);
+      console.log(`[UP] TOTAL TEST SCENARIOS: ${totalScenarios}`);
       console.log(`${'='.repeat(60)}\n`);
       
       expect(totalScenarios).toBeGreaterThan(0);
     });
   });
 });
+

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * CONSTANTS & CONFIGURATION
  * 
  * Centralized constants used across the test suite
@@ -73,14 +73,14 @@ const AUTH = {
 // LOG LEVELS
 // ============================================
 const LOG_LEVELS = {
-  INFO: '📝',
-  SUCCESS: '✅',
-  ERROR: '❌',
-  WARNING: '⚠️',
-  DEBUG: '🐛',
-  TEST: '🧪',
-  AUTH: '🔐',
-  TIMING: '⏱️',
+  INFO: '[NOTE]',
+  SUCCESS: '[OK]',
+  ERROR: '[ERROR]',
+  WARNING: '[WARNING]',
+  DEBUG: '[DEBUG]',
+  TEST: '[TEST]',
+  AUTH: '[LOCK]',
+  TIMING: '[TIME]',
 };
 
 module.exports = {
@@ -92,3 +92,4 @@ module.exports = {
   AUTH,
   LOG_LEVELS,
 };
+

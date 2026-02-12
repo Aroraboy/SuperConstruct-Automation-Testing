@@ -1,4 +1,4 @@
-const BasePage = require('./base.page');
+﻿const BasePage = require('./base.page');
 const OTPReader = require('../utils/otp-reader');
 
 class LoginPage extends BasePage {
@@ -119,10 +119,10 @@ class LoginPage extends BasePage {
    */
   async submitOTPManual() {
     console.log('\n' + '='.repeat(60));
-    console.log('🔐 OTP VERIFICATION REQUIRED');
+    console.log('[LOCK] OTP VERIFICATION REQUIRED');
     console.log('='.repeat(60));
-    console.log('\n📧 An OTP has been sent to your email');
-    console.log('📸 Screenshot of OTP screen saved to: reports/screenshots/');
+    console.log('\n[EMAIL] An OTP has been sent to your email');
+    console.log('[CAMERA] Screenshot of OTP screen saved to: reports/screenshots/');
     console.log('\n⏳ Waiting for your input...');
     console.log('Please enter the OTP you received in your email inbox');
     console.log('='.repeat(60) + '\n');
@@ -148,7 +148,7 @@ class LoginPage extends BasePage {
    * Login with OTP - tries automatic then falls back to manual
    */
   async loginWithOTPAuto(email, password, gmailAppPassword) {
-    console.log('🔐 Starting login with OTP verification...');
+    console.log('[LOCK] Starting login with OTP verification...');
 
     // Step 1: Enter credentials and submit
     await this.login(email, password);
@@ -161,7 +161,7 @@ class LoginPage extends BasePage {
       return true;
     }
 
-    console.log('📱 OTP screen detected');
+    console.log('[PHONE] OTP screen detected');
 
     // Take screenshot for user reference
     await this.takeScreenshot('otp-screen');
@@ -169,7 +169,7 @@ class LoginPage extends BasePage {
     // Try automatic reading first
     if (gmailAppPassword && gmailAppPassword !== 'YOUR_GMAIL_APP_PASSWORD_HERE') {
       try {
-        console.log('📧 Attempting to read OTP from Gmail...');
+        console.log('[EMAIL] Attempting to read OTP from Gmail...');
         const OTPReader = require('../utils/otp-reader');
         const otpReader = new OTPReader(email, gmailAppPassword);
         const otp = await otpReader.waitForOTP(3, 2000);
@@ -203,5 +203,6 @@ class LoginPage extends BasePage {
 }
 
 module.exports = LoginPage;
+
 
 

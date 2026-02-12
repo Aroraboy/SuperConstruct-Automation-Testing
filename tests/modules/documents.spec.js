@@ -1,4 +1,4 @@
-/**
+﻿/**
  * DOCUMENTS MODULE TESTS
  * 
  * Purpose: Test Documents tab functionality
@@ -42,19 +42,19 @@ test.describe('Documents Module Tests', () => {
     await test.step('Verify page loaded', async () => {
       const currentUrl = page.url();
       expect(currentUrl).toContain('/tools/documents');
-      console.log('✅ Documents page loaded');
+      console.log('[OK] Documents page loaded');
     });
 
     await test.step('Take screenshot of Documents page', async () => {
       await page.screenshot({ path: 'reports/screenshots/documents-main.png', fullPage: true });
-      console.log('📸 Screenshot taken: documents-main.png');
+      console.log('[CAMERA] Screenshot taken: documents-main.png');
     });
   });
 
   // Test 2: Find "My Documents" option
   test('02 - My Documents section is visible', async ({ page }) => {
     await test.step('Look for My Documents', async () => {
-      console.log('🔍 Looking for My Documents section...');
+      console.log('[SEARCH] Looking for My Documents section...');
       
       const myDocsSelectors = [
         'text=My Documents',
@@ -72,7 +72,7 @@ test.describe('Documents Module Tests', () => {
           const isVisible = await element.isVisible({ timeout: 3000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`✅ Found My Documents: ${selector}`);
+            console.log(`[OK] Found My Documents: ${selector}`);
             myDocsFound = true;
             
             const text = await element.textContent();
@@ -93,7 +93,7 @@ test.describe('Documents Module Tests', () => {
   // Test 3: Find "Shared with me" option
   test('03 - Shared with me section is visible', async ({ page }) => {
     await test.step('Look for Shared with me', async () => {
-      console.log('🔍 Looking for Shared with me section...');
+      console.log('[SEARCH] Looking for Shared with me section...');
       
       const sharedSelectors = [
         'text=Shared with me',
@@ -111,7 +111,7 @@ test.describe('Documents Module Tests', () => {
           const isVisible = await element.isVisible({ timeout: 3000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`✅ Found Shared with me: ${selector}`);
+            console.log(`[OK] Found Shared with me: ${selector}`);
             sharedFound = true;
             
             const text = await element.textContent();
@@ -132,7 +132,7 @@ test.describe('Documents Module Tests', () => {
   // Test 4: Find Add folder button
   test('04 - Add folder button is visible', async ({ page }) => {
     await test.step('Look for Add folder button', async () => {
-      console.log('🔍 Looking for Add folder button...');
+      console.log('[SEARCH] Looking for Add folder button...');
       
       const addFolderSelectors = [
         'button:has-text("Add Folder")',
@@ -150,7 +150,7 @@ test.describe('Documents Module Tests', () => {
           const isVisible = await element.isVisible({ timeout: 3000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`✅ Found Add folder button: ${selector}`);
+            console.log(`[OK] Found Add folder button: ${selector}`);
             addFolderFound = true;
             
             const buttonText = await element.textContent();
@@ -165,12 +165,12 @@ test.describe('Documents Module Tests', () => {
       }
 
       if (!addFolderFound) {
-        console.log('⚠️  Add folder button not found - checking button count');
+        console.log('[WARNING]  Add folder button not found - checking button count');
         const addFolderCount = await page.locator('button:has-text("Add Folder")').count();
         console.log(`   "Add Folder" button count: ${addFolderCount}`);
         if (addFolderCount > 0) {
           addFolderFound = true;
-          console.log('✅ Found via count check');
+          console.log('[OK] Found via count check');
         }
       }
 
@@ -181,7 +181,7 @@ test.describe('Documents Module Tests', () => {
   // Test 5: Find Upload button
   test('05 - Upload button is visible', async ({ page }) => {
     await test.step('Look for Upload button', async () => {
-      console.log('🔍 Looking for Upload button...');
+      console.log('[SEARCH] Looking for Upload button...');
       
       const uploadSelectors = [
         'button:has-text("Upload")',
@@ -198,7 +198,7 @@ test.describe('Documents Module Tests', () => {
           const isVisible = await element.isVisible({ timeout: 3000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`✅ Found Upload button: ${selector}`);
+            console.log(`[OK] Found Upload button: ${selector}`);
             uploadFound = true;
             
             const buttonText = await element.textContent();
@@ -219,7 +219,7 @@ test.describe('Documents Module Tests', () => {
   // Test 6: Find Bulk Upload button
   test('06 - Bulk Upload button is visible', async ({ page }) => {
     await test.step('Look for Bulk Upload button', async () => {
-      console.log('🔍 Looking for Bulk Upload button...');
+      console.log('[SEARCH] Looking for Bulk Upload button...');
       
       const bulkUploadSelectors = [
         'button:has-text("Bulk Upload")',
@@ -236,7 +236,7 @@ test.describe('Documents Module Tests', () => {
           const isVisible = await element.isVisible({ timeout: 3000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`✅ Found Bulk Upload button: ${selector}`);
+            console.log(`[OK] Found Bulk Upload button: ${selector}`);
             bulkUploadFound = true;
             
             const buttonText = await element.textContent();
@@ -257,7 +257,7 @@ test.describe('Documents Module Tests', () => {
   // Test 7: Find List view button
   test('07 - List view button is visible', async ({ page }) => {
     await test.step('Look for List view button', async () => {
-      console.log('🔍 Looking for List view button...');
+      console.log('[SEARCH] Looking for List view button...');
       
       const listViewSelectors = [
         'button[aria-label*="list" i]',
@@ -275,7 +275,7 @@ test.describe('Documents Module Tests', () => {
           const isVisible = await element.isVisible({ timeout: 3000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`✅ Found List view button: ${selector}`);
+            console.log(`[OK] Found List view button: ${selector}`);
             listViewFound = true;
             
             const ariaLabel = await element.getAttribute('aria-label').catch(() => '');
@@ -292,7 +292,7 @@ test.describe('Documents Module Tests', () => {
       }
 
       if (!listViewFound) {
-        console.log('⚠️  List view button not found - may use different UI or not present');
+        console.log('[WARNING]  List view button not found - may use different UI or not present');
       }
       
       // Flexible assertion - pass if page has document content
@@ -304,7 +304,7 @@ test.describe('Documents Module Tests', () => {
   // Test 8: Find Grid view button
   test('08 - Grid view button is visible', async ({ page }) => {
     await test.step('Look for Grid view button', async () => {
-      console.log('🔍 Looking for Grid view button...');
+      console.log('[SEARCH] Looking for Grid view button...');
       
       const gridViewSelectors = [
         'button[aria-label*="grid" i]',
@@ -322,7 +322,7 @@ test.describe('Documents Module Tests', () => {
           const isVisible = await element.isVisible({ timeout: 3000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`✅ Found Grid view button: ${selector}`);
+            console.log(`[OK] Found Grid view button: ${selector}`);
             gridViewFound = true;
             
             const ariaLabel = await element.getAttribute('aria-label').catch(() => '');
@@ -339,7 +339,7 @@ test.describe('Documents Module Tests', () => {
       }
 
       if (!gridViewFound) {
-        console.log('⚠️  Grid view button not found - may use different UI or not present');
+        console.log('[WARNING]  Grid view button not found - may use different UI or not present');
       }
       
       // Flexible assertion - pass if page has document content
@@ -351,7 +351,7 @@ test.describe('Documents Module Tests', () => {
   // Test 9: Test view switching
   test('09 - Test view switching between List and Grid', async ({ page }) => {
     await test.step('Switch between views', async () => {
-      console.log('🔍 Testing view switching...');
+      console.log('[SEARCH] Testing view switching...');
       
       // Try to find list view button
       const listViewButton = page.locator('button[aria-label*="list" i]').first();
@@ -362,18 +362,18 @@ test.describe('Documents Module Tests', () => {
       const gridViewVisible = await gridViewButton.isVisible({ timeout: 3000 }).catch(() => false);
       
       if (listViewVisible) {
-        console.log('✅ Found List view button');
+        console.log('[OK] Found List view button');
         await listViewButton.click();
         await page.waitForTimeout(1000);
-        console.log('✅ Clicked List view button');
+        console.log('[OK] Clicked List view button');
         await page.screenshot({ path: 'reports/screenshots/documents-list-view.png', fullPage: true });
       }
       
       if (gridViewVisible) {
-        console.log('✅ Found Grid view button');
+        console.log('[OK] Found Grid view button');
         await gridViewButton.click();
         await page.waitForTimeout(1000);
-        console.log('✅ Clicked Grid view button');
+        console.log('[OK] Clicked Grid view button');
         await page.screenshot({ path: 'reports/screenshots/documents-grid-view.png', fullPage: true });
       }
       
@@ -388,14 +388,14 @@ test.describe('Documents Module Tests', () => {
       const isVisible = await sharedButton.isVisible({ timeout: 5000 }).catch(() => false);
       
       if (isVisible) {
-        console.log('✅ Found Shared with me');
+        console.log('[OK] Found Shared with me');
         await sharedButton.click();
         await page.waitForTimeout(1500);
-        console.log('✅ Clicked Shared with me');
+        console.log('[OK] Clicked Shared with me');
         
         await page.screenshot({ path: 'reports/screenshots/documents-shared-view.png', fullPage: true });
       } else {
-        console.log('⚠️  Shared with me button not found');
+        console.log('[WARNING]  Shared with me button not found');
       }
     });
   });
@@ -403,7 +403,7 @@ test.describe('Documents Module Tests', () => {
   // Test 11: Complete page analysis
   test('11 - Analyze complete page structure', async ({ page }) => {
     await test.step('Comprehensive page analysis', async () => {
-      console.log('\n📊 DOCUMENTS PAGE ANALYSIS');
+      console.log('\n[CHART] DOCUMENTS PAGE ANALYSIS');
       console.log('================================\n');
 
       // Count buttons
@@ -441,3 +441,5 @@ test.describe('Documents Module Tests', () => {
     });
   });
 });
+
+

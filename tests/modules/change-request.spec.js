@@ -1,4 +1,4 @@
-/**
+﻿/**
  * CHANGE REQUESTS MODULE TESTS
  * 
  * Purpose: Test Change Requests tab functionality
@@ -39,19 +39,19 @@ test.describe('Change Requests Module Tests', () => {
     await test.step('Verify page loaded', async () => {
       const currentUrl = page.url();
       expect(currentUrl).toContain('/tools/change-requests');
-      console.log('✅ Change Requests page loaded');
+      console.log('[OK] Change Requests page loaded');
     });
 
     await test.step('Take screenshot of Change Requests page', async () => {
       await page.screenshot({ path: 'reports/screenshots/change-requests-main.png', fullPage: true });
-      console.log('📸 Screenshot taken: change-requests-main.png');
+      console.log('[CAMERA] Screenshot taken: change-requests-main.png');
     });
   });
 
   // Test 2: Search bar with functionality
   test('02 - Search bar is functional', async ({ page }) => {
     await test.step('Look for search bar and test functionality', async () => {
-      console.log('🔍 Looking for search bar...');
+      console.log('[SEARCH] Looking for search bar...');
       
       const searchSelectors = [
         'input[type="search"]',
@@ -69,7 +69,7 @@ test.describe('Change Requests Module Tests', () => {
           const isVisible = await element.isVisible({ timeout: 3000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`✅ Found search bar: ${selector}`);
+            console.log(`[OK] Found search bar: ${selector}`);
             searchFound = true;
             
             const placeholder = await element.getAttribute('placeholder').catch(() => '');
@@ -79,7 +79,7 @@ test.describe('Change Requests Module Tests', () => {
             const initialContent = await page.content();
             await element.fill('Test Change Request');
             await page.waitForTimeout(2000);
-            console.log('✅ Search text entered');
+            console.log('[OK] Search text entered');
             
             const searchedContent = await page.content();
             console.log(`   Page updated: ${initialContent.length !== searchedContent.length}`);
@@ -87,7 +87,7 @@ test.describe('Change Requests Module Tests', () => {
             // Clear search
             await element.fill('');
             await page.waitForTimeout(1000);
-            console.log('✅ Search cleared');
+            console.log('[OK] Search cleared');
             
             await page.screenshot({ path: 'reports/screenshots/change-requests-search.png', fullPage: true });
             break;
@@ -104,7 +104,7 @@ test.describe('Change Requests Module Tests', () => {
   // Test 3: First dropdown with functionality
   test('03 - First dropdown menu is functional', async ({ page }) => {
     await test.step('Look for and interact with first dropdown', async () => {
-      console.log('🔍 Looking for dropdowns...');
+      console.log('[SEARCH] Looking for dropdowns...');
       
       const dropdownSelectors = [
         'select',
@@ -129,7 +129,7 @@ test.describe('Change Requests Module Tests', () => {
         }
       }
 
-      console.log(`✅ Found ${allDropdowns.length} total dropdowns`);
+      console.log(`[OK] Found ${allDropdowns.length} total dropdowns`);
       
       if (allDropdowns.length >= 1) {
         const firstDropdown = allDropdowns[0];
@@ -139,7 +139,7 @@ test.describe('Change Requests Module Tests', () => {
         // Click to open
         await firstDropdown.element.click();
         await page.waitForTimeout(1000);
-        console.log('✅ Dropdown opened');
+        console.log('[OK] Dropdown opened');
         
         // Check for menu items
         const menuItems = await page.locator('[role="menuitem"]').all();
@@ -151,7 +151,7 @@ test.describe('Change Requests Module Tests', () => {
           console.log(`   Selecting: "${itemText.trim()}"`);
           await menuItems[0].click();
           await page.waitForTimeout(1000);
-          console.log('✅ Option selected');
+          console.log('[OK] Option selected');
         }
         
         await page.screenshot({ path: 'reports/screenshots/change-requests-dropdown1.png', fullPage: true });
@@ -187,7 +187,7 @@ test.describe('Change Requests Module Tests', () => {
         }
       }
 
-      console.log(`✅ Total dropdowns found: ${allDropdowns.length}`);
+      console.log(`[OK] Total dropdowns found: ${allDropdowns.length}`);
       
       if (allDropdowns.length >= 2) {
         const secondDropdown = allDropdowns[1];
@@ -197,7 +197,7 @@ test.describe('Change Requests Module Tests', () => {
         // Click second dropdown to open it
         await secondDropdown.element.click();
         await page.waitForTimeout(1000);
-        console.log('✅ Clicked second dropdown');
+        console.log('[OK] Clicked second dropdown');
         
         await page.screenshot({ path: 'reports/screenshots/change-requests-dropdown2-open.png', fullPage: true });
       }
@@ -209,7 +209,7 @@ test.describe('Change Requests Module Tests', () => {
   // Test 5: Find calendar dropdown
   test('05 - Calendar dropdown is visible', async ({ page }) => {
     await test.step('Look for calendar dropdown', async () => {
-      console.log('🔍 Looking for calendar dropdown...');
+      console.log('[SEARCH] Looking for calendar dropdown...');
       
       const calendarSelectors = [
         'input[type="date"]',
@@ -229,7 +229,7 @@ test.describe('Change Requests Module Tests', () => {
           const isVisible = await element.isVisible({ timeout: 3000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`✅ Found calendar dropdown: ${selector}`);
+            console.log(`[OK] Found calendar dropdown: ${selector}`);
             calendarFound = true;
             
             const elementType = await element.evaluate(el => el.tagName);
@@ -245,7 +245,7 @@ test.describe('Change Requests Module Tests', () => {
       }
 
       if (!calendarFound) {
-        console.log('⚠️  Calendar dropdown not found with standard selectors');
+        console.log('[WARNING]  Calendar dropdown not found with standard selectors');
         // Count all dropdowns to understand page structure
         const allComboboxes = await page.locator('[role="combobox"]').all();
         console.log(`   Total comboboxes on page: ${allComboboxes.length}`);
@@ -258,13 +258,13 @@ test.describe('Change Requests Module Tests', () => {
   // Test 6: Export button is clickable
   test('06 - Export button is clickable', async ({ page }) => {
     await test.step('Look for Export button', async () => {
-      console.log('🔍 Looking for Export button...');
+      console.log('[SEARCH] Looking for Export button...');
       
       const exportButton = page.locator('button:has-text("Export")').first();
       const isVisible = await exportButton.isVisible({ timeout: 5000 }).catch(() => false);
       
       if (isVisible) {
-        console.log('✅ Found Export button');
+        console.log('[OK] Found Export button');
         
         const buttonText = await exportButton.textContent();
         console.log(`   Button text: "${buttonText.trim()}"`);
@@ -274,12 +274,12 @@ test.describe('Change Requests Module Tests', () => {
         // Click Export
         await exportButton.click();
         await page.waitForTimeout(1500);
-        console.log('✅ Export button clicked');
+        console.log('[OK] Export button clicked');
         
         await page.screenshot({ path: 'reports/screenshots/change-requests-export-clicked.png', fullPage: true });
         expect(isVisible).toBeTruthy();
       } else {
-        console.log('⚠️  Export button not found with text selector');
+        console.log('[WARNING]  Export button not found with text selector');
         
         // Try to find any export-related button
         const allButtons = await page.locator('button').all();
@@ -301,11 +301,11 @@ test.describe('Change Requests Module Tests', () => {
       const dropdowns = await page.locator('[role="combobox"]').all();
       
       if (dropdowns.length >= 1) {
-        console.log(`✅ Found ${dropdowns.length} dropdowns`);
+        console.log(`[OK] Found ${dropdowns.length} dropdowns`);
         
         await dropdowns[0].click();
         await page.waitForTimeout(1000);
-        console.log('✅ Clicked first dropdown');
+        console.log('[OK] Clicked first dropdown');
         
         const menuItems = await page.locator('[role="menuitem"]').all();
         console.log(`   Menu items: ${menuItems.length}`);
@@ -319,10 +319,10 @@ test.describe('Change Requests Module Tests', () => {
           
           // Select first option
           const firstText = await menuItems[0].textContent().catch(() => '');
-          console.log(`✅ Selecting: "${firstText.trim()}"`);
+          console.log(`[OK] Selecting: "${firstText.trim()}"`);
           await menuItems[0].click();
           await page.waitForTimeout(1000);
-          console.log('✅ Option selected');
+          console.log('[OK] Option selected');
         }
         
         await page.screenshot({ path: 'reports/screenshots/change-requests-dropdown-options.png', fullPage: true });
@@ -333,7 +333,7 @@ test.describe('Change Requests Module Tests', () => {
   // Test 9: Complete page analysis
   test('09 - Analyze complete page structure', async ({ page }) => {
     await test.step('Comprehensive page analysis', async () => {
-      console.log('\n📊 CHANGE REQUESTS PAGE ANALYSIS');
+      console.log('\n[CHART] CHANGE REQUESTS PAGE ANALYSIS');
       console.log('================================\n');
 
       // Count dropdowns
@@ -373,3 +373,5 @@ test.describe('Change Requests Module Tests', () => {
     });
   });
 });
+
+

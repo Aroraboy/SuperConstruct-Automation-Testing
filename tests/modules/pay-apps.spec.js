@@ -1,4 +1,4 @@
-/**
+﻿/**
  * PAY APPLICATIONS MODULE TESTS
  * 
  * Purpose: Test Pay Applications tab functionality
@@ -37,25 +37,25 @@ test.describe('Pay Applications Module Tests', () => {
     await test.step('Verify page loaded', async () => {
       const currentUrl = page.url();
       expect(currentUrl).toContain('/tools/pay-apps');
-      console.log('✅ Pay Applications page loaded');
+      console.log('[OK] Pay Applications page loaded');
     });
 
     await test.step('Take screenshot of Pay Applications page', async () => {
       await page.screenshot({ path: 'reports/screenshots/pay-apps-main.png', fullPage: true });
-      console.log('📸 Screenshot taken: pay-apps-main.png');
+      console.log('[CAMERA] Screenshot taken: pay-apps-main.png');
     });
   });
 
   // Test 2: Export button is clickable
   test('02 - Export button is clickable', async ({ page }) => {
     await test.step('Look for Export button', async () => {
-      console.log('🔍 Looking for Export button...');
+      console.log('[SEARCH] Looking for Export button...');
       
       const exportButton = page.locator('button:has-text("Export")').first();
       const isVisible = await exportButton.isVisible({ timeout: 5000 }).catch(() => false);
       
       if (isVisible) {
-        console.log('✅ Found Export button');
+        console.log('[OK] Found Export button');
         
         const buttonText = await exportButton.textContent();
         console.log(`   Button text: "${buttonText.trim()}"`);
@@ -65,12 +65,12 @@ test.describe('Pay Applications Module Tests', () => {
         // Click Export
         await exportButton.click();
         await page.waitForTimeout(1500);
-        console.log('✅ Export button clicked');
+        console.log('[OK] Export button clicked');
         
         await page.screenshot({ path: 'reports/screenshots/pay-apps-export-clicked.png', fullPage: true });
         expect(isVisible).toBeTruthy();
       } else {
-        console.log('⚠️  Export button not found with text selector');
+        console.log('[WARNING]  Export button not found with text selector');
         
         // Try to find any export-related button
         const allButtons = await page.locator('button').all();
@@ -107,7 +107,7 @@ test.describe('Pay Applications Module Tests', () => {
   // Test 4: Analyze page structure
   test('04 - Analyze complete page structure', async ({ page }) => {
     await test.step('Comprehensive page analysis', async () => {
-      console.log('\n📊 PAY APPLICATIONS PAGE ANALYSIS');
+      console.log('\n[CHART] PAY APPLICATIONS PAGE ANALYSIS');
       console.log('================================\n');
 
       // Count buttons
@@ -139,7 +139,7 @@ test.describe('Pay Applications Module Tests', () => {
   // Test 5: Look for pay application list or data
   test('05 - Check for pay application list', async ({ page }) => {
     await test.step('Look for pay application data', async () => {
-      console.log('🔍 Looking for pay application data...');
+      console.log('[SEARCH] Looking for pay application data...');
       
       // Check for common pay app elements
       const payAppElements = [
@@ -158,7 +158,7 @@ test.describe('Pay Applications Module Tests', () => {
       for (const selector of payAppElements) {
         const count = await page.locator(selector).count();
         if (count > 0) {
-          console.log(`✅ Found: ${selector} (${count})`);
+          console.log(`[OK] Found: ${selector} (${count})`);
           elementsFound++;
         }
       }
@@ -168,3 +168,5 @@ test.describe('Pay Applications Module Tests', () => {
     });
   });
 });
+
+

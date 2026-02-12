@@ -1,4 +1,4 @@
-const { test, expect } = require('@playwright/test');
+﻿const { test, expect } = require('@playwright/test');
 const DashboardPage = require('../pages/dashboard.page');
 const config = require('../utils/config-manager');
 
@@ -15,7 +15,7 @@ test.describe('SuperConstruct Comprehensive Functional Tests', () => {
 
   test.beforeEach(async ({ page }) => {
     dashboardPage = new DashboardPage(page, config);
-    console.log(`🎯 Navigating with project ID: ${projectId}`);
+    console.log(`[TARGET] Navigating with project ID: ${projectId}`);
   });
 
   // ==================== RFI TESTS ====================
@@ -24,7 +24,7 @@ test.describe('SuperConstruct Comprehensive Functional Tests', () => {
       await test.step('Navigate to RFI module', async () => {
         await page.goto(`/app/projects/${projectId}/tools/rfi`, { waitUntil: 'load', timeout: 30000 });
         await page.waitForTimeout(1000);
-        console.log('✅ RFI module loaded');
+        console.log('[OK] RFI module loaded');
       });
 
       await test.step('Click Create RFI button', async () => {
@@ -33,16 +33,16 @@ test.describe('SuperConstruct Comprehensive Functional Tests', () => {
         if (createBtn) {
           await page.locator('button:has-text("Create"), button:has-text("New"), button:has-text("Add")').first().click();
           await page.waitForTimeout(2000);
-          console.log('✅ Create RFI form opened');
+          console.log('[OK] Create RFI form opened');
         } else {
-          console.log('⚠️ Create button not found, may have different UI');
+          console.log('[WARNING] Create button not found, may have different UI');
         }
       });
 
       await test.step('Verify form elements', async () => {
         const hasFormContent = await page.content().then(c => c.length > 500);
         expect(hasFormContent).toBeTruthy();
-        console.log('✅ Form loaded with content');
+        console.log('[OK] Form loaded with content');
       });
     });
 
@@ -57,7 +57,7 @@ test.describe('SuperConstruct Comprehensive Functional Tests', () => {
         const hasContent = await page.content().then(c => c.includes('RFI') || c.includes('rfi') || c.length > 1000);
         
         expect(hasContent).toBeTruthy();
-        console.log(`✅ RFI list displayed (has table: ${hasTable})`);
+        console.log(`[OK] RFI list displayed (has table: ${hasTable})`);
       });
     });
   });
@@ -68,7 +68,7 @@ test.describe('SuperConstruct Comprehensive Functional Tests', () => {
       await test.step('Navigate to Submittals module', async () => {
         await page.goto(`/app/projects/${projectId}/tools/submittals`, { waitUntil: 'load', timeout: 30000 });
         await page.waitForTimeout(1000);
-        console.log('✅ Submittals module loaded');
+        console.log('[OK] Submittals module loaded');
       });
 
       await test.step('Click Create Submittal button', async () => {
@@ -77,14 +77,14 @@ test.describe('SuperConstruct Comprehensive Functional Tests', () => {
         if (createBtn) {
           await page.locator('button:has-text("Create"), button:has-text("New"), button:has-text("Add")').first().click();
           await page.waitForTimeout(2000);
-          console.log('✅ Create Submittal form opened');
+          console.log('[OK] Create Submittal form opened');
         }
       });
 
       await test.step('Verify form elements', async () => {
         const hasFormContent = await page.content().then(c => c.length > 500);
         expect(hasFormContent).toBeTruthy();
-        console.log('✅ Form loaded with content');
+        console.log('[OK] Form loaded with content');
       });
     });
 
@@ -97,7 +97,7 @@ test.describe('SuperConstruct Comprehensive Functional Tests', () => {
       await test.step('Check for Submittals list', async () => {
         const hasContent = await page.content().then(c => c.includes('Submittal') || c.includes('submittal') || c.length > 1000);
         expect(hasContent).toBeTruthy();
-        console.log('✅ Submittals list displayed');
+        console.log('[OK] Submittals list displayed');
       });
     });
   });
@@ -108,7 +108,7 @@ test.describe('SuperConstruct Comprehensive Functional Tests', () => {
       await test.step('Navigate to Inspections module', async () => {
         await page.goto(`/app/projects/${projectId}/tools/inspections`, { waitUntil: 'load', timeout: 30000 });
         await page.waitForTimeout(1000);
-        console.log('✅ Inspections module loaded');
+        console.log('[OK] Inspections module loaded');
       });
 
       await test.step('Click Create Inspection button', async () => {
@@ -117,14 +117,14 @@ test.describe('SuperConstruct Comprehensive Functional Tests', () => {
         if (createBtn) {
           await page.locator('button:has-text("Create"), button:has-text("New"), button:has-text("Add")').first().click();
           await page.waitForTimeout(2000);
-          console.log('✅ Create Inspection form opened');
+          console.log('[OK] Create Inspection form opened');
         }
       });
 
       await test.step('Verify form loaded', async () => {
         const hasFormContent = await page.content().then(c => c.length > 500);
         expect(hasFormContent).toBeTruthy();
-        console.log('✅ Form loaded with content');
+        console.log('[OK] Form loaded with content');
       });
     });
 
@@ -137,7 +137,7 @@ test.describe('SuperConstruct Comprehensive Functional Tests', () => {
       await test.step('Check for Inspections list', async () => {
         const hasContent = await page.content().then(c => c.includes('Inspection') || c.includes('inspection') || c.length > 1000);
         expect(hasContent).toBeTruthy();
-        console.log('✅ Inspections list displayed');
+        console.log('[OK] Inspections list displayed');
       });
     });
   });
@@ -148,7 +148,7 @@ test.describe('SuperConstruct Comprehensive Functional Tests', () => {
       await test.step('Navigate to SOV module', async () => {
         await page.goto(`/app/projects/${projectId}/tools/sov`, { waitUntil: 'load', timeout: 30000 });
         await page.waitForTimeout(1000);
-        console.log('✅ SOV module loaded');
+        console.log('[OK] SOV module loaded');
       });
 
       await test.step('Click Create SOV button', async () => {
@@ -157,14 +157,14 @@ test.describe('SuperConstruct Comprehensive Functional Tests', () => {
         if (createBtn) {
           await page.locator('button:has-text("Create"), button:has-text("New"), button:has-text("Add")').first().click();
           await page.waitForTimeout(2000);
-          console.log('✅ Create SOV form opened');
+          console.log('[OK] Create SOV form opened');
         }
       });
 
       await test.step('Verify form loaded', async () => {
         const hasFormContent = await page.content().then(c => c.length > 500);
         expect(hasFormContent).toBeTruthy();
-        console.log('✅ Form loaded with content');
+        console.log('[OK] Form loaded with content');
       });
     });
 
@@ -177,12 +177,12 @@ test.describe('SuperConstruct Comprehensive Functional Tests', () => {
       await test.step('Check for SOV data', async () => {
         const hasContent = await page.content().then(c => c.includes('SOV') || c.includes('Schedule') || c.length > 1000);
         expect(hasContent).toBeTruthy();
-        console.log('✅ SOV data displayed');
+        console.log('[OK] SOV data displayed');
       });
 
       await test.step('Look for financial/budget elements', async () => {
         const hasAmounts = await page.content().then(c => /\$|amount|total|budget/i.test(c));
-        console.log(`💰 Financial data visible: ${hasAmounts}`);
+        console.log(`[MONEY] Financial data visible: ${hasAmounts}`);
       });
     });
   });
@@ -193,7 +193,7 @@ test.describe('SuperConstruct Comprehensive Functional Tests', () => {
       await test.step('Navigate to Change Requests module', async () => {
         await page.goto(`/app/projects/${projectId}/tools/change-requests`, { waitUntil: 'load', timeout: 30000 });
         await page.waitForTimeout(1000);
-        console.log('✅ Change Requests module loaded');
+        console.log('[OK] Change Requests module loaded');
       });
 
       await test.step('Click Create Change Request button', async () => {
@@ -202,14 +202,14 @@ test.describe('SuperConstruct Comprehensive Functional Tests', () => {
         if (createBtn) {
           await page.locator('button:has-text("Create"), button:has-text("New"), button:has-text("Add")').first().click();
           await page.waitForTimeout(2000);
-          console.log('✅ Create Change Request form opened');
+          console.log('[OK] Create Change Request form opened');
         }
       });
 
       await test.step('Verify form loaded', async () => {
         const hasFormContent = await page.content().then(c => c.length > 500);
         expect(hasFormContent).toBeTruthy();
-        console.log('✅ Form loaded with content');
+        console.log('[OK] Form loaded with content');
       });
     });
 
@@ -222,7 +222,7 @@ test.describe('SuperConstruct Comprehensive Functional Tests', () => {
       await test.step('Check for Change Requests list', async () => {
         const hasContent = await page.content().then(c => c.includes('Change') || c.includes('Request') || c.length > 1000);
         expect(hasContent).toBeTruthy();
-        console.log('✅ Change Requests list displayed');
+        console.log('[OK] Change Requests list displayed');
       });
     });
   });
@@ -233,13 +233,13 @@ test.describe('SuperConstruct Comprehensive Functional Tests', () => {
       await test.step('Navigate to Members module', async () => {
         await page.goto(`/app/projects/${projectId}/tools/members`, { waitUntil: 'load', timeout: 30000 });
         await page.waitForTimeout(1000);
-        console.log('✅ Members module loaded');
+        console.log('[OK] Members module loaded');
       });
 
       await test.step('Verify members list', async () => {
         const hasContent = await page.content().then(c => c.includes('Member') || c.includes('User') || c.includes('Team') || c.length > 1000);
         expect(hasContent).toBeTruthy();
-        console.log('✅ Members list displayed');
+        console.log('[OK] Members list displayed');
       });
     });
 
@@ -251,7 +251,7 @@ test.describe('SuperConstruct Comprehensive Functional Tests', () => {
 
       await test.step('Look for add member button', async () => {
         const hasAddBtn = await page.locator('button:has-text("Add"), button:has-text("Invite"), button:has-text("New")').first().isVisible().catch(() => false);
-        console.log(`👥 Add member button visible: ${hasAddBtn}`);
+        console.log(`[TEAM] Add member button visible: ${hasAddBtn}`);
       });
     });
   });
@@ -262,13 +262,13 @@ test.describe('SuperConstruct Comprehensive Functional Tests', () => {
       await test.step('Navigate to Documents module', async () => {
         await page.goto(`/app/projects/${projectId}/tools/documents`, { waitUntil: 'load', timeout: 30000 });
         await page.waitForTimeout(1000);
-        console.log('✅ Documents module loaded');
+        console.log('[OK] Documents module loaded');
       });
 
       await test.step('Verify documents display', async () => {
         const hasContent = await page.content().then(c => c.includes('Document') || c.includes('File') || c.includes('Upload') || c.length > 1000);
         expect(hasContent).toBeTruthy();
-        console.log('✅ Documents section displayed');
+        console.log('[OK] Documents section displayed');
       });
     });
 
@@ -280,7 +280,7 @@ test.describe('SuperConstruct Comprehensive Functional Tests', () => {
 
       await test.step('Look for upload button', async () => {
         const hasUploadBtn = await page.locator('button:has-text("Upload"), button:has-text("Add File"), button:has-text("New")').first().isVisible().catch(() => false);
-        console.log(`📁 Upload button visible: ${hasUploadBtn}`);
+        console.log(`[FOLDER] Upload button visible: ${hasUploadBtn}`);
       });
     });
   });
@@ -291,13 +291,13 @@ test.describe('SuperConstruct Comprehensive Functional Tests', () => {
       await test.step('Navigate to Daily Logs module', async () => {
         await page.goto(`/app/projects/${projectId}/tools/daily-logs`, { waitUntil: 'load', timeout: 30000 });
         await page.waitForTimeout(1000);
-        console.log('✅ Daily Logs module loaded');
+        console.log('[OK] Daily Logs module loaded');
       });
 
       await test.step('Verify logs display', async () => {
         const hasContent = await page.content().then(c => c.includes('Log') || c.includes('Daily') || c.includes('Date') || c.length > 1000);
         expect(hasContent).toBeTruthy();
-        console.log('✅ Daily Logs displayed');
+        console.log('[OK] Daily Logs displayed');
       });
     });
 
@@ -309,7 +309,7 @@ test.describe('SuperConstruct Comprehensive Functional Tests', () => {
 
       await test.step('Look for new entry button', async () => {
         const hasNewBtn = await page.locator('button:has-text("Create"), button:has-text("New"), button:has-text("Add")').first().isVisible().catch(() => false);
-        console.log(`📝 New log entry button visible: ${hasNewBtn}`);
+        console.log(`[NOTE] New log entry button visible: ${hasNewBtn}`);
       });
     });
   });
@@ -320,13 +320,13 @@ test.describe('SuperConstruct Comprehensive Functional Tests', () => {
       await test.step('Navigate to Quality Check module', async () => {
         await page.goto(`/app/projects/${projectId}/tools/quality-check`, { waitUntil: 'load', timeout: 30000 });
         await page.waitForTimeout(1000);
-        console.log('✅ Quality Check module loaded');
+        console.log('[OK] Quality Check module loaded');
       });
 
       await test.step('Verify QC data display', async () => {
         const hasContent = await page.content().then(c => c.includes('Quality') || c.includes('Check') || c.includes('QC') || c.length > 1000);
         expect(hasContent).toBeTruthy();
-        console.log('✅ Quality Check data displayed');
+        console.log('[OK] Quality Check data displayed');
       });
     });
   });
@@ -337,13 +337,13 @@ test.describe('SuperConstruct Comprehensive Functional Tests', () => {
       await test.step('Navigate to Scheduling module', async () => {
         await page.goto(`/app/projects/${projectId}/tools/scheduling`, { waitUntil: 'load', timeout: 30000 });
         await page.waitForTimeout(1000);
-        console.log('✅ Scheduling module loaded');
+        console.log('[OK] Scheduling module loaded');
       });
 
       await test.step('Verify schedule display', async () => {
         const hasContent = await page.content().then(c => c.includes('Schedule') || c.includes('Timeline') || c.includes('Date') || c.length > 1000);
         expect(hasContent).toBeTruthy();
-        console.log('✅ Schedule displayed');
+        console.log('[OK] Schedule displayed');
       });
     });
   });
@@ -354,13 +354,13 @@ test.describe('SuperConstruct Comprehensive Functional Tests', () => {
       await test.step('Navigate to Expenses module', async () => {
         await page.goto(`/app/projects/${projectId}/tools/expenses`, { waitUntil: 'load', timeout: 30000 });
         await page.waitForTimeout(1000);
-        console.log('✅ Expenses module loaded');
+        console.log('[OK] Expenses module loaded');
       });
 
       await test.step('Verify expenses display', async () => {
         const hasContent = await page.content().then(c => c.includes('Expense') || c.includes('Cost') || c.includes('Amount') || c.length > 1000);
         expect(hasContent).toBeTruthy();
-        console.log('✅ Expenses displayed');
+        console.log('[OK] Expenses displayed');
       });
     });
 
@@ -372,7 +372,7 @@ test.describe('SuperConstruct Comprehensive Functional Tests', () => {
 
       await test.step('Check for financial summary', async () => {
         const hasFinancial = await page.content().then(c => /total|sum|\$|amount|budget/i.test(c));
-        console.log(`💰 Financial summary visible: ${hasFinancial}`);
+        console.log(`[MONEY] Financial summary visible: ${hasFinancial}`);
       });
     });
   });
@@ -383,13 +383,13 @@ test.describe('SuperConstruct Comprehensive Functional Tests', () => {
       await test.step('Navigate to Pay Apps module', async () => {
         await page.goto(`/app/projects/${projectId}/tools/pay-apps`, { waitUntil: 'load', timeout: 30000 });
         await page.waitForTimeout(1000);
-        console.log('✅ Pay Apps module loaded');
+        console.log('[OK] Pay Apps module loaded');
       });
 
       await test.step('Verify pay apps display', async () => {
         const hasContent = await page.content().then(c => c.includes('Pay') || c.includes('Payment') || c.includes('App') || c.length > 1000);
         expect(hasContent).toBeTruthy();
-        console.log('✅ Payment applications displayed');
+        console.log('[OK] Payment applications displayed');
       });
     });
   });
@@ -400,13 +400,13 @@ test.describe('SuperConstruct Comprehensive Functional Tests', () => {
       await test.step('Navigate to Message Board module', async () => {
         await page.goto(`/app/projects/${projectId}/tools/message-board`, { waitUntil: 'load', timeout: 30000 });
         await page.waitForTimeout(1000);
-        console.log('✅ Message Board module loaded');
+        console.log('[OK] Message Board module loaded');
       });
 
       await test.step('Verify messages display', async () => {
         const hasContent = await page.content().then(c => c.includes('Message') || c.includes('Board') || c.includes('Comment') || c.length > 1000);
         expect(hasContent).toBeTruthy();
-        console.log('✅ Message board displayed');
+        console.log('[OK] Message board displayed');
       });
     });
 
@@ -420,9 +420,11 @@ test.describe('SuperConstruct Comprehensive Functional Tests', () => {
         const hasMessageInput = await page.locator('textarea, input[type="text"]').first().isVisible().catch(() => false);
         const hasSendBtn = await page.locator('button:has-text("Send"), button:has-text("Post"), button:has-text("Comment")').first().isVisible().catch(() => false);
         
-        console.log(`💬 Message input visible: ${hasMessageInput}`);
-        console.log(`📤 Send button visible: ${hasSendBtn}`);
+        console.log(`[CHAT] Message input visible: ${hasMessageInput}`);
+        console.log(`[SEND] Send button visible: ${hasSendBtn}`);
       });
     });
   });
 });
+
+

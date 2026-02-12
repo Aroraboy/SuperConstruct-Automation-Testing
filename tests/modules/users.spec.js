@@ -1,4 +1,4 @@
-const { test, expect } = require('@playwright/test');
+﻿const { test, expect } = require('@playwright/test');
 const LoginPage = require('../../pages/login.page');
 const DashboardPage = require('../../pages/dashboard.page');
 const CreateModulePage = require('../../pages/create-module.page');
@@ -18,7 +18,7 @@ test.describe('User Management Tests', () => {
     await test.step('Verify on dashboard', async () => {
       const currentUrl = page.url();
       expect(currentUrl).toContain('superconstruct.io');
-      console.log(`✅ Authenticated and on: ${currentUrl}`);
+      console.log(`[OK] Authenticated and on: ${currentUrl}`);
     });
 
     await test.step('Select company', async () => {
@@ -27,7 +27,7 @@ test.describe('User Management Tests', () => {
       // Wait and verify we're now in a company context
       await page.waitForTimeout(2000);
       const currentUrl = page.url();
-      console.log(`✅ After company selection: ${currentUrl}`);
+      console.log(`[OK] After company selection: ${currentUrl}`);
     });
 
     await test.step('Open existing project (abcd)', async () => {
@@ -35,7 +35,7 @@ test.describe('User Management Tests', () => {
       
       await page.waitForTimeout(2000);
       const currentUrl = page.url();
-      console.log(`✅ Opened project abcd, current URL: ${currentUrl}`);
+      console.log(`[OK] Opened project abcd, current URL: ${currentUrl}`);
     });
 
     await test.step('Check for navigation elements', async () => {
@@ -53,7 +53,7 @@ test.describe('User Management Tests', () => {
         })).filter(l => l.href && l.href.includes('/tools/'))
       );
       
-      console.log(`📋 Available tool links:`, JSON.stringify(allLinks, null, 2));
+      console.log(`[LIST] Available tool links:`, JSON.stringify(allLinks, null, 2));
       
       // Check for specific modules by searching page content or URLs
       const pageContent = await page.content();
@@ -71,7 +71,7 @@ test.describe('User Management Tests', () => {
       const isInProject = currentUrl.includes('/projects/') && currentUrl.includes('/tools/');
       expect(isInProject).toBeTruthy();
       
-      console.log('✅ Successfully navigated into project with tools/modules access');
+      console.log('[OK] Successfully navigated into project with tools/modules access');
     });
   });
 
@@ -134,3 +134,5 @@ test.describe('User Management Tests', () => {
     });
   });
 });
+
+

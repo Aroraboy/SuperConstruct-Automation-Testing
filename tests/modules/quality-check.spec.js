@@ -1,4 +1,4 @@
-/**
+﻿/**
  * QUALITY CHECK MODULE TESTS
  * 
  * Purpose: Test Quality Check tab functionality
@@ -39,19 +39,19 @@ test.describe('Quality Check Module Tests', () => {
     await test.step('Verify page loaded', async () => {
       const currentUrl = page.url();
       expect(currentUrl).toContain('/tools/quality-check');
-      console.log('✅ Quality Check page loaded');
+      console.log('[OK] Quality Check page loaded');
     });
 
     await test.step('Take screenshot of Quality Check page', async () => {
       await page.screenshot({ path: 'reports/screenshots/quality-check-main.png', fullPage: true });
-      console.log('📸 Screenshot taken: quality-check-main.png');
+      console.log('[CAMERA] Screenshot taken: quality-check-main.png');
     });
   });
 
   // Test 2: Find first dropdown and test functionality
   test('02 - First dropdown menu is functional', async ({ page }) => {
     await test.step('Look for and interact with first dropdown', async () => {
-      console.log('🔍 Looking for dropdowns...');
+      console.log('[SEARCH] Looking for dropdowns...');
       
       const dropdownSelectors = [
         'select',
@@ -76,7 +76,7 @@ test.describe('Quality Check Module Tests', () => {
         }
       }
 
-      console.log(`✅ Found ${allDropdowns.length} total dropdowns`);
+      console.log(`[OK] Found ${allDropdowns.length} total dropdowns`);
       
       if (allDropdowns.length >= 1) {
         const firstDropdown = allDropdowns[0];
@@ -86,7 +86,7 @@ test.describe('Quality Check Module Tests', () => {
         // Click to open dropdown
         await firstDropdown.element.click();
         await page.waitForTimeout(1000);
-        console.log('✅ Dropdown opened');
+        console.log('[OK] Dropdown opened');
         
         // Check for menu items
         const menuItems = await page.locator('[role="menuitem"]').all();
@@ -98,7 +98,7 @@ test.describe('Quality Check Module Tests', () => {
           console.log(`   Selecting: "${itemText.trim()}"`);
           await menuItems[0].click();
           await page.waitForTimeout(1000);
-          console.log('✅ Dropdown option selected');
+          console.log('[OK] Dropdown option selected');
         }
         
         await page.screenshot({ path: 'reports/screenshots/quality-check-dropdown1.png', fullPage: true });
@@ -134,7 +134,7 @@ test.describe('Quality Check Module Tests', () => {
         }
       }
 
-      console.log(`✅ Total dropdowns found: ${allDropdowns.length}`);
+      console.log(`[OK] Total dropdowns found: ${allDropdowns.length}`);
       
       if (allDropdowns.length >= 2) {
         const secondDropdown = allDropdowns[1];
@@ -144,7 +144,7 @@ test.describe('Quality Check Module Tests', () => {
         // Click second dropdown to open it
         await secondDropdown.element.click();
         await page.waitForTimeout(1000);
-        console.log('✅ Clicked second dropdown');
+        console.log('[OK] Clicked second dropdown');
         
         await page.screenshot({ path: 'reports/screenshots/quality-check-dropdown2-open.png', fullPage: true });
       }
@@ -156,7 +156,7 @@ test.describe('Quality Check Module Tests', () => {
   // Test 4: Find and click Expand All button
   test('04 - Expand All button is functional', async ({ page }) => {
     await test.step('Look for and click Expand All button', async () => {
-      console.log('🔍 Looking for Expand All button...');
+      console.log('[SEARCH] Looking for Expand All button...');
       
       const expandSelectors = [
         'button:has-text("Expand All")',
@@ -174,7 +174,7 @@ test.describe('Quality Check Module Tests', () => {
           const isVisible = await element.isVisible({ timeout: 3000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`✅ Found Expand All button: ${selector}`);
+            console.log(`[OK] Found Expand All button: ${selector}`);
             expandFound = true;
             
             const buttonText = await element.textContent();
@@ -185,7 +185,7 @@ test.describe('Quality Check Module Tests', () => {
             // Click button
             await element.click();
             await page.waitForTimeout(1500);
-            console.log('✅ Expand All button clicked');
+            console.log('[OK] Expand All button clicked');
             
             // Check if text changed
             const newText = await element.textContent();
@@ -200,7 +200,7 @@ test.describe('Quality Check Module Tests', () => {
       }
 
       if (!expandFound) {
-        console.log('⚠️  Expand All button not found with standard selectors');
+        console.log('[WARNING]  Expand All button not found with standard selectors');
         const allButtons = await page.locator('button').all();
         console.log(`   Total buttons on page: ${allButtons.length}`);
         
@@ -220,7 +220,7 @@ test.describe('Quality Check Module Tests', () => {
   // Test 5: Find and click Add QC button
   test('05 - Add QC button is clickable', async ({ page }) => {
     await test.step('Look for and click Add QC button', async () => {
-      console.log('🔍 Looking for Add QC button...');
+      console.log('[SEARCH] Looking for Add QC button...');
       
       const addQCSelectors = [
         'button:has-text("Add QC")',
@@ -239,7 +239,7 @@ test.describe('Quality Check Module Tests', () => {
           const isVisible = await element.isVisible({ timeout: 3000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`✅ Found Add QC button: ${selector}`);
+            console.log(`[OK] Found Add QC button: ${selector}`);
             addQCFound = true;
             
             const buttonText = await element.textContent();
@@ -250,7 +250,7 @@ test.describe('Quality Check Module Tests', () => {
             // Click button
             await element.click();
             await page.waitForTimeout(2000);
-            console.log('✅ Add QC button clicked');
+            console.log('[OK] Add QC button clicked');
             
             const currentUrl = page.url();
             console.log(`   Navigated to: ${currentUrl}`);
@@ -264,7 +264,7 @@ test.describe('Quality Check Module Tests', () => {
       }
 
       if (!addQCFound) {
-        console.log('⚠️  Add QC button not found - analyzing all buttons');
+        console.log('[WARNING]  Add QC button not found - analyzing all buttons');
         const allButtons = await page.locator('button').all();
         console.log(`   Total buttons on page: ${allButtons.length}`);
         
@@ -284,7 +284,7 @@ test.describe('Quality Check Module Tests', () => {
   // Test 6: Click Add QC button and navigate to form
   test('06 - Add QC button opens new QC form', async ({ page }) => {
     await test.step('Find and click Add QC button', async () => {
-      console.log('🔍 Looking for Add QC button...');
+      console.log('[SEARCH] Looking for Add QC button...');
       
       const addQCSelectors = [
         'button:has-text("Add QC")',
@@ -303,10 +303,10 @@ test.describe('Quality Check Module Tests', () => {
           const isVisible = await element.isVisible({ timeout: 3000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`✅ Found Add QC button: ${selector}`);
+            console.log(`[OK] Found Add QC button: ${selector}`);
             await element.click();
             await page.waitForTimeout(2000);
-            console.log('✅ Add QC button clicked');
+            console.log('[OK] Add QC button clicked');
             clicked = true;
             break;
           }
@@ -326,9 +326,9 @@ test.describe('Quality Check Module Tests', () => {
                         (currentUrl.includes('/new') || currentUrl.includes('/create'));
       
       if (isFormPage) {
-        console.log('✅ Navigated to QC creation form');
+        console.log('[OK] Navigated to QC creation form');
       } else {
-        console.log(`⚠️  Current URL: ${currentUrl}`);
+        console.log(`[WARNING]  Current URL: ${currentUrl}`);
       }
       
       await page.screenshot({ path: 'reports/screenshots/quality-check-new-form.png', fullPage: true });
@@ -344,17 +344,17 @@ test.describe('Quality Check Module Tests', () => {
       if (isVisible) {
         await addQCButton.click();
         await page.waitForTimeout(2000);
-        console.log('✅ Navigated via Add QC button');
+        console.log('[OK] Navigated via Add QC button');
       } else {
         // Try alternative navigation
         await page.goto(`/app/projects/${projectId}/tools/quality-checks/new`, { waitUntil: 'domcontentloaded' });
         await page.waitForTimeout(2000);
-        console.log('✅ Navigated directly to form');
+        console.log('[OK] Navigated directly to form');
       }
     });
 
     await test.step('Count and analyze dropdown fields', async () => {
-      console.log('\n📊 QC FORM STRUCTURE ANALYSIS');
+      console.log('\n[CHART] QC FORM STRUCTURE ANALYSIS');
       console.log('================================\n');
 
       // Count all dropdowns
@@ -367,7 +367,7 @@ test.describe('Quality Check Module Tests', () => {
 
       // Analyze select elements
       if (selectElements.length > 0) {
-        console.log('\n📋 Select Elements:');
+        console.log('\n[LIST] Select Elements:');
         for (let i = 0; i < Math.min(4, selectElements.length); i++) {
           const name = await selectElements[i].getAttribute('name').catch(() => 'unnamed');
           const id = await selectElements[i].getAttribute('id').catch(() => '');
@@ -377,7 +377,7 @@ test.describe('Quality Check Module Tests', () => {
 
       // Analyze comboboxes
       if (comboboxes.length > 0) {
-        console.log('\n📋 Combobox Elements:');
+        console.log('\n[LIST] Combobox Elements:');
         for (let i = 0; i < Math.min(4, comboboxes.length); i++) {
           const text = await comboboxes[i].textContent().catch(() => '');
           const ariaLabel = await comboboxes[i].getAttribute('aria-label').catch(() => '');
@@ -414,19 +414,19 @@ test.describe('Quality Check Module Tests', () => {
     });
 
     await test.step('Interact with dropdown fields', async () => {
-      console.log('🔍 Testing dropdown interactions...\n');
+      console.log('[SEARCH] Testing dropdown interactions...\n');
 
       // Get all dropdowns
       const comboboxes = await page.locator('[role="combobox"]:visible').all();
       
       if (comboboxes.length >= 4) {
-        console.log(`✅ Found ${comboboxes.length} dropdown fields (expected 4+)`);
+        console.log(`[OK] Found ${comboboxes.length} dropdown fields (expected 4+)`);
         
         // Click first dropdown
         try {
           await comboboxes[0].click();
           await page.waitForTimeout(1000);
-          console.log('✅ Clicked first dropdown');
+          console.log('[OK] Clicked first dropdown');
           
           const menuItems = await page.locator('[role="menuitem"]').all();
           console.log(`   Options found: ${menuItems.length}`);
@@ -437,13 +437,15 @@ test.describe('Quality Check Module Tests', () => {
           await page.keyboard.press('Escape');
           await page.waitForTimeout(500);
         } catch (e) {
-          console.log('⚠️  Could not interact with first dropdown');
+          console.log('[WARNING]  Could not interact with first dropdown');
         }
       } else {
-        console.log(`⚠️  Found ${comboboxes.length} dropdowns (expected 4)`);
+        console.log(`[WARNING]  Found ${comboboxes.length} dropdowns (expected 4)`);
       }
 
       await page.screenshot({ path: 'reports/screenshots/quality-check-form-ready.png', fullPage: true });
     });
   });
 });
+
+

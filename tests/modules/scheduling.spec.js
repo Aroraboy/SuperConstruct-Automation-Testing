@@ -1,4 +1,4 @@
-/**
+﻿/**
  * SCHEDULING MODULE TESTS
  * 
  * Purpose: Test Scheduling tab functionality
@@ -38,19 +38,19 @@ test.describe('Scheduling Module Tests', () => {
     await test.step('Verify page loaded', async () => {
       const currentUrl = page.url();
       expect(currentUrl).toContain('/tools/scheduling');
-      console.log('✅ Scheduling page loaded');
+      console.log('[OK] Scheduling page loaded');
     });
 
     await test.step('Take screenshot of Scheduling page', async () => {
       await page.screenshot({ path: 'reports/screenshots/scheduling-main.png', fullPage: true });
-      console.log('📸 Screenshot taken: scheduling-main.png');
+      console.log('[CAMERA] Screenshot taken: scheduling-main.png');
     });
   });
 
   // Test 2: Find dropdown for instructions
   test('02 - Instructions dropdown is visible', async ({ page }) => {
     await test.step('Look for instructions dropdown', async () => {
-      console.log('🔍 Looking for instructions dropdown...');
+      console.log('[SEARCH] Looking for instructions dropdown...');
       
       const dropdownSelectors = [
         'select',
@@ -77,7 +77,7 @@ test.describe('Scheduling Module Tests', () => {
         }
       }
 
-      console.log(`✅ Found ${allDropdowns.length} total dropdowns`);
+      console.log(`[OK] Found ${allDropdowns.length} total dropdowns`);
       
       if (allDropdowns.length >= 1) {
         for (let i = 0; i < allDropdowns.length; i++) {
@@ -87,7 +87,7 @@ test.describe('Scheduling Module Tests', () => {
         
         await page.screenshot({ path: 'reports/screenshots/scheduling-dropdown.png', fullPage: true });
       } else {
-        console.log('⚠️  No dropdowns found - Scheduling may use different UI structure');
+        console.log('[WARNING]  No dropdowns found - Scheduling may use different UI structure');
         await page.screenshot({ path: 'reports/screenshots/scheduling-no-dropdown.png', fullPage: true });
       }
 
@@ -100,7 +100,7 @@ test.describe('Scheduling Module Tests', () => {
   // Test 3: Find file upload area
   test('03 - MS file upload area is visible', async ({ page }) => {
     await test.step('Look for file upload input', async () => {
-      console.log('🔍 Looking for file upload area...');
+      console.log('[SEARCH] Looking for file upload area...');
       
       const uploadSelectors = [
         'input[type="file"]',
@@ -119,7 +119,7 @@ test.describe('Scheduling Module Tests', () => {
           const count = await page.locator(selector).count();
           
           if (count > 0) {
-            console.log(`✅ Found file upload input: ${selector}`);
+            console.log(`[OK] Found file upload input: ${selector}`);
             uploadFound = true;
             
             const accept = await element.getAttribute('accept').catch(() => '');
@@ -136,7 +136,7 @@ test.describe('Scheduling Module Tests', () => {
       }
 
       if (!uploadFound) {
-        console.log('⚠️  File upload input not found with standard selectors');
+        console.log('[WARNING]  File upload input not found with standard selectors');
         
         // Look for upload-related text or buttons
         const uploadTexts = [
@@ -167,7 +167,7 @@ test.describe('Scheduling Module Tests', () => {
   // Test 4: Look for upload button or area
   test('04 - Upload button or area is present', async ({ page }) => {
     await test.step('Look for upload button/area', async () => {
-      console.log('🔍 Looking for upload button or area...');
+      console.log('[SEARCH] Looking for upload button or area...');
       
       const uploadButtons = [
         'button:has-text("Upload")',
@@ -186,7 +186,7 @@ test.describe('Scheduling Module Tests', () => {
           const isVisible = await element.isVisible({ timeout: 3000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`✅ Found upload button: ${selector}`);
+            console.log(`[OK] Found upload button: ${selector}`);
             buttonFound = true;
             
             const buttonText = await element.textContent();
@@ -201,7 +201,7 @@ test.describe('Scheduling Module Tests', () => {
       }
 
       if (!buttonFound) {
-        console.log('⚠️  Upload button not found - checking for file input area');
+        console.log('[WARNING]  Upload button not found - checking for file input area');
         
         // Check if there's a file input (might be hidden but present)
         const fileInputs = await page.locator('input[type="file"]').count();
@@ -209,7 +209,7 @@ test.describe('Scheduling Module Tests', () => {
         
         if (fileInputs > 0) {
           buttonFound = true;
-          console.log('✅ File input exists (upload functionality available)');
+          console.log('[OK] File input exists (upload functionality available)');
         }
       }
     });
@@ -221,11 +221,11 @@ test.describe('Scheduling Module Tests', () => {
       const dropdowns = await page.locator('[role="combobox"]').all();
       
       if (dropdowns.length >= 1) {
-        console.log(`✅ Found ${dropdowns.length} dropdowns`);
+        console.log(`[OK] Found ${dropdowns.length} dropdowns`);
         
         await dropdowns[0].click();
         await page.waitForTimeout(1000);
-        console.log('✅ Clicked dropdown');
+        console.log('[OK] Clicked dropdown');
         
         const menuItems = await page.locator('[role="menuitem"]').all();
         console.log(`   Menu items: ${menuItems.length}`);
@@ -249,7 +249,7 @@ test.describe('Scheduling Module Tests', () => {
   // Test 6: Check for instructions or help text
   test('06 - Check for instructions text', async ({ page }) => {
     await test.step('Look for instructions or help text', async () => {
-      console.log('🔍 Looking for instructions text...');
+      console.log('[SEARCH] Looking for instructions text...');
       
       const instructionTexts = [
         'text=instruction',
@@ -267,7 +267,7 @@ test.describe('Scheduling Module Tests', () => {
         try {
           const elements = await page.locator(selector).all();
           if (elements.length > 0) {
-            console.log(`✅ Found instruction-related text: ${selector}`);
+            console.log(`[OK] Found instruction-related text: ${selector}`);
             instructionsFound = true;
             
             // Get first matching element's text
@@ -289,7 +289,7 @@ test.describe('Scheduling Module Tests', () => {
   // Test 7: Complete page analysis
   test('07 - Analyze complete page structure', async ({ page }) => {
     await test.step('Comprehensive page analysis', async () => {
-      console.log('\n📊 SCHEDULING PAGE ANALYSIS');
+      console.log('\n[CHART] SCHEDULING PAGE ANALYSIS');
       console.log('================================\n');
 
       // Count dropdowns
@@ -343,3 +343,5 @@ test.describe('Scheduling Module Tests', () => {
     });
   });
 });
+
+

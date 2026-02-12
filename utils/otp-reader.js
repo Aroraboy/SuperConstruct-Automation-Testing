@@ -1,4 +1,4 @@
-const nodemailer = require('nodemailer');
+﻿const nodemailer = require('nodemailer');
 const ImapSimple = require('imap-simple');
 const { createWorker } = require('tesseract.js');
 const fs = require('fs');
@@ -47,22 +47,22 @@ class OTPReader {
    */
   async extractOTPFromImage(imagePath) {
     try {
-      console.log('🖼️  Extracting OTP from image using OCR...');
+      console.log('[PICTURE]  Extracting OTP from image using OCR...');
       
       const worker = await createWorker();
       const { data: { text } } = await worker.recognize(imagePath);
       await worker.terminate();
 
-      console.log('📖 OCR Text extracted:', text);
+      console.log('[BOOK] OCR Text extracted:', text);
       const otp = this.extractOTPFromText(text);
       
       if (otp) {
-        console.log(`✅ OTP extracted from image: ${otp}`);
+        console.log(`[OK] OTP extracted from image: ${otp}`);
       }
       
       return otp;
     } catch (error) {
-      console.error('❌ Error reading image with OCR:', error.message);
+      console.error('[ERROR] Error reading image with OCR:', error.message);
       return null;
     }
   }
@@ -74,7 +74,7 @@ class OTPReader {
    */
   async readOTPFromGmail() {
     try {
-      console.log('🔐 Connecting to Gmail to read OTP...');
+      console.log('[LOCK] Connecting to Gmail to read OTP...');
 
       const config = {
         imap: {
@@ -96,7 +96,7 @@ class OTPReader {
       const messages = await connection.search(searchCriteria, fetchOptions);
 
       if (messages.length === 0) {
-        console.log('❌ No recent emails found');
+        console.log('[ERROR] No recent emails found');
         await connection.end();
         return null;
       }
@@ -118,11 +118,11 @@ class OTPReader {
         if (part.type === 'text' && part.subtype === 'plain') {
           try {
             const text = await connection.getPartData(latestMessage, part, {});
-            console.log('📧 Email text content received');
+            console.log('[EMAIL] Email text content received');
             otp = this.extractOTPFromText(text.toString());
 
             if (otp) {
-              console.log(`✅ OTP extracted from text: ${otp}`);
+              console.log(`[OK] OTP extracted from text: ${otp}`);
               break;
             }
           } catch (error) {
@@ -133,13 +133,13 @@ class OTPReader {
         // If no text OTP, try images
         if (!otp && part.type === 'image') {
           try {
-            console.log(`📸 Found image attachment: ${part.filename}`);
+            console.log(`[CAMERA] Found image attachment: ${part.filename}`);
             const imageData = await connection.getPartData(latestMessage, part, {});
             const imagePath = path.join(tempDir, part.filename || `image_${Date.now()}.png`);
             
             // Save image
             fs.writeFileSync(imagePath, imageData);
-            console.log(`💾 Image saved to: ${imagePath}`);
+            console.log(`[SAVE] Image saved to: ${imagePath}`);
 
             // Extract OTP from image using OCR
             otp = await this.extractOTPFromImage(imagePath);
@@ -158,7 +158,7 @@ class OTPReader {
       await connection.end();
       return otp;
     } catch (error) {
-      console.error('❌ Error reading Gmail:', error.message);
+      console.error('[ERROR] Error reading Gmail:', error.message);
       return null;
     }
   }
@@ -176,19 +176,21 @@ class OTPReader {
       const otp = await this.readOTPFromGmail();
 
       if (otp) {
-        console.log(`✅ OTP found on attempt ${attempt}: ${otp}`);
+        console.log(`[OK] OTP found on attempt ${attempt}: ${otp}`);
         return otp;
       }
 
       if (attempt < maxAttempts) {
-        console.log(`⏱️  Waiting ${delayMs}ms before retry...`);
+        console.log(`[TIME]  Waiting ${delayMs}ms before retry...`);
         await new Promise(resolve => setTimeout(resolve, delayMs));
       }
     }
 
-    console.log('❌ Failed to retrieve OTP after all attempts');
+    console.log('[ERROR] Failed to retrieve OTP after all attempts');
     return null;
   }
 }
 
 module.exports = OTPReader;
+
+

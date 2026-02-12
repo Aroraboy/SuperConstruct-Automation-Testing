@@ -1,8 +1,8 @@
-## Pages Folder - Page Objects
+﻿## Pages Folder - Page Objects
 
 This folder contains Page Object Models (POM) that encapsulate page interactions and reduce duplication in tests.
 
-### 🏗️ Architecture
+### ### Architecture
 
 ```
 BasePage (base.page.js)
@@ -12,7 +12,7 @@ BasePage (base.page.js)
 └── CreateModulePage (create-module.page.js)
 ```
 
-### 📄 Files
+### ### Files
 
 | File                      | Purpose                                                                                          | Methods                                                                                     |
 | ------------------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
@@ -22,7 +22,7 @@ BasePage (base.page.js)
 | **dashboard.page.js**     | Project dashboard navigation                                                                     | `navigateToProject()`, `navigateToModule()`                                                 |
 | **create-module.page.js** | Generic form for creating modules<br>(RFI, SOV, Submittal, etc.)                                 | `fillForm()`, `submit()`, `verifyCreated()`                                                 |
 
-### 🎯 Usage Pattern
+### ### Usage Pattern
 
 ```javascript
 // Instead of writing selectors in tests:
@@ -35,7 +35,7 @@ const loginPage = new LoginPage(page, config);
 await loginPage.loginWithTestUser();
 ```
 
-### 🔑 Key Principles
+### ### Key Principles
 
 1. **Single Responsibility** - Each page handles one page/feature
 2. **Encapsulation** - Hide selector details, expose high-level actions
@@ -43,7 +43,7 @@ await loginPage.loginWithTestUser();
 4. **Maintainability** - Change selectors in one place
 5. **Inheritance** - Extend BasePage to reuse common functionality
 
-### 🛠️ Adding a New Page Object
+### ### Adding a New Page Object
 
 1. Create new file: `my-feature.page.js`
 2. Extend BasePage:
@@ -71,3 +71,4 @@ module.exports = MyFeaturePage;
 ```
 
 3. Import and use in tests
+

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * GLOBAL SETUP
  * 
  * Runs ONCE before all tests in the test suite
@@ -35,7 +35,7 @@ async function globalSetup() {
     return;
   }
 
-  console.log('\n🔐 Running global authentication setup...\n');
+  console.log('\n[LOCK] Running global authentication setup...\n');
   
   const browser = await chromium.launch({ headless: false });
   const context = await browser.newContext();
@@ -45,10 +45,10 @@ async function globalSetup() {
     const loginPage = new LoginPage(page, config);
     const user = config.getTestUser();
     
-    console.log('📍 Navigating to login page...');
+    console.log('[PIN] Navigating to login page...');
     await loginPage.goto();
     
-    console.log('🔑 Logging in...');
+    console.log('[KEY] Logging in...');
     await loginPage.loginWithOTPAuto(user.email, user.password, user.gmailAppPassword);
     
     // Wait a bit for login to complete
@@ -58,12 +58,12 @@ async function globalSetup() {
     const authFile = path.join(__dirname, '../.auth/user.json');
     await context.storageState({ path: authFile });
     
-    console.log('✅ Login successful!');
-    console.log('💾 Authentication state saved to .auth/user.json');
-    console.log('🎯 All subsequent tests will reuse this session\n');
+    console.log('[OK] Login successful!');
+    console.log('[SAVE] Authentication state saved to .auth/user.json');
+    console.log('[TARGET] All subsequent tests will reuse this session\n');
     
   } catch (error) {
-    console.error('❌ Global setup failed:', error.message);
+    console.error('[ERROR] Global setup failed:', error.message);
     throw error;
   } finally {
     await browser.close();
@@ -71,3 +71,5 @@ async function globalSetup() {
 }
 
 module.exports = globalSetup;
+
+

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * SMOKE TEST SUITE
  * 
  * Purpose: Quick validation that all 14 core modules load without errors
@@ -32,7 +32,7 @@ test.describe('SuperConstruct Smoke Tests', () => {
     
     // Just go directly to the project since we know the project ID
     // The session is already authenticated from global setup
-    console.log(`🎯 Navigating with project ID: ${projectId}`);
+    console.log(`[TARGET] Navigating with project ID: ${projectId}`);
   });
 
   // Module 1: Overview
@@ -45,7 +45,7 @@ test.describe('SuperConstruct Smoke Tests', () => {
     await test.step('Verify page loads', async () => {
       const content = await page.content();
       expect(content.length).toBeGreaterThan(100); // Page has content
-      console.log('✅ Overview module loaded');
+      console.log('[OK] Overview module loaded');
     });
   });
 
@@ -59,7 +59,7 @@ test.describe('SuperConstruct Smoke Tests', () => {
     await test.step('Verify page loads', async () => {
       const content = await page.content();
       expect(content.length).toBeGreaterThan(100);
-      console.log('✅ Members module loaded');
+      console.log('[OK] Members module loaded');
     });
   });
 
@@ -73,12 +73,12 @@ test.describe('SuperConstruct Smoke Tests', () => {
     await test.step('Verify page loads', async () => {
       const content = await page.content();
       expect(content.length).toBeGreaterThan(100);
-      console.log('✅ SOV module loaded');
+      console.log('[OK] SOV module loaded');
     });
 
     await test.step('Check for create button', async () => {
       const hasCreateBtn = await page.locator('button:has-text("Create"), button:has-text("New"), button:has-text("Add")').isVisible().catch(() => false);
-      console.log(`📋 Create button visible: ${hasCreateBtn}`);
+      console.log(`[LIST] Create button visible: ${hasCreateBtn}`);
     });
   });
 
@@ -92,7 +92,7 @@ test.describe('SuperConstruct Smoke Tests', () => {
     await test.step('Verify page loads', async () => {
       const content = await page.content();
       expect(content.length).toBeGreaterThan(100);
-      console.log('✅ Daily Logs module loaded');
+      console.log('[OK] Daily Logs module loaded');
     });
   });
 
@@ -106,17 +106,17 @@ test.describe('SuperConstruct Smoke Tests', () => {
     await test.step('Verify page loads', async () => {
       const content = await page.content();
       expect(content.length).toBeGreaterThan(100);
-      console.log('✅ RFI module loaded');
+      console.log('[OK] RFI module loaded');
     });
 
     await test.step('Look for create RFI button', async () => {
       const createBtn = await page.locator('button:has-text("Create"), button:has-text("New"), button:has-text("Add")').first().isVisible().catch(() => false);
-      console.log(`📋 Create button visible: ${createBtn}`);
+      console.log(`[LIST] Create button visible: ${createBtn}`);
       
       if (createBtn) {
         await page.locator('button:has-text("Create"), button:has-text("New"), button:has-text("Add")').first().click().catch(() => {});
         await page.waitForTimeout(1000);
-        console.log('✅ Create RFI form opened');
+        console.log('[OK] Create RFI form opened');
       }
     });
   });
@@ -131,7 +131,7 @@ test.describe('SuperConstruct Smoke Tests', () => {
     await test.step('Verify page loads', async () => {
       const content = await page.content();
       expect(content.length).toBeGreaterThan(100);
-      console.log('✅ Quality Check module loaded');
+      console.log('[OK] Quality Check module loaded');
     });
   });
 
@@ -145,7 +145,7 @@ test.describe('SuperConstruct Smoke Tests', () => {
     await test.step('Verify page loads', async () => {
       const content = await page.content();
       expect(content.length).toBeGreaterThan(100);
-      console.log('✅ Change Requests module loaded');
+      console.log('[OK] Change Requests module loaded');
     });
   });
 
@@ -159,7 +159,7 @@ test.describe('SuperConstruct Smoke Tests', () => {
     await test.step('Verify page loads', async () => {
       const content = await page.content();
       expect(content.length).toBeGreaterThan(100);
-      console.log('✅ Inspections module loaded');
+      console.log('[OK] Inspections module loaded');
     });
   });
 
@@ -173,7 +173,7 @@ test.describe('SuperConstruct Smoke Tests', () => {
     await test.step('Verify page loads', async () => {
       const content = await page.content();
       expect(content.length).toBeGreaterThan(100);
-      console.log('✅ Submittals module loaded');
+      console.log('[OK] Submittals module loaded');
     });
   });
 
@@ -187,7 +187,7 @@ test.describe('SuperConstruct Smoke Tests', () => {
     await test.step('Verify page loads', async () => {
       const content = await page.content();
       expect(content.length).toBeGreaterThan(100);
-      console.log('✅ Scheduling module loaded');
+      console.log('[OK] Scheduling module loaded');
     });
   });
 
@@ -201,7 +201,7 @@ test.describe('SuperConstruct Smoke Tests', () => {
     await test.step('Verify page loads', async () => {
       const content = await page.content();
       expect(content.length).toBeGreaterThan(100);
-      console.log('✅ Documents module loaded');
+      console.log('[OK] Documents module loaded');
     });
   });
 
@@ -215,7 +215,7 @@ test.describe('SuperConstruct Smoke Tests', () => {
     await test.step('Verify page loads', async () => {
       const content = await page.content();
       expect(content.length).toBeGreaterThan(100);
-      console.log('✅ Pay Apps module loaded');
+      console.log('[OK] Pay Apps module loaded');
     });
   });
 
@@ -229,7 +229,7 @@ test.describe('SuperConstruct Smoke Tests', () => {
     await test.step('Verify page loads', async () => {
       const content = await page.content();
       expect(content.length).toBeGreaterThan(100);
-      console.log('✅ Expenses module loaded');
+      console.log('[OK] Expenses module loaded');
     });
   });
 
@@ -243,7 +243,8 @@ test.describe('SuperConstruct Smoke Tests', () => {
     await test.step('Verify page loads', async () => {
       const content = await page.content();
       expect(content.length).toBeGreaterThan(100);
-      console.log('✅ Message Board module loaded');
+      console.log('[OK] Message Board module loaded');
     });
   });
 });
+

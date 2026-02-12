@@ -1,4 +1,4 @@
-const { exec } = require('child_process');
+﻿const { exec } = require('child_process');
 const path = require('path');
 const fs = require('fs');
 
@@ -16,7 +16,7 @@ class SmokeTestRunner {
     console.log('╚═══════════════════════════════════════════════════════╝\n');
 
     this.startTime = new Date();
-    console.log(`🚀 Starting smoke tests at ${this.startTime.toLocaleString()}\n`);
+    console.log(`[START] Starting smoke tests at ${this.startTime.toLocaleString()}\n`);
 
     // Test suites to run
     const testSuites = [
@@ -29,7 +29,7 @@ class SmokeTestRunner {
       { name: 'Change Request', path: 'tests/modules/change-request.spec.js' }
     ];
 
-    console.log('📋 Test Suites to Execute:');
+    console.log('[LIST] Test Suites to Execute:');
     testSuites.forEach((suite, index) => {
       console.log(`   ${index + 1}. ${suite.name}`);
     });
@@ -93,7 +93,7 @@ class SmokeTestRunner {
 
   printSummary() {
     console.log('\n' + '═'.repeat(60));
-    console.log('📊 SMOKE TEST SUMMARY');
+    console.log('[CHART] SMOKE TEST SUMMARY');
     console.log('═'.repeat(60) + '\n');
 
     const passed = this.testResults.filter(r => r.passed).length;
@@ -118,17 +118,17 @@ class SmokeTestRunner {
     console.log('\n' + '═'.repeat(60) + '\n');
 
     if (failed === 0) {
-      console.log('🎉 All smoke tests passed successfully!');
+      console.log('[COMPLETE] All smoke tests passed successfully!');
     } else {
       console.log(`⚠️  ${failed} test suite(s) failed. Please review the report.`);
     }
 
-    console.log('\n📄 Test report generated in: reports/html-report/');
-    console.log('💡 Run "npm run report" to view the detailed HTML report\n');
+    console.log('\n[FILE] Test report generated in: reports/html-report/');
+    console.log('[IDEA] Run "npm run report" to view the detailed HTML report\n');
   }
 
   openReport() {
-    console.log('🌐 Opening test report...\n');
+    console.log('[WEB] Opening test report...\n');
     
     // Open the HTML report
     setTimeout(() => {
@@ -151,3 +151,5 @@ if (require.main === module) {
 }
 
 module.exports = SmokeTestRunner;
+
+

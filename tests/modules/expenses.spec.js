@@ -1,4 +1,4 @@
-/**
+﻿/**
  * EXPENSE MANAGEMENT MODULE TESTS
  * 
  * Purpose: Test Expense Management tab functionality
@@ -44,19 +44,19 @@ test.describe('Expense Management Module Tests', () => {
     await test.step('Verify page loaded', async () => {
       const currentUrl = page.url();
       expect(currentUrl).toContain('/tools/expenses');
-      console.log('✅ Expenses page loaded');
+      console.log('[OK] Expenses page loaded');
     });
 
     await test.step('Take screenshot of Expenses page', async () => {
       await page.screenshot({ path: 'reports/screenshots/expenses-main.png', fullPage: true });
-      console.log('📸 Screenshot taken: expenses-main.png');
+      console.log('[CAMERA] Screenshot taken: expenses-main.png');
     });
   });
 
   // Test 2: Find Dashboard tab
   test('02 - Dashboard tab is visible', async ({ page }) => {
     await test.step('Look for Dashboard tab', async () => {
-      console.log('🔍 Looking for Dashboard tab...');
+      console.log('[SEARCH] Looking for Dashboard tab...');
       
       const dashboardSelectors = [
         'text=Dashboard',
@@ -74,7 +74,7 @@ test.describe('Expense Management Module Tests', () => {
           const isVisible = await element.isVisible({ timeout: 3000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`✅ Found Dashboard tab: ${selector}`);
+            console.log(`[OK] Found Dashboard tab: ${selector}`);
             dashboardFound = true;
             
             const text = await element.textContent();
@@ -95,7 +95,7 @@ test.describe('Expense Management Module Tests', () => {
   // Test 3: Find Expenses tab
   test('03 - Expenses tab is visible', async ({ page }) => {
     await test.step('Look for Expenses tab', async () => {
-      console.log('🔍 Looking for Expenses tab...');
+      console.log('[SEARCH] Looking for Expenses tab...');
       
       const expensesSelectors = [
         'text=Expenses',
@@ -113,7 +113,7 @@ test.describe('Expense Management Module Tests', () => {
           const isVisible = await element.isVisible({ timeout: 3000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`✅ Found Expenses tab: ${selector}`);
+            console.log(`[OK] Found Expenses tab: ${selector}`);
             expensesFound = true;
             
             const text = await element.textContent();
@@ -122,7 +122,7 @@ test.describe('Expense Management Module Tests', () => {
             // Click Expenses tab to show the filters
             await element.click();
             await page.waitForTimeout(1000);
-            console.log('✅ Clicked Expenses tab');
+            console.log('[OK] Clicked Expenses tab');
             
             await page.screenshot({ path: 'reports/screenshots/expenses-expenses-tab.png', fullPage: true });
             break;
@@ -148,7 +148,7 @@ test.describe('Expense Management Module Tests', () => {
     });
 
     await test.step('Look for search bar', async () => {
-      console.log('🔍 Looking for search bar...');
+      console.log('[SEARCH] Looking for search bar...');
       
       const searchSelectors = [
         'input[type="search"]',
@@ -166,7 +166,7 @@ test.describe('Expense Management Module Tests', () => {
           const isVisible = await element.isVisible({ timeout: 3000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`✅ Found search bar: ${selector}`);
+            console.log(`[OK] Found search bar: ${selector}`);
             searchFound = true;
             
             const placeholder = await element.getAttribute('placeholder').catch(() => '');
@@ -174,7 +174,7 @@ test.describe('Expense Management Module Tests', () => {
             
             await element.fill('Test Expense Search');
             await page.waitForTimeout(1000);
-            console.log('✅ Search text entered');
+            console.log('[OK] Search text entered');
             
             await page.screenshot({ path: 'reports/screenshots/expenses-search.png', fullPage: true });
             break;
@@ -200,7 +200,7 @@ test.describe('Expense Management Module Tests', () => {
     });
 
     await test.step('Look for calendar dropdown', async () => {
-      console.log('🔍 Looking for calendar dropdown...');
+      console.log('[SEARCH] Looking for calendar dropdown...');
       
       const calendarSelectors = [
         'input[type="date"]',
@@ -219,7 +219,7 @@ test.describe('Expense Management Module Tests', () => {
           const isVisible = await element.isVisible({ timeout: 3000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`✅ Found calendar dropdown: ${selector}`);
+            console.log(`[OK] Found calendar dropdown: ${selector}`);
             calendarFound = true;
             
             const placeholder = await element.getAttribute('placeholder').catch(() => '');
@@ -249,7 +249,7 @@ test.describe('Expense Management Module Tests', () => {
     });
 
     await test.step('Look for all dropdowns', async () => {
-      console.log('🔍 Looking for dropdowns...');
+      console.log('[SEARCH] Looking for dropdowns...');
       
       const dropdownSelectors = [
         'select',
@@ -274,7 +274,7 @@ test.describe('Expense Management Module Tests', () => {
         }
       }
 
-      console.log(`✅ Found ${allDropdowns.length} total dropdowns`);
+      console.log(`[OK] Found ${allDropdowns.length} total dropdowns`);
       
       for (let i = 0; i < Math.min(4, allDropdowns.length); i++) {
         const text = await allDropdowns[i].element.textContent().catch(() => '');
@@ -299,7 +299,7 @@ test.describe('Expense Management Module Tests', () => {
     });
 
     await test.step('Look for Reset filter button', async () => {
-      console.log('🔍 Looking for Reset filter button...');
+      console.log('[SEARCH] Looking for Reset filter button...');
       
       const resetSelectors = [
         'button:has-text("Reset")',
@@ -317,7 +317,7 @@ test.describe('Expense Management Module Tests', () => {
           const isVisible = await element.isVisible({ timeout: 3000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`✅ Found Reset button: ${selector}`);
+            console.log(`[OK] Found Reset button: ${selector}`);
             resetFound = true;
             
             const buttonText = await element.textContent();
@@ -347,13 +347,13 @@ test.describe('Expense Management Module Tests', () => {
     });
 
     await test.step('Look for Import button', async () => {
-      console.log('🔍 Looking for Import button...');
+      console.log('[SEARCH] Looking for Import button...');
       
       const importButton = page.locator('button:has-text("Import")').first();
       const isVisible = await importButton.isVisible({ timeout: 5000 }).catch(() => false);
       
       if (isVisible) {
-        console.log('✅ Found Import button');
+        console.log('[OK] Found Import button');
         
         const buttonText = await importButton.textContent();
         console.log(`   Button text: "${buttonText.trim()}"`);
@@ -363,12 +363,12 @@ test.describe('Expense Management Module Tests', () => {
         // Click Import
         await importButton.click();
         await page.waitForTimeout(1500);
-        console.log('✅ Import button clicked');
+        console.log('[OK] Import button clicked');
         
         await page.screenshot({ path: 'reports/screenshots/expenses-import-clicked.png', fullPage: true });
         expect(isVisible).toBeTruthy();
       } else {
-        console.log('⚠️  Import button not found');
+        console.log('[WARNING]  Import button not found');
       }
     });
   });
@@ -385,13 +385,13 @@ test.describe('Expense Management Module Tests', () => {
     });
 
     await test.step('Look for Export button', async () => {
-      console.log('🔍 Looking for Export button...');
+      console.log('[SEARCH] Looking for Export button...');
       
       const exportButton = page.locator('button:has-text("Export")').first();
       const isVisible = await exportButton.isVisible({ timeout: 5000 }).catch(() => false);
       
       if (isVisible) {
-        console.log('✅ Found Export button');
+        console.log('[OK] Found Export button');
         
         const buttonText = await exportButton.textContent();
         console.log(`   Button text: "${buttonText.trim()}"`);
@@ -401,12 +401,12 @@ test.describe('Expense Management Module Tests', () => {
         // Click Export
         await exportButton.click();
         await page.waitForTimeout(1500);
-        console.log('✅ Export button clicked');
+        console.log('[OK] Export button clicked');
         
         await page.screenshot({ path: 'reports/screenshots/expenses-export-clicked.png', fullPage: true });
         expect(isVisible).toBeTruthy();
       } else {
-        console.log('⚠️  Export button not found');
+        console.log('[WARNING]  Export button not found');
       }
     });
   });
@@ -423,7 +423,7 @@ test.describe('Expense Management Module Tests', () => {
     });
 
     await test.step('Look for Add expense button', async () => {
-      console.log('🔍 Looking for Add expense button...');
+      console.log('[SEARCH] Looking for Add expense button...');
       
       const addExpenseSelectors = [
         'button:has-text("Add Expense")',
@@ -441,7 +441,7 @@ test.describe('Expense Management Module Tests', () => {
           const isVisible = await element.isVisible({ timeout: 3000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`✅ Found Add expense button: ${selector}`);
+            console.log(`[OK] Found Add expense button: ${selector}`);
             addExpenseFound = true;
             
             const buttonText = await element.textContent();
@@ -471,7 +471,7 @@ test.describe('Expense Management Module Tests', () => {
     });
 
     await test.step('Comprehensive page analysis', async () => {
-      console.log('\n📊 EXPENSES TAB ANALYSIS');
+      console.log('\n[CHART] EXPENSES TAB ANALYSIS');
       console.log('================================\n');
 
       // Count tabs
@@ -510,3 +510,5 @@ test.describe('Expense Management Module Tests', () => {
     });
   });
 });
+
+

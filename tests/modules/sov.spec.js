@@ -1,4 +1,4 @@
-/**
+﻿/**
  * SCHEDULE OF VALUES (SOV) MODULE TESTS
  * 
  * Purpose: Test SOV tab functionality
@@ -41,25 +41,25 @@ test.describe('Schedule of Values (SOV) Module Tests', () => {
     await test.step('Verify page loaded', async () => {
       const currentUrl = page.url();
       expect(currentUrl).toContain('/tools/sov');
-      console.log('✅ SOV page loaded');
+      console.log('[OK] SOV page loaded');
     });
 
     await test.step('Verify page has content', async () => {
       const pageContent = await page.content();
       expect(pageContent.length).toBeGreaterThan(500);
-      console.log('✅ Page has content');
+      console.log('[OK] Page has content');
     });
 
     await test.step('Take screenshot of SOV page', async () => {
       await page.screenshot({ path: 'reports/screenshots/sov-main.png', fullPage: true });
-      console.log('📸 Screenshot taken: sov-main.png');
+      console.log('[CAMERA] Screenshot taken: sov-main.png');
     });
   });
 
   // Test 2: Find and analyze dropdown menu
   test('02 - Dropdown menu is visible and functional', async ({ page }) => {
     await test.step('Look for dropdown menu', async () => {
-      console.log('🔍 Looking for dropdown menu...');
+      console.log('[SEARCH] Looking for dropdown menu...');
       
       const dropdownSelectors = [
         'select',
@@ -78,7 +78,7 @@ test.describe('Schedule of Values (SOV) Module Tests', () => {
           const isVisible = await element.isVisible({ timeout: 3000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`✅ Found dropdown: ${selector}`);
+            console.log(`[OK] Found dropdown: ${selector}`);
             dropdownFound = true;
             
             const text = await element.textContent().catch(() => '');
@@ -100,7 +100,7 @@ test.describe('Schedule of Values (SOV) Module Tests', () => {
   // Test 3: Find and analyze search functionality
   test('03 - Search input is visible and functional', async ({ page }) => {
     await test.step('Look for search field', async () => {
-      console.log('🔍 Looking for search field...');
+      console.log('[SEARCH] Looking for search field...');
       
       const searchSelectors = [
         'input[type="search"]',
@@ -117,7 +117,7 @@ test.describe('Schedule of Values (SOV) Module Tests', () => {
           const isVisible = await element.isVisible({ timeout: 3000 }).catch(() => false);
           
           if (isVisible) {
-            console.log(`✅ Found search field: ${selector}`);
+            console.log(`[OK] Found search field: ${selector}`);
             searchFound = true;
             
             const placeholder = await element.getAttribute('placeholder').catch(() => '');
@@ -143,13 +143,13 @@ test.describe('Schedule of Values (SOV) Module Tests', () => {
       const isVisible = await searchField.isVisible({ timeout: 2000 }).catch(() => false);
       
       if (isVisible) {
-        console.log('📍 Using search field');
+        console.log('[PIN] Using search field');
         
         const searchQuery = 'structural';
         await searchField.fill(searchQuery);
         await page.waitForTimeout(1000);
         
-        console.log(`✅ Entered search query: "${searchQuery}"`);
+        console.log(`[OK] Entered search query: "${searchQuery}"`);
         
         await page.screenshot({ path: 'reports/screenshots/sov-after-search.png', fullPage: true });
       }
@@ -160,7 +160,7 @@ test.describe('Schedule of Values (SOV) Module Tests', () => {
       
       const currentUrl = page.url();
       expect(currentUrl).toContain('/tools/sov');
-      console.log('✅ Still on SOV page after search');
+      console.log('[OK] Still on SOV page after search');
     });
   });
 
@@ -171,10 +171,10 @@ test.describe('Schedule of Values (SOV) Module Tests', () => {
       const isVisible = await dropdown.isVisible({ timeout: 2000 }).catch(() => false);
       
       if (isVisible) {
-        console.log('📍 Clicking dropdown');
+        console.log('[PIN] Clicking dropdown');
         await dropdown.click();
         await page.waitForTimeout(1000);
-        console.log('✅ Clicked dropdown');
+        console.log('[OK] Clicked dropdown');
         
         await page.screenshot({ path: 'reports/screenshots/sov-dropdown-open.png', fullPage: true });
       }
@@ -184,7 +184,7 @@ test.describe('Schedule of Values (SOV) Module Tests', () => {
       const menuItems = await page.locator('[role="menuitem"]').all();
       
       if (menuItems.length > 0) {
-        console.log(`✅ Found ${menuItems.length} menu items`);
+        console.log(`[OK] Found ${menuItems.length} menu items`);
         
         for (let i = 0; i < Math.min(4, menuItems.length); i++) {
           const text = await menuItems[i].textContent().catch(() => '');
@@ -192,14 +192,14 @@ test.describe('Schedule of Values (SOV) Module Tests', () => {
         }
       }
 
-      console.log(`\n📊 Total menu items found: ${menuItems.length}`);
+      console.log(`\n[CHART] Total menu items found: ${menuItems.length}`);
     });
   });
 
   // Test 6: Analyze complete SOV page structure
   test('06 - Analyze complete SOV page structure', async ({ page }) => {
     await test.step('Comprehensive page analysis', async () => {
-      console.log('\n📊 SOV PAGE STRUCTURE ANALYSIS');
+      console.log('\n[CHART] SOV PAGE STRUCTURE ANALYSIS');
       console.log('================================\n');
 
       // Count buttons
@@ -223,7 +223,9 @@ test.describe('Schedule of Values (SOV) Module Tests', () => {
       console.log(`Total lists (ul/ol): ${lists.length}`);
 
       console.log('\n================================\n');
-      console.log('✅ SOV page is a view/filter page (read-only)');
+      console.log('[OK] SOV page is a view/filter page (read-only)');
     });
   });
 });
+
+
