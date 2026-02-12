@@ -1,4 +1,4 @@
-const { defineConfig, devices } = require('@playwright/test');
+﻿const { defineConfig, devices } = require('@playwright/test');
 
 module.exports = defineConfig({
   testDir: './tests',
@@ -17,7 +17,7 @@ module.exports = defineConfig({
     ['list']
   ],
   use: {
-    baseURL: process.env.BASE_URL || 'https://app.superconstruct.io',
+    baseURL: process.env.BASE_URL || 'https://beta.superconstruct.io',
     trace: 'retain-on-failure',
     screenshot: 'on',
     video: 'retain-on-failure',
@@ -39,7 +39,7 @@ module.exports = defineConfig({
       testMatch: '**/auth/**',
       globalSetup: undefined, // Don't run global setup for auth tests
       use: { 
-        baseURL: process.env.BASE_URL || 'https://app.superconstruct.io',
+        baseURL: process.env.BASE_URL || 'https://beta.superconstruct.io',
         trace: 'retain-on-failure',
         screenshot: 'on',
         video: 'retain-on-failure',

@@ -23,7 +23,7 @@ test.describe('Contractor Registration with OTP Verification', () => {
     
     // Step 2: Navigate to login page
     console.log('\n[LOCK] Step 2: Navigating to login page...');
-    const loginUrl = 'https://app.superconstruct.io/auth/login';
+    const loginUrl = 'https://beta.superconstruct.io/auth/login';
     
     await page.goto(loginUrl, { waitUntil: 'load', timeout: 15000 });
     await page.waitForTimeout(2000);
@@ -72,7 +72,7 @@ test.describe('Contractor Registration with OTP Verification', () => {
         
         // Maybe already onboarded - let's navigate to app
         console.log(`   [INFO]  No error found, trying to navigate to app...`);
-        await page.goto('https://app.superconstruct.io/app', { waitUntil: 'load', timeout: 15000 });
+        await page.goto('https://beta.superconstruct.io/app', { waitUntil: 'load', timeout: 15000 });
         console.log(`   Navigated to: ${page.url()}`);
       }
       
@@ -323,7 +323,7 @@ test.describe('Contractor Registration with OTP Verification', () => {
         console.log(`   [OK] Successfully onboarded! On main app`);
       } else {
         // Try one more navigation
-        await page.goto('https://app.superconstruct.io/app', { waitUntil: 'load', timeout: 10000 }).catch(() => {});
+        await page.goto('https://beta.superconstruct.io/app', { waitUntil: 'load', timeout: 10000 }).catch(() => {});
       }
       
       // Wait 3 seconds to view dashboard
@@ -338,13 +338,13 @@ test.describe('Contractor Registration with OTP Verification', () => {
     try {
       // Logout first
       console.log('   [DOOR] Attempting logout...');
-      await page.goto('https://app.superconstruct.io/auth/logout', { waitUntil: 'load', timeout: 15000 });
+      await page.goto('https://beta.superconstruct.io/auth/logout', { waitUntil: 'load', timeout: 15000 });
       await page.waitForTimeout(3000);
       console.log('   [DONE] Logged out');
       
       // Navigate to login page
       console.log('   [LOCK] Navigating to login page...');
-      await page.goto('https://app.superconstruct.io/auth/login', { waitUntil: 'load', timeout: 15000 });
+      await page.goto('https://beta.superconstruct.io/auth/login', { waitUntil: 'load', timeout: 15000 });
       await page.waitForTimeout(2000);
       console.log(`   [OK] On login page: ${page.url()}`);
       

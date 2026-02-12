@@ -1,8 +1,8 @@
-{
+﻿{
   "app": {
-    "webUrl": "https://app.superconstruct.io/",
+    "webUrl": "https://beta.superconstruct.io/",
     "mobileUrl": "https://play.google.com/store/apps/details?id=com.superconstruct.sc",
-    "apiUrl": "https://app.superconstruct.io"
+    "apiUrl": "https://beta.superconstruct.io"
   },
   "testUser": {
     "email": "YOUR_TEST_EMAIL@gmail.com",

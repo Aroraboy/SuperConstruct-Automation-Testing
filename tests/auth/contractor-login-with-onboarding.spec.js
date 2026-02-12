@@ -23,7 +23,7 @@ test.describe('Contractor Login and Onboarding', () => {
     
     // Step 2: Navigate to login page
     console.log('\n[STEP 2] Navigating to login page...');
-    const loginUrl = 'https://app.superconstruct.io/auth/login';
+    const loginUrl = 'https://beta.superconstruct.io/auth/login';
     
     await page.goto(loginUrl, { waitUntil: 'load', timeout: 15000 });
     await page.waitForTimeout(2000);
@@ -72,7 +72,7 @@ test.describe('Contractor Login and Onboarding', () => {
         
         // Maybe already onboarded - let's navigate to app
         console.log(`   [INFO] No error found, trying to navigate to app...`);
-        await page.goto('https://app.superconstruct.io/app', { waitUntil: 'load', timeout: 15000 });
+        await page.goto('https://beta.superconstruct.io/app', { waitUntil: 'load', timeout: 15000 });
         console.log(`   Navigated to: ${page.url()}`);
       }
       
