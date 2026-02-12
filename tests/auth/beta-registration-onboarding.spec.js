@@ -7,13 +7,13 @@ test.describe('Beta Registration and Onboarding', () => {
   });
 
   test('should register contractor and complete full onboarding on beta', async ({ page }) => {
-    // Increase test timeout to 120 seconds for full onboarding flow
-    test.setTimeout(120000);
+    // Increase test timeout to 180 seconds for full onboarding + project creation flow
+    test.setTimeout(180000);
 
-    // MailSlurp credentials - fresh on beta.superconstruct.io
-    const testEmail = '1e79e412-764b-4a9b-b000-377e29efc237@mailslurp.biz';
+    // Use an existing MailSlurp inbox (fresh/unused on beta.superconstruct.io)
+    const inboxId = '4a996dae-8d21-4670-9eec-8a7be2df0afe';
+    const testEmail = '4a996dae-8d21-4670-9eec-8a7be2df0afe@mailslurp.biz';
     const testPassword = 'TestPassword@123';
-    const inboxId = '1e79e412-764b-4a9b-b000-377e29efc237';
 
     console.log(`\n[EMAIL] Using MailSlurp email: ${testEmail}`);
 
@@ -433,6 +433,7 @@ test.describe('Beta Registration and Onboarding', () => {
     }
 
     await page.screenshot({ path: `test-results/beta-final-${Date.now()}.png` }).catch(() => {});
+
     console.log('\n[COMPLETE] Test completed: Register -> OTP -> Intro -> Profile -> Company -> Complete!\n');
   });
 
