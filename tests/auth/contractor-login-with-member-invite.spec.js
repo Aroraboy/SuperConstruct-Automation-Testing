@@ -1,12 +1,12 @@
 ﻿const { test, expect } = require('@playwright/test');
 const { getOTPFromEmail } = require('../../utils/test-email-service');
 
-test.describe('Contractor Login and Onboarding', () => {
+test.describe('Contractor Login and Member Invitation', () => {
   test.beforeAll(async () => {
-    console.log('\n[SETUP] Setting up login test...');
+    console.log('\n[SETUP] Setting up login + member invitation test...');
   });
 
-  test('should login contractor and complete onboarding', async ({ page, context, browser }) => {
+  test('should login contractor and invite a new member', async ({ page, context, browser }) => {
     // Increase test timeout to 90 seconds
     test.setTimeout(90000);
     
