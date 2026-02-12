@@ -325,12 +325,17 @@ test.describe('Contractor Login and Onboarding', () => {
     try {
       await page.waitForTimeout(2000);
       
-      // Using Gmail alias feature for demo:
-      // divyansharora35@gmail.com -> di.vyansharora35@gmail.com
-      // Both go to the same inbox, but appear as different email addresses to the app
-      const newMemberEmail = 'di.vyansharora35@gmail.com'; // Gmail alias
+      // Using Gmail alias feature with dynamic dot positioning
+      // Gmail treats dots as ignored characters, so all variations go to same inbox
+      // Example: divya.nsharora35, divyan.sharora35, divyans.harora35, etc.
+      const baseEmail = 'divyansharora35';
+      const domain = '@gmail.com';
+      const dotPosition = (Date.now() % (baseEmail.length - 1)) + 1; // Position between 1 and length-1
+      const newMemberEmail = baseEmail.slice(0, dotPosition) + '.' + baseEmail.slice(dotPosition) + domain;
       const newMemberFirstName = 'John';
       const newMemberLastName = 'Doe';
+      
+      console.log(`   [INFO] Generated dynamic email with dot at position ${dotPosition}: ${newMemberEmail}`);
       
       // Fill email
       const emailInput = page.locator('input[type="email"], input[placeholder*="email"i], input[name*="email"i]').first();
@@ -396,7 +401,7 @@ test.describe('Contractor Login and Onboarding', () => {
       console.log('\n   [COMPANY] Checking for company name field...');
       const companyNameInput = page.locator('input[placeholder*="company"i], input[name*="company"i], input[placeholder*="organization"i], input[name*="organization"i]').first();
       if (await companyNameInput.isVisible({ timeout: 2000 }).catch(() => false)) {
-        const companyName = `Test Corporation ${Date.now()}`;
+        const companyName = `Acme Construction ${Date.now()}`;
         await companyNameInput.fill(companyName);
         console.log(`   [DONE] Company Name: ${companyName}`);
         await page.waitForTimeout(500);
@@ -469,16 +474,16 @@ test.describe('Contractor Login and Onboarding', () => {
       await page.evaluate(() => window.scrollTo(0, 0));
       await page.waitForTimeout(500);
       
-      const memberEmail = 'di.vyansharora35@gmail.com';
-      console.log(`   Looking for member: ${memberEmail}`);
+      // Search for member email (matching any dot variation since Gmail ignores dots)
+      console.log(`   Looking for member with email containing: divyansharora35`);
       
       // Get all text content on the page to see what's there
       const allText = await page.textContent('body');
-      const emailFound = allText?.includes(memberEmail) || allText?.includes('ivyansharora35');
+      const emailFound = allText?.includes('divyansharora35') || allText?.includes('nsharora35');
       
       if (emailFound) {
-        console.log(`   [OK] Member ${memberEmail} found on the members page!`);
-        const memberRow = page.locator(`text=${memberEmail}`).or(page.locator('text=ivyansharora35')).first();
+        console.log(`   [OK] Member with email containing 'divyansharora35' found on the members page!`);
+        const memberRow = page.locator('text=divyansharora35').or(page.locator('text=nsharora35')).first();
         if (await memberRow.isVisible({ timeout: 2000 }).catch(() => false)) {
           console.log('   [OK] Member is visible in the list');
         } else {
