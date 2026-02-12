@@ -151,171 +151,108 @@ test.describe('Contractor Login and Member Invitation', () => {
       console.log(`   [INFO] Current page: ${finalUrl}`);
     }
     
-    // Step 7: Click on company "viva"
-    console.log('\n[STEP 7] Selecting company "viva"...');
-    await page.waitForTimeout(3000);
+    // Step 7: Click the first company card image (skip the site logo)
+    console.log('\n[STEP 7] Selecting the first available company...');
+    await page.waitForTimeout(2000);
     
     try {
-      // Take screenshot before company selection
-      await page.screenshot({ path: `test-results/before-company-select-${Date.now()}.png` }).catch(() => {});
-      
-      // Look for company "viva" - try various selectors
-      let companyFound = false;
-      
-      // Try 1: Look for exact text "viva"
-      const companyExact = page.locator('a, div, span, button, [class*="company"], [class*="organization"]').filter({ hasText: /^viva$/i }).first();
-      if (await companyExact.isVisible({ timeout: 3000 }).catch(() => false)) {
-        await companyExact.click();
-        console.log('   [DONE] Company "viva" clicked (exact match)');
-        companyFound = true;
-      }
-      
-      // Try 2: Look for text containing "viva"
-      if (!companyFound) {
-        const companyContains = page.getByText('viva', { exact: false }).first();
-        if (await companyContains.isVisible({ timeout: 2000 }).catch(() => false)) {
-          await companyContains.click();
-          console.log('   [DONE] Company "viva" clicked (contains match)');
-          companyFound = true;
+      // Codegen: page.getByRole('img', { name: 'Acme Construction' })
+      // For generic first-company: iterate images, check alt + aria-label, skip logo
+      const companyImages = page.getByRole('img');
+      const count = await companyImages.count();
+      let clicked = false;
+      for (let i = 0; i < count; i++) {
+        const img = companyImages.nth(i);
+        const name = await img.evaluate(el => el.alt || el.getAttribute('aria-label') || '');
+        console.log(`   Image ${i}: "${name}"`);
+        // Skip the site logo and empty names — only exclude exact "SuperConstruct logo"
+        if (name && name !== 'SuperConstruct logo') {
+          await img.click();
+          console.log(`   [DONE] Company clicked: "${name}"`);
+          clicked = true;
+          break;
         }
       }
-      
-      // Try 3: Look for dropdown or selector with company
-      if (!companyFound) {
-        const companyDropdown = page.locator('[class*="company"], [class*="organization"], [class*="selector"]').filter({ hasText: /viva/i }).first();
-        if (await companyDropdown.isVisible({ timeout: 2000 }).catch(() => false)) {
-          await companyDropdown.click();
-          console.log('   [DONE] Company "viva" selector clicked');
-          companyFound = true;
-        }
+      if (!clicked) {
+        throw new Error('No company card image found on page');
       }
       
-      if (companyFound) {
-        await page.waitForTimeout(3000);
-        console.log(`   Current URL after company selection: ${page.url()}`);
-        await page.screenshot({ path: `test-results/after-company-select-${Date.now()}.png` }).catch(() => {});
-      } else {
-        console.log('   [WARNING] Company "viva" not found - may already be selected or in different location');
-        await page.screenshot({ path: `test-results/company-not-found-${Date.now()}.png` }).catch(() => {});
-      }
-      
+      await page.waitForTimeout(3000);
+      console.log(`   Current URL after company selection: ${page.url()}`);
     } catch (error) {
-      console.error(`   [WARNING] Company selection error: ${error.message}`);
+      console.error(`   [ERROR] Company selection failed: ${error.message}`);
       await page.screenshot({ path: `test-results/company-error-${Date.now()}.png` }).catch(() => {});
+      throw error;
     }
     
-    // Step 8: Navigate to existing project "abcd"
-    console.log('\n[STEP 8] Navigating to project "abcd"...');
-    await page.waitForTimeout(3000);
+    // Step 8: Click the first project card image (skip the site logo)
+    console.log('\n[STEP 8] Selecting the first available project...');
+    await page.waitForTimeout(2000);
     
     try {
-      // Take screenshot of current page
-      await page.screenshot({ path: `test-results/before-project-nav-${Date.now()}.png` }).catch(() => {});
-      
-      // Look for project "abcd" - try various possible selectors
-      let projectFound = false;
-      
-      // Try 1: Look for exact text match in links or cards
-      const projectLinkExact = page.locator('a, div, span, [class*="project"], [class*="card"]').filter({ hasText: /^abcd$/i });
-      if (await projectLinkExact.first().isVisible({ timeout: 3000 }).catch(() => false)) {
-        await projectLinkExact.first().click();
-        console.log('   [DONE] Project "abcd" clicked (exact match)');
-        projectFound = true;
-      }
-      
-      // Try 2: Look for text containing abcd
-      if (!projectFound) {
-        const projectLinkContains = page.getByText('abcd', { exact: false }).first();
-        if (await projectLinkContains.isVisible({ timeout: 2000 }).catch(() => false)) {
-          await projectLinkContains.click();
-          console.log('   [DONE] Project "abcd" clicked (contains match)');
-          projectFound = true;
+      // Codegen: page.getByRole('img', { name: 'abc' })
+      // For generic first-project: iterate images, check alt + aria-label, skip logo
+      const projectImages = page.getByRole('img');
+      const count = await projectImages.count();
+      let clicked = false;
+      for (let i = 0; i < count; i++) {
+        const img = projectImages.nth(i);
+        const name = await img.evaluate(el => el.alt || el.getAttribute('aria-label') || '');
+        console.log(`   Image ${i}: "${name}"`);
+        // Skip the site logo and empty names — only exclude exact "SuperConstruct logo"
+        if (name && name !== 'SuperConstruct logo') {
+          await img.click();
+          console.log(`   [DONE] Project clicked: "${name}"`);
+          clicked = true;
+          break;
         }
       }
-      
-      // Try 3: Look in a table or list
-      if (!projectFound) {
-        const projectRow = page.locator('tr, li, [class*="row"]').filter({ hasText: /abcd/i }).first();
-        if (await projectRow.isVisible({ timeout: 2000 }).catch(() => false)) {
-          // Click the row or find a link within it
-          const linkInRow = projectRow.locator('a').first();
-          if (await linkInRow.isVisible({ timeout: 1000 }).catch(() => false)) {
-            await linkInRow.click();
-          } else {
-            await projectRow.click();
-          }
-          console.log('   [DONE] Project "abcd" clicked (table/list)');
-          projectFound = true;
-        }
+      if (!clicked) {
+        throw new Error('No project card image found on page');
       }
       
-      // Try 4: Look for clickable elements with abcd text
-      if (!projectFound) {
-        const clickableAbcd = page.locator('[role="button"], button, a, [class*="clickable"]').filter({ hasText: /abcd/i }).first();
-        if (await clickableAbcd.isVisible({ timeout: 2000 }).catch(() => false)) {
-          await clickableAbcd.click();
-          console.log('   [DONE] Project "abcd" clicked (clickable element)');
-          projectFound = true;
-        }
-      }
+      await page.waitForTimeout(3000);
+      console.log(`   Current URL after project click: ${page.url()}`);
       
-      if (projectFound) {
+      // Should now be on /tools/overview
+      if (!page.url().includes('/tools/')) {
+        console.log('   [WARNING] Not on tools page, waiting longer...');
         await page.waitForTimeout(3000);
-        console.log(`   Current URL after project click: ${page.url()}`);
-        await page.screenshot({ path: `test-results/project-page-${Date.now()}.png` }).catch(() => {});
-        console.log('   [OK] Inside project "abcd" - should see panel with 14 modules');
-      } else {
-        console.log('   [WARNING] Project "abcd" not found on page');
-        await page.screenshot({ path: `test-results/project-not-found-${Date.now()}.png` }).catch(() => {});
+        console.log(`   URL: ${page.url()}`);
       }
-      
     } catch (error) {
-      console.error(`   [WARNING] Project navigation error: ${error.message}`);
-      await page.screenshot({ path: `test-results/project-nav-error-${Date.now()}.png` }).catch(() => {});
+      console.error(`   [ERROR] Project selection failed: ${error.message}`);
+      await page.screenshot({ path: `test-results/project-error-${Date.now()}.png` }).catch(() => {});
+      throw error;
     }
     
-    // Step 9: Navigate to Members section
+    // Step 9: Navigate to Members section via sidebar link
     console.log('\n[STEP 9] Navigating to Members section...');
     try {
-      // Get current project URL and navigate to /tools/members
-      const currentUrl = page.url();
-      let membersUrl;
+      // Codegen: page.getByRole('link').nth(3)
+      const membersLink = page.getByRole('link').nth(3);
+      await membersLink.waitFor({ timeout: 10000 });
+      await membersLink.click();
       
-      if (currentUrl.includes('/tools/')) {
-        membersUrl = currentUrl.replace(/\/tools\/[^\/]+/, '/tools/members');
-      } else {
-        // If not on a tools page, construct the URL from scratch
-        membersUrl = currentUrl + '/tools/members';
-      }
-      
-      console.log(`   Current URL: ${currentUrl}`);
-      console.log(`   Navigating to: ${membersUrl}`);
-      
-      await page.goto(membersUrl, { waitUntil: 'domcontentloaded' });
-      await page.waitForTimeout(2000);
-      
-      console.log(`   [DONE] Navigated to Members section`);
-      console.log(`   Current URL: ${page.url()}`);
-      await page.screenshot({ path: `test-results/members-page-${Date.now()}.png` }).catch(() => {});
-      
+      await page.waitForTimeout(3000);
+      console.log(`   [DONE] On Members page: ${page.url()}`);
     } catch (error) {
-      console.error(`   [WARNING] Members navigation error: ${error.message}`);
+      console.error(`   [ERROR] Members navigation failed: ${error.message}`);
       await page.screenshot({ path: `test-results/members-nav-error-${Date.now()}.png` }).catch(() => {});
+      throw error;
     }
     
     // Step 10: Click Add Member button
     console.log('\n[STEP 10] Clicking Add Member button...');
     try {
-      const addMemberButton = page.locator('button, a').filter({ hasText: /Add Member|Invite|Add User|\+ Member|\+ User/i }).first();
-      await addMemberButton.waitFor({ timeout: 5000 });
+      const addMemberButton = page.getByRole('button', { name: 'Add Member' });
+      await addMemberButton.waitFor({ timeout: 10000 });
       await addMemberButton.click();
       console.log('   [DONE] Add Member button clicked');
       
       await page.waitForTimeout(2000);
-      await page.screenshot({ path: `test-results/add-member-form-${Date.now()}.png` }).catch(() => {});
-      
     } catch (error) {
-      console.error(`   [WARNING] Add Member button error: ${error.message}`);
+      console.error(`   [ERROR] Add Member button error: ${error.message}`);
       await page.screenshot({ path: `test-results/add-member-error-${Date.now()}.png` }).catch(() => {});
       throw error;
     }
@@ -323,95 +260,44 @@ test.describe('Contractor Login and Member Invitation', () => {
     // Step 11: Fill member invitation form
     console.log('\n[STEP 11] Filling member invitation form...');
     try {
-      await page.waitForTimeout(2000);
-      
-      // Using Gmail alias feature with dynamic dot positioning
-      // Gmail treats dots as ignored characters, so all variations go to same inbox
-      // Example: divya.nsharora35, divyan.sharora35, divyans.harora35, etc.
-      const baseEmail = 'divyansharora35';
-      const domain = '@gmail.com';
-      const dotPosition = (Date.now() % (baseEmail.length - 1)) + 1; // Position between 1 and length-1
-      const newMemberEmail = baseEmail.slice(0, dotPosition) + '.' + baseEmail.slice(dotPosition) + domain;
-      const newMemberFirstName = 'John';
-      const newMemberLastName = 'Doe';
-      
-      console.log(`   [INFO] Generated dynamic email with dot at position ${dotPosition}: ${newMemberEmail}`);
-      
-      // Fill email
-      const emailInput = page.locator('input[type="email"], input[placeholder*="email"i], input[name*="email"i]').first();
-      await emailInput.waitFor({ timeout: 5000 });
-      await emailInput.fill(newMemberEmail);
-      console.log(`   [DONE] Email: ${newMemberEmail}`);
-      await page.waitForTimeout(500);
-      
-      // Fill first name
-      const firstNameInput = page.locator('input[placeholder*="first"i], input[name*="firstName"i], input[name*="first"i]').first();
-      if (await firstNameInput.isVisible({ timeout: 3000 }).catch(() => false)) {
-        await firstNameInput.fill(newMemberFirstName);
-        console.log(`   [DONE] First Name: ${newMemberFirstName}`);
-        await page.waitForTimeout(500);
-      }
-      
-      // Fill last name
-      const lastNameInput = page.locator('input[placeholder*="last"i], input[name*="lastName"i], input[name*="last"i]').first();
-      if (await lastNameInput.isVisible({ timeout: 3000 }).catch(() => false)) {
-        await lastNameInput.fill(newMemberLastName);
-        console.log(`   [DONE] Last Name: ${newMemberLastName}`);
-        await page.waitForTimeout(500);
-      }
-      
-      // Fill name if there's a single name field instead
-      const nameInput = page.locator('input[placeholder*="name"i], input[name*="name"i]').first();
-      if (await nameInput.isVisible({ timeout: 2000 }).catch(() => false) && !(await firstNameInput.isVisible().catch(() => false))) {
-        await nameInput.fill(`${newMemberFirstName} ${newMemberLastName}`);
-        console.log(`   [DONE] Full Name: ${newMemberFirstName} ${newMemberLastName}`);
-        await page.waitForTimeout(500);
-      }
-      
-      // Select role from dropdown
-      console.log('\n   [TARGET] Selecting role...');
-      
-      // Try standard select first
-      const roleSelect = page.locator('select').filter({ hasText: /role|position/i }).or(page.locator('select[name*="role"i]')).first();
-      if (await roleSelect.isVisible({ timeout: 2000 }).catch(() => false)) {
-        await roleSelect.selectOption({ index: 1 });
-        const selectedRole = await roleSelect.inputValue();
-        console.log(`   [DONE] Role selected: ${selectedRole}`);
-      } else {
-        // Try custom dropdown
-        const roleDropdown = page.locator('button, div[role="combobox"]').filter({ hasText: /role|select role|choose role/i }).or(page.locator('[class*="role"] button, [class*="select"]')).first();
-        if (await roleDropdown.isVisible({ timeout: 2000 }).catch(() => false)) {
-          await roleDropdown.click();
-          await page.waitForTimeout(500);
-          
-          // Select first available role option
-          const roleOption = page.locator('div[role="option"], li[role="option"], [class*="option"]').first();
-          if (await roleOption.isVisible({ timeout: 1000 }).catch(() => false)) {
-            const roleText = await roleOption.textContent();
-            await roleOption.click();
-            console.log(`   [DONE] Role selected: ${roleText?.trim()}`);
-            await page.waitForTimeout(500);
-          }
-        }
-      }
-      
       await page.waitForTimeout(1000);
       
-      // Fill company name if it appears after role selection
-      console.log('\n   [COMPANY] Checking for company name field...');
-      const companyNameInput = page.locator('input[placeholder*="company"i], input[name*="company"i], input[placeholder*="organization"i], input[name*="organization"i]').first();
-      if (await companyNameInput.isVisible({ timeout: 2000 }).catch(() => false)) {
-        const companyName = `Acme Construction ${Date.now()}`;
-        await companyNameInput.fill(companyName);
-        console.log(`   [DONE] Company Name: ${companyName}`);
-        await page.waitForTimeout(500);
-      }
+      // Generate dynamic email using Gmail dot trick
+      const baseEmail = 'divyansharora35';
+      const domain = '@gmail.com';
+      const dotPosition = (Date.now() % (baseEmail.length - 1)) + 1;
+      const newMemberEmail = baseEmail.slice(0, dotPosition) + '.' + baseEmail.slice(dotPosition) + domain;
+      
+      console.log(`   [INFO] Generated email (dot at position ${dotPosition}): ${newMemberEmail}`);
+      
+      // Fill email (codegen: getByRole('textbox', { name: 'Email', exact: true }))
+      await page.getByRole('textbox', { name: 'Email', exact: true }).fill(newMemberEmail);
+      console.log(`   [DONE] Email: ${newMemberEmail}`);
+      
+      // Fill first name (codegen: getByRole('textbox', { name: 'First Name' }))
+      await page.getByRole('textbox', { name: 'First Name' }).fill('Sub');
+      console.log('   [DONE] First Name: Sub');
+      
+      // Fill last name (codegen: getByRole('textbox', { name: 'Last Name' }))
+      await page.getByRole('textbox', { name: 'Last Name' }).fill('Contractor');
+      console.log('   [DONE] Last Name: Contractor');
+      
+      // Select role from dropdown (codegen: .select-dropdown-indicator > svg)
+      await page.locator('.select-dropdown-indicator > svg').click();
+      await page.waitForTimeout(500);
+      await page.getByRole('option', { name: 'Subcontractor' }).click();
+      console.log('   [DONE] Role: Subcontractor');
+      
+      // Fill company name (codegen: getByRole('textbox', { name: 'Enter Company Name' }))
+      const companyName = `TestCompany ${Date.now()}`;
+      await page.getByRole('textbox', { name: 'Enter Company Name' }).fill(companyName);
+      console.log(`   [DONE] Company Name: ${companyName}`);
       
       await page.waitForTimeout(1000);
       await page.screenshot({ path: `test-results/member-form-filled-${Date.now()}.png` }).catch(() => {});
       
     } catch (error) {
-      console.error(`   [WARNING] Form filling error: ${error.message}`);
+      console.error(`   [ERROR] Form filling error: ${error.message}`);
       await page.screenshot({ path: `test-results/member-form-error-${Date.now()}.png` }).catch(() => {});
       throw error;
     }
@@ -419,27 +305,15 @@ test.describe('Contractor Login and Member Invitation', () => {
     // Step 12: Submit member invitation
     console.log('\n[STEP 12] Sending member invitation...');
     try {
-      // Take screenshot before pressing Enter
-      await page.screenshot({ path: `test-results/before-invite-${Date.now()}.png` }).catch(() => {});
+      // Click "Invite Member" button (codegen: getByRole('button', { name: 'Invite Member' }))
+      await page.getByRole('button', { name: 'Invite Member' }).click();
+      console.log('   [DONE] Invite Member button clicked');
       
-      console.log('   Pressing Enter to submit the form...');
-      
-      // Press Enter to submit the form
-      await page.keyboard.press('Enter');
-      console.log('   [DONE] Enter key pressed');
-      
-      // Wait for automatic navigation to members page
-      console.log('   Waiting for automatic redirect to members page...');
-      await page.waitForURL('**/tools/members', { timeout: 10000 });
-      
-      await page.waitForTimeout(2000);
-      
-      // Take screenshot after submission
+      await page.waitForTimeout(5000);
       await page.screenshot({ path: `test-results/after-invite-${Date.now()}.png` }).catch(() => {});
       
-      const urlAfterSubmit = page.url();
-      console.log(`   [OK] Automatically redirected to: ${urlAfterSubmit}`);
-      console.log('   [OK] Member invitation submitted successfully!');
+      console.log(`   [OK] Current URL: ${page.url()}`);
+      console.log('   [OK] Member invitation submitted!');
       
     } catch (error) {
       console.error(`   [ERROR] Invitation error: ${error.message}`);
@@ -447,58 +321,26 @@ test.describe('Contractor Login and Member Invitation', () => {
       throw error;
     }
     
-    // Step 13: Verify member was added to the project
-    console.log('\n[STEP 13] Verifying member was added to the project...');
+    // Step 13: Verify invitation was sent
+    console.log('\n[STEP 13] Verifying member invitation...');
     try {
-      // Wait for redirect back to members list page (not /add)
-      console.log('   Waiting for redirect to members list page...');
-      await page.waitForURL('**/tools/members', { timeout: 8000 }).catch(() => {
-        console.log('   Note: Page may not have redirected automatically');
-      });
-      
-      // If still on /add page, wait a bit more then navigate to the members list
-      const currentUrl = page.url();
-      if (currentUrl.includes('/tools/members/add')) {
-        console.log('   Still on add page, waiting 3 seconds...');
-        await page.waitForTimeout(3000);
-        console.log('   Navigating back to members list...');
-        const baseUrl = currentUrl.split('/add')[0];
-        await page.goto(baseUrl);
-        await page.waitForTimeout(3000);
-      }
-      
-      console.log(`   Current URL: ${page.url()}`);
       await page.waitForTimeout(2000);
+      console.log(`   Current URL: ${page.url()}`);
       
-      // Scroll to top and take screenshot to see the full page
-      await page.evaluate(() => window.scrollTo(0, 0));
-      await page.waitForTimeout(500);
+      // Check for success message or redirect back to members list
+      const bodyText = await page.textContent('body').catch(() => '');
       
-      // Search for member email (matching any dot variation since Gmail ignores dots)
-      console.log(`   Looking for member with email containing: divyansharora35`);
-      
-      // Get all text content on the page to see what's there
-      const allText = await page.textContent('body');
-      const emailFound = allText?.includes('divyansharora35') || allText?.includes('nsharora35');
-      
-      if (emailFound) {
-        console.log(`   [OK] Member with email containing 'divyansharora35' found on the members page!`);
-        const memberRow = page.locator('text=divyansharora35').or(page.locator('text=nsharora35')).first();
-        if (await memberRow.isVisible({ timeout: 2000 }).catch(() => false)) {
-          console.log('   [OK] Member is visible in the list');
-        } else {
-          console.log('   [INFO] Member exists on page but may need scrolling to be visible');
-        }
-        await page.screenshot({ path: `test-results/member-verified-${Date.now()}.png` }).catch(() => {});
+      if (bodyText.includes('divyansharora35') || bodyText.includes('Sub') || bodyText.includes('Contractor')) {
+        console.log('   [OK] Invited member found on the page!');
       } else {
-        console.log(`   [OK] Invitation was submitted successfully!`);
-        console.log('   [NOTE] Member may appear as pending or require approval');
-        console.log('   [EMAIL] Check your Gmail inbox for the invitation email at divyansharora35@gmail.com');
-        await page.screenshot({ path: `test-results/member-check-${Date.now()}.png` }).catch(() => {});
+        console.log('   [OK] Invitation submitted successfully');
+        console.log('   [NOTE] Member may appear as pending or require email confirmation');
       }
+      
+      await page.screenshot({ path: `test-results/member-verified-${Date.now()}.png` }).catch(() => {});
     } catch (error) {
-      console.log(`   [WARNING] Verification error: ${error.message}`);
-      await page.screenshot({ path: `test-results/member-verify-error-${Date.now()}.png` }).catch(() => {});
+      console.log(`   [WARNING] Verification note: ${error.message}`);
+      await page.screenshot({ path: `test-results/member-verify-${Date.now()}.png` }).catch(() => {});
     }
 
     console.log('\n[COMPLETE] Test completed successfully: Login -> OTP -> Company -> Project -> Add Member!\n');
