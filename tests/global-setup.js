@@ -29,9 +29,13 @@ const config = require('../utils/config-manager');
  * SKIPPED for: registration, auth tests
  */
 async function globalSetup() {
-  // Skip setup for registration and auth tests
-  if (process.env.SKIP_GLOBAL_SETUP || process.argv.some(arg => arg.includes('registration') || arg.includes('auth'))) {
-    console.log('\n⏭️  Skipping global authentication setup for auth/registration tests\n');
+  // Skip setup for registration, auth, and GC flow projects
+  const skipProjects = ['registration', 'auth', 'gc-register', 'gc-project', 'gc-invite'];
+  if (
+    process.env.SKIP_GLOBAL_SETUP ||
+    process.argv.some(arg => skipProjects.some(p => arg.includes(p)))
+  ) {
+    console.log(`\n⏭️  Skipping global authentication setup for: ${skipProjects.join(', ')}\n`);
     return;
   }
 

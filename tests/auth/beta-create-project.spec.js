@@ -1,136 +1,68 @@
 const { test, expect } = require('@playwright/test');
-const { getOTPFromEmail } = require('../../utils/test-email-service');
+const fs = require('fs');
+const path = require('path');
+
+// Read GC credentials saved by beta-registration-onboarding.spec.js
+const GC_CREDS_PATH = path.join(__dirname, '..', '..', '.auth', 'gc-account.json');
+const STORAGE_STATE_PATH = path.join(__dirname, '..', '..', '.auth', 'gc-storage-state.json');
+
+function loadGCCredentials() {
+  if (!fs.existsSync(GC_CREDS_PATH)) {
+    throw new Error('GC account not found. Run "npm run test:beta-register" first.');
+  }
+  return JSON.parse(fs.readFileSync(GC_CREDS_PATH, 'utf-8'));
+}
+
+// Use saved auth state from registration (conditional to avoid crash if file missing)
+if (fs.existsSync(STORAGE_STATE_PATH)) {
+  test.use({ storageState: STORAGE_STATE_PATH });
+}
 
 test.describe('Beta - Create New Project', () => {
   test.beforeAll(async () => {
     console.log('\n[SETUP] Setting up project creation test...');
   });
 
-  test('should login and create a new project on beta', async ({ page }) => {
-    // Increase test timeout to 120 seconds
+  test('should create a new project on beta', async ({ page }) => {
     test.setTimeout(120000);
 
-    // Use the already-registered MailSlurp account on beta
-    const inboxId = '4a996dae-8d21-4670-9eec-8a7be2df0afe';
-    const testEmail = '4a996dae-8d21-4670-9eec-8a7be2df0afe@mailslurp.biz';
-    const testPassword = 'TestPassword@123';
+    const gc = loadGCCredentials();
+    console.log(`   [INFO] Using GC account: ${gc.email} (Run #${gc.runNumber})`);
 
     // ============================
-    // STEP 1: Login
+    // STEP 1: Navigate to company (authenticated via storageState)
     // ============================
-    console.log('\n[STEP 1] Logging in...');
-    await page.goto('https://beta.superconstruct.io/auth/login', { waitUntil: 'domcontentloaded', timeout: 30000 });
-    await page.waitForTimeout(2000);
-    console.log(`   Current URL: ${page.url()}`);
-
-    // Fill email
-    const emailInput = page.locator('input[type="email"]').first();
-    await emailInput.waitFor({ timeout: 5000 });
-    await emailInput.fill(testEmail);
-    console.log(`   [DONE] Email: ${testEmail}`);
-
-    // Fill password
-    const passwordInput = page.locator('input[type="password"]').first();
-    await passwordInput.waitFor({ timeout: 5000 });
-    await passwordInput.fill(testPassword);
-    console.log('   [DONE] Password entered');
-
-    // Click login button
-    const loginButton = page.locator('button').filter({ hasText: /Login|Sign In/i }).first();
-    await loginButton.waitFor({ timeout: 5000 });
-    await loginButton.click();
-    console.log('   [DONE] Login button clicked');
-
-    await page.waitForTimeout(3000);
-    console.log(`   Current URL after login: ${page.url()}`);
-
-    // ============================
-    // STEP 2: Handle OTP if required
-    // ============================
-    const urlAfterLogin = page.url();
-    if (urlAfterLogin.includes('/otp')) {
-      console.log('\n[STEP 2] OTP verification required...');
-      let otp;
-      try {
-        otp = await getOTPFromEmail(inboxId, 60000);
-        console.log(`   [OK] OTP extracted: ${otp}`);
-      } catch (error) {
-        console.error(`   [ERROR] Failed to get OTP: ${error.message}`);
-        throw error;
-      }
-
-      // Enter OTP digits
-      const otpInputs = page.locator('input[type="text"]');
-      const otpArray = otp.split('');
-      const otpInputsArray = await otpInputs.all();
-
-      if (otpInputsArray.length >= otpArray.length) {
-        for (let i = 0; i < otpArray.length; i++) {
-          await otpInputsArray[i].fill(otpArray[i]);
-          await page.waitForTimeout(200);
-        }
-        console.log(`   [DONE] OTP digits entered: ${otp}`);
-      } else if (otpInputsArray.length > 0) {
-        await otpInputsArray[0].fill(otp);
-        console.log(`   [DONE] OTP entered: ${otp}`);
-      }
-
-      // Click verify button if present
-      await page.waitForTimeout(1000);
-      const verifyButton = page.locator('button').filter({ hasText: /Verify|Confirm|Submit/i }).first();
-      if (await verifyButton.isVisible({ timeout: 3000 }).catch(() => false)) {
-        await verifyButton.click();
-        console.log('   [DONE] Verify button clicked');
-      }
-
-      await page.waitForTimeout(3000);
-      console.log(`   Current URL after OTP: ${page.url()}`);
-    } else {
-      console.log('\n[STEP 2] No OTP required, proceeding...');
-    }
-
-    // ============================
-    // STEP 3: Navigate to company
-    // ============================
-    console.log('\n[STEP 3] Navigating to company...');
-    await page.waitForTimeout(2000);
+    console.log('\n[STEP 1] Navigating to company (session restored)...');
+    await page.goto('https://beta.superconstruct.io/app', { waitUntil: 'domcontentloaded', timeout: 30000 });
+    await page.waitForTimeout(7000);
     console.log(`   Current URL: ${page.url()}`);
     await page.screenshot({ path: `test-results/beta-before-company-${Date.now()}.png` }).catch(() => {});
 
-    // Click on the company - look for "Acme Construction" or any company link
+    // Click on the first company card image (skip site logo)
+    // Retry up to 3 times with increasing waits to handle slow image loading
     let companyFound = false;
-
-    // Try 1: Look for text containing "Acme Construction"
-    const acmeCompany = page.getByText(/Acme Construction/i).first();
-    if (await acmeCompany.isVisible({ timeout: 5000 }).catch(() => false)) {
-      await acmeCompany.click();
-      console.log('   [DONE] Company "Acme Construction" clicked');
-      companyFound = true;
-    }
-
-    // Try 2: Look for any company card/link on the page
-    if (!companyFound) {
-      const companyCard = page.locator('[class*="company"], [class*="organization"], [class*="card"]').first();
-      if (await companyCard.isVisible({ timeout: 3000 }).catch(() => false)) {
-        await companyCard.click();
-        console.log('   [DONE] Company card clicked');
-        companyFound = true;
+    for (let attempt = 0; attempt < 3 && !companyFound; attempt++) {
+      if (attempt > 0) {
+        console.log(`   [RETRY] Attempt ${attempt + 1} - waiting for images to load...`);
+        await page.waitForTimeout(5000);
+      }
+      const companyImages = page.getByRole('img');
+      const companyCount = await companyImages.count();
+      for (let i = 0; i < companyCount; i++) {
+        const img = companyImages.nth(i);
+        const name = await img.evaluate(el => el.alt || el.getAttribute('aria-label') || '');
+        console.log(`   Image ${i}: "${name}"`);
+        if (name && name !== 'SuperConstruct logo') {
+          await img.click();
+          console.log(`   [DONE] Company clicked: "${name}"`);
+          companyFound = true;
+          break;
+        }
       }
     }
-
-    // Try 3: Look for any clickable element that looks like a company
     if (!companyFound) {
-      const anyCompany = page.locator('a, div, span').filter({ hasText: /construction/i }).first();
-      if (await anyCompany.isVisible({ timeout: 3000 }).catch(() => false)) {
-        await anyCompany.click();
-        console.log('   [DONE] Company element clicked (fallback)');
-        companyFound = true;
-      }
-    }
-
-    if (!companyFound) {
-      console.log('   [WARNING] Could not find company to click, taking screenshot...');
       await page.screenshot({ path: `test-results/beta-no-company-found-${Date.now()}.png` }).catch(() => {});
+      throw new Error('No company card image found on page');
     }
 
     await page.waitForTimeout(3000);
@@ -138,18 +70,18 @@ test.describe('Beta - Create New Project', () => {
     await page.screenshot({ path: `test-results/beta-after-company-${Date.now()}.png` }).catch(() => {});
 
     // ============================
-    // STEP 4: Click New Project
+    // STEP 2: Click New Project
     // ============================
-    console.log('\n[STEP 4] Clicking New Project button...');
+    console.log('\n[STEP 2] Clicking New Project button...');
     await page.getByRole('button', { name: 'New Project' }).first().click();
     await page.waitForTimeout(2000);
     console.log('   [DONE] New Project button clicked');
     await page.screenshot({ path: `test-results/beta-new-project-form-${Date.now()}.png` }).catch(() => {});
 
     // ============================
-    // STEP 5: Fill project form
+    // STEP 3: Fill project form
     // ============================
-    console.log('\n[STEP 5] Filling project form...');
+    console.log('\n[STEP 3] Filling project form...');
 
     // Project Type dropdown - select Commercial
     console.log('   Selecting project type...');
@@ -218,22 +150,38 @@ test.describe('Beta - Create New Project', () => {
     await page.getByRole('textbox', { name: 'Enter ZIP code' }).fill('10001');
     console.log('   [DONE] ZIP: 10001');
 
-    // Role dropdown
+    // Role dropdown (from codegen)
     console.log('   Selecting role...');
-    await page.locator('div').filter({ hasText: /^Select your role$/ }).nth(3).click();
-    await page.waitForTimeout(500);
+    // Use codegen approach: click the role dropdown indicator SVG, then select option
+    const roleDropdown = page.locator('div:nth-child(6) > .form-item > div > .select > .select-control > .select-value-container > .select-input-container');
+    if (await roleDropdown.isVisible({ timeout: 3000 }).catch(() => false)) {
+      await roleDropdown.click();
+    } else {
+      // Fallback: try the text-based selector
+      await page.locator('div').filter({ hasText: /^Select your role$/ }).nth(3).click();
+    }
+    await page.waitForTimeout(1000);
     await page.getByRole('option', { name: 'General Contractor' }).click();
     console.log('   [DONE] Role: General Contractor');
 
-    await page.waitForTimeout(500);
+    await page.waitForTimeout(2000);
     await page.screenshot({ path: `test-results/beta-project-form-filled-${Date.now()}.png` }).catch(() => {});
 
     // ============================
-    // STEP 6: Publish project
+    // STEP 4: Publish project (click the Publish button explicitly)
     // ============================
-    console.log('\n[STEP 6] Publishing project...');
-    await page.getByRole('button', { name: 'Publish' }).click();
+    console.log('\n[STEP 4] Publishing project...');
+    await page.waitForTimeout(2000);
+    // Scroll to make sure Publish button is visible
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await page.waitForTimeout(1000);
+    const publishButton = page.getByRole('button', { name: 'Publish' });
+    await publishButton.scrollIntoViewIfNeeded();
+    await publishButton.waitFor({ state: 'visible', timeout: 15000 });
+    await publishButton.click();
     console.log('   [DONE] Publish button clicked');
+    await page.waitForTimeout(5000);
+    await page.screenshot({ path: `test-results/beta-after-publish-${Date.now()}.png` }).catch(() => {});
 
     await page.waitForTimeout(5000);
     console.log(`   Current URL after publish: ${page.url()}`);
@@ -246,7 +194,11 @@ test.describe('Beta - Create New Project', () => {
       console.log(`   [INFO] Post-publish URL: ${page.url()}`);
     }
 
-    console.log('\n[COMPLETE] Test completed: Login -> Company -> New Project -> Publish!\n');
+    // Save updated storageState for next spec (gc-invite-members)
+    await page.context().storageState({ path: STORAGE_STATE_PATH });
+    console.log('   [SAVED] StorageState updated -> .auth/gc-storage-state.json');
+
+    console.log('\n[COMPLETE] Test completed: Company -> New Project -> Publish!\n');
   });
 
   test.afterAll(async () => {

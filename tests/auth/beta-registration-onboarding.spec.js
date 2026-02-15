@@ -1,25 +1,47 @@
 const { test, expect } = require('@playwright/test');
-const { getOTPFromEmail } = require('../../utils/test-email-service');
-const { generateTestEmail, getOTPFromGmail } = require('../../utils/gmail-otp-reader');
+const { getOTPFromGmail } = require('../../utils/gmail-otp-reader');
+const fs = require('fs');
+const path = require('path');
 
-test.describe('Beta Registration and Onboarding', () => {
-  test.beforeAll(async () => {
-    console.log('\n[SETUP] Setting up beta registration test...');
+const GMAIL_BASE = 'aroradivyansh995';
+const GMAIL_DOMAIN = '@gmail.com';
+const COUNTER_PATH = path.join(__dirname, '..', '..', '.auth', 'run-counter.json');
+const CREDS_PATH = path.join(__dirname, '..', '..', '.auth', 'gc-account.json');
+
+// Run number + email are set in beforeAll to avoid title mismatch on retries
+let runNumber;
+let testEmail;
+const testPassword = 'TestPassword@123';
+
+function initRunNumber() {
+  const authDir = path.dirname(COUNTER_PATH);
+  if (!fs.existsSync(authDir)) fs.mkdirSync(authDir, { recursive: true });
+
+  let counter = 0;
+  if (fs.existsSync(COUNTER_PATH)) {
+    try {
+      const data = JSON.parse(fs.readFileSync(COUNTER_PATH, 'utf-8'));
+      counter = data.lastRun || 0;
+    } catch { counter = 0; }
+  }
+  counter++;
+  fs.writeFileSync(COUNTER_PATH, JSON.stringify({ lastRun: counter, updatedAt: new Date().toISOString() }, null, 2));
+  runNumber = counter;
+  testEmail = `${GMAIL_BASE}+gc${runNumber}${GMAIL_DOMAIN}`;
+}
+
+test.describe('Register General Contractor', () => {
+  test.beforeAll(() => {
+    initRunNumber();
   });
 
-  test('should register contractor and complete full onboarding on beta', async ({ page }) => {
-    // Increase test timeout to 180 seconds for full onboarding flow
+  test('Register General Contractor on beta', async ({ page }) => {
     test.setTimeout(180000);
 
-    // Generate a unique Gmail +alias for this test run (infinite supply)
-    const testEmail = generateTestEmail();
-    const testPassword = 'TestPassword@123';
-
-    // Determine which OTP reader to use based on email provider
-    const useGmail = testEmail.includes('@gmail.com');
-
-    console.log(`\n[EMAIL] Using email: ${testEmail}`);
-    console.log(`[EMAIL] OTP reader: ${useGmail ? 'Gmail IMAP' : 'MailSlurp'}`);
+    console.log(`\n========================================`);
+    console.log(`[RUN #${runNumber}] Registering General Contractor`);
+    console.log(`[EMAIL]  ${testEmail}`);
+    console.log(`========================================`);
 
     // ============================
     // STEP 1: Registration Form
@@ -35,13 +57,13 @@ test.describe('Beta Registration and Onboarding', () => {
     // First Name
     const firstNameInput = page.locator('input[placeholder="First name"]');
     await firstNameInput.waitFor({ timeout: 5000 });
-    await firstNameInput.fill('John');
-    console.log('   [DONE] First Name: John');
+    await firstNameInput.fill('General');
+    console.log('   [DONE] First Name: General');
 
     // Last Name
     const lastNameInput = page.locator('input[placeholder="Last name"]');
-    await lastNameInput.fill('Doe');
-    console.log('   [DONE] Last Name: Doe');
+    await lastNameInput.fill('Contractor');
+    console.log('   [DONE] Last Name: Contractor');
 
     // Email
     const emailInput = page.locator('input[type="email"]');
@@ -88,14 +110,7 @@ test.describe('Beta Registration and Onboarding', () => {
 
       let otp;
       try {
-        if (useGmail) {
-          // Gmail IMAP - search by the +alias address
-          otp = await getOTPFromGmail(testEmail, 60000);
-        } else {
-          // MailSlurp fallback
-          const inboxId = testEmail.split('@')[0];
-          otp = await getOTPFromEmail(inboxId, 60000);
-        }
+        otp = await getOTPFromGmail(testEmail, 60000);
         console.log(`   [OK] OTP extracted: ${otp}`);
       } catch (error) {
         console.error(`   [ERROR] Failed to get OTP: ${error.message}`);
@@ -247,7 +262,7 @@ test.describe('Beta Registration and Onboarding', () => {
     // Company Name
     const companyNameInput = page.locator('input[placeholder*="company"i], input[name*="company"i], input[name*="companyName"i]').first();
     if (await companyNameInput.isVisible({ timeout: 5000 }).catch(() => false)) {
-      const companyName = `Acme Construction ${Date.now()}`;
+      const companyName = `GC Construction ${Date.now()}`;
       await companyNameInput.fill(companyName);
       console.log(`   [DONE] Company Name: ${companyName}`);
     }
@@ -432,10 +447,26 @@ test.describe('Beta Registration and Onboarding', () => {
 
     await page.screenshot({ path: `test-results/beta-final-${Date.now()}.png` }).catch(() => {});
 
-    console.log('\n[COMPLETE] Test completed: Register -> OTP -> Intro -> Profile -> Company -> Complete!\n');
-  });
+    // Save credentials for other tests to use
+    const creds = {
+      email: testEmail,
+      password: testPassword,
+      firstName: 'General',
+      lastName: 'Contractor',
+      role: 'General Contractor',
+      runNumber,
+      registeredAt: new Date().toISOString(),
+    };
+    const authDir = path.dirname(CREDS_PATH);
+    if (!fs.existsSync(authDir)) fs.mkdirSync(authDir, { recursive: true });
+    fs.writeFileSync(CREDS_PATH, JSON.stringify(creds, null, 2));
+    console.log(`   [SAVED] Credentials -> .auth/gc-account.json`);
 
-  test.afterAll(async () => {
-    console.log('\n[OK] Beta registration test run completed');
+    // Save browser auth state for subsequent specs (create-project, invite-members)
+    const STORAGE_PATH = path.join(__dirname, '..', '..', '.auth', 'gc-storage-state.json');
+    await page.context().storageState({ path: STORAGE_PATH });
+    console.log('   [SAVED] StorageState -> .auth/gc-storage-state.json');
+
+    console.log('\n[COMPLETE] General Contractor registered: Register -> OTP -> Intro -> Profile -> Company -> Complete!\n');
   });
 });

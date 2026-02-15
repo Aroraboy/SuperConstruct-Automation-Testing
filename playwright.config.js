@@ -60,6 +60,68 @@ module.exports = defineConfig({
     //   name: 'Mobile Safari',
     //   use: { ...devices['iPhone 12'] },
     // },
+
+    // ========== GC Flow: Register -> Create Project -> Invite Members ==========
+    // Run with: npm run test:gc-flow (triggers gc-invite which pulls in dependencies)
+    {
+      name: 'gc-register',
+      testMatch: '**/auth/beta-registration-onboarding.spec.js',
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: process.env.BASE_URL || 'https://beta.superconstruct.io',
+        trace: 'retain-on-failure',
+        screenshot: 'on',
+        video: 'retain-on-failure',
+        actionTimeout: 15000,
+        navigationTimeout: 30000,
+        storageState: false,
+      },
+    },
+    {
+      name: 'gc-project',
+      testMatch: '**/auth/beta-create-project.spec.js',
+      dependencies: ['gc-register'],
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: process.env.BASE_URL || 'https://beta.superconstruct.io',
+        trace: 'retain-on-failure',
+        screenshot: 'on',
+        video: 'retain-on-failure',
+        actionTimeout: 15000,
+        navigationTimeout: 30000,
+        storageState: '.auth/gc-storage-state.json',
+      },
+    },
+    {
+      name: 'gc-invite',
+      testMatch: '**/auth/gc-invite-members.spec.js',
+      dependencies: ['gc-project'],
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: process.env.BASE_URL || 'https://beta.superconstruct.io',
+        trace: 'retain-on-failure',
+        screenshot: 'on',
+        video: 'retain-on-failure',
+        actionTimeout: 15000,
+        navigationTimeout: 30000,
+        storageState: '.auth/gc-storage-state.json',
+      },
+    },
+    {
+      name: 'gc-accept',
+      testMatch: '**/auth/accept-invitations-gc.spec.js',
+      dependencies: ['gc-invite'],
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: process.env.BASE_URL || 'https://beta.superconstruct.io',
+        trace: 'retain-on-failure',
+        screenshot: 'on',
+        video: 'retain-on-failure',
+        actionTimeout: 15000,
+        navigationTimeout: 30000,
+        storageState: false,
+      },
+    },
   ],
 
   // Web server configuration for local testing

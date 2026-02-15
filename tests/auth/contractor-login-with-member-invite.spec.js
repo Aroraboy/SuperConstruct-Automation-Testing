@@ -1,5 +1,18 @@
 ﻿const { test, expect } = require('@playwright/test');
-const { getOTPFromEmail } = require('../../utils/test-email-service');
+const { getOTPFromGmail } = require('../../utils/gmail-otp-reader');
+const fs = require('fs');
+const path = require('path');
+
+// Read credentials saved by register-gmail-account.spec.js
+const CREDENTIALS_PATH = path.join(__dirname, '..', '..', '.auth', 'gmail-account.json');
+function loadCredentials() {
+  if (!fs.existsSync(CREDENTIALS_PATH)) {
+    throw new Error(
+      'No registered account found. Run "npm run test:register-gmail" first to create one.'
+    );
+  }
+  return JSON.parse(fs.readFileSync(CREDENTIALS_PATH, 'utf-8'));
+}
 
 test.describe('Contractor Login and Member Invitation', () => {
   test.beforeAll(async () => {
@@ -13,20 +26,21 @@ test.describe('Contractor Login and Member Invitation', () => {
     // Ensure NO authentication is carried over
     console.log('\n[CLEANUP] Ensuring fresh unauthenticated context...');
     
-    // Use MailSlurp registered contractor account credentials
-    console.log('\n[CREDENTIALS] Using MailSlurp registered contractor account...');
-    const testEmail = '1e79e412-764b-4a9b-b000-377e29efc237@mailslurp.biz';
-    const testPassword = 'TestPassword@123';
-    const inboxId = '1e79e412-764b-4a9b-b000-377e29efc237';
+    // Load credentials from the last registered Gmail account
+    console.log('\n[CREDENTIALS] Using Gmail test account...');
+    const creds = loadCredentials();
+    const testEmail = creds.email;
+    const testPassword = creds.password;
+    console.log(`   [INFO] Using account registered at: ${creds.registeredAt}`);
     
-    console.log(`\n[EMAIL] MailSlurp Contractor email: ${testEmail}`);
+    console.log(`\\n[EMAIL] Test account email: ${testEmail}`);
     
     // Step 2: Navigate to login page
     console.log('\n[STEP 2] Navigating to login page...');
     const loginUrl = 'https://beta.superconstruct.io/auth/login';
     
     await page.goto(loginUrl, { waitUntil: 'load', timeout: 15000 });
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(5000);
     console.log(`   Current URL: ${page.url()}`);
     console.log(`   [OK] Login page loaded`);
     
@@ -97,7 +111,7 @@ test.describe('Contractor Login and Member Invitation', () => {
       console.log('\n[STEP 5] Waiting for OTP email...');
       let otp;
       try {
-        otp = await getOTPFromEmail(inboxId, 60000);
+        otp = await getOTPFromGmail(testEmail, 60000);
         console.log(`   [OK] OTP extracted: ${otp}`);
       } catch (error) {
         console.error(`   [ERROR] Failed to get OTP: ${error.message}`);
@@ -139,7 +153,7 @@ test.describe('Contractor Login and Member Invitation', () => {
     // Refresh the page to ensure full load after OTP/login
     console.log('\n   Refreshing page to ensure full load...');
     await page.reload();
-    await page.waitForTimeout(3000);
+    await page.waitForTimeout(5000);
     
     // Check if we're already on the app (onboarding completed)
     const finalUrl = page.url();
@@ -153,7 +167,7 @@ test.describe('Contractor Login and Member Invitation', () => {
     
     // Step 7: Click the first company card image (skip the site logo)
     console.log('\n[STEP 7] Selecting the first available company...');
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(5000);
     
     try {
       // Codegen: page.getByRole('img', { name: 'Acme Construction' })
@@ -177,7 +191,7 @@ test.describe('Contractor Login and Member Invitation', () => {
         throw new Error('No company card image found on page');
       }
       
-      await page.waitForTimeout(3000);
+      await page.waitForTimeout(5000);
       console.log(`   Current URL after company selection: ${page.url()}`);
     } catch (error) {
       console.error(`   [ERROR] Company selection failed: ${error.message}`);
@@ -187,7 +201,7 @@ test.describe('Contractor Login and Member Invitation', () => {
     
     // Step 8: Click the first project card image (skip the site logo)
     console.log('\n[STEP 8] Selecting the first available project...');
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(5000);
     
     try {
       // Codegen: page.getByRole('img', { name: 'abc' })
@@ -250,7 +264,7 @@ test.describe('Contractor Login and Member Invitation', () => {
       await addMemberButton.click();
       console.log('   [DONE] Add Member button clicked');
       
-      await page.waitForTimeout(2000);
+      await page.waitForTimeout(5000);
     } catch (error) {
       console.error(`   [ERROR] Add Member button error: ${error.message}`);
       await page.screenshot({ path: `test-results/add-member-error-${Date.now()}.png` }).catch(() => {});
@@ -260,7 +274,7 @@ test.describe('Contractor Login and Member Invitation', () => {
     // Step 11: Fill member invitation form
     console.log('\n[STEP 11] Filling member invitation form...');
     try {
-      await page.waitForTimeout(1000);
+      await page.waitForTimeout(3000);
       
       // Generate dynamic email using Gmail dot trick
       const baseEmail = 'divyansharora35';
@@ -270,17 +284,19 @@ test.describe('Contractor Login and Member Invitation', () => {
       
       console.log(`   [INFO] Generated email (dot at position ${dotPosition}): ${newMemberEmail}`);
       
-      // Fill email (codegen: getByRole('textbox', { name: 'Email', exact: true }))
+      // Fill email
       await page.getByRole('textbox', { name: 'Email', exact: true }).fill(newMemberEmail);
       console.log(`   [DONE] Email: ${newMemberEmail}`);
-      
-      // Fill first name (codegen: getByRole('textbox', { name: 'First Name' }))
-      await page.getByRole('textbox', { name: 'First Name' }).fill('Sub');
-      console.log('   [DONE] First Name: Sub');
-      
-      // Fill last name (codegen: getByRole('textbox', { name: 'Last Name' }))
-      await page.getByRole('textbox', { name: 'Last Name' }).fill('Contractor');
-      console.log('   [DONE] Last Name: Contractor');
+
+      // Fill first name and last name fields directly below email
+      const textboxes = page.getByRole('textbox');
+      const emailIndex = await textboxes.locator({ name: 'Email', exact: true }).index().catch(() => 0);
+      // Fill first name (next textbox after email)
+      await textboxes.nth(emailIndex + 1).fill('AnyFirst');
+      console.log('   [DONE] First Name: AnyFirst');
+      // Fill last name (next textbox after first name)
+      await textboxes.nth(emailIndex + 2).fill('AnyLast');
+      console.log('   [DONE] Last Name: AnyLast');
       
       // Select role from dropdown (codegen: .select-dropdown-indicator > svg)
       await page.locator('.select-dropdown-indicator > svg').click();
@@ -309,7 +325,7 @@ test.describe('Contractor Login and Member Invitation', () => {
       await page.getByRole('button', { name: 'Invite Member' }).click();
       console.log('   [DONE] Invite Member button clicked');
       
-      await page.waitForTimeout(5000);
+      await page.waitForTimeout(7000);
       await page.screenshot({ path: `test-results/after-invite-${Date.now()}.png` }).catch(() => {});
       
       console.log(`   [OK] Current URL: ${page.url()}`);
@@ -324,7 +340,7 @@ test.describe('Contractor Login and Member Invitation', () => {
     // Step 13: Verify invitation was sent
     console.log('\n[STEP 13] Verifying member invitation...');
     try {
-      await page.waitForTimeout(2000);
+      await page.waitForTimeout(5000);
       console.log(`   Current URL: ${page.url()}`);
       
       // Check for success message or redirect back to members list
