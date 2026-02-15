@@ -30,7 +30,7 @@ const config = require('../utils/config-manager');
  */
 async function globalSetup() {
   // Skip setup for registration, auth, and GC flow projects
-  const skipProjects = ['registration', 'auth', 'gc-register', 'gc-project', 'gc-invite'];
+  const skipProjects = ['registration', 'auth', 'gc-register', 'gc-project', 'gc-invite', 'gc-accept', 'gc-add-to-project'];
   if (
     process.env.SKIP_GLOBAL_SETUP ||
     process.argv.some(arg => skipProjects.some(p => arg.includes(p)))

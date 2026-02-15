@@ -1,8 +1,15 @@
 /**
  * Gmail Invite Link Reader
  * 
- * Reads invitation emails from Gmail and extracts the invite/accept link.
+ * Reads invitation emails from Gmail and extracts:
+ *   - The invite/accept link (token URL)
+ *   - The OTP code embedded in the email body
  * Uses the same IMAP setup as gmail-otp-reader.js.
+ *
+ * Email format from SuperConstruct:
+ *   Subject: "Welcome to <Company> on SuperConstruct"
+ *   Body contains: OTP code + Accept Invitation link
+ *   Link format: https://beta.superconstruct.io/auth/register/otp?token=<token>
  */
 
 const { ImapFlow } = require('imapflow');
@@ -28,17 +35,20 @@ async function connectToGmail() {
 }
 
 /**
- * Wait for and extract an invitation link from Gmail for a specific +alias address
+ * Wait for and extract invitation data from Gmail for a specific +alias address.
+ * Returns both the invite link (token URL) and the OTP code.
+ * Searches unread emails only and marks them as read after extraction.
+ *
  * @param {string} aliasEmail - The full +alias email (e.g. aroradivyansh995+projectmgr47@gmail.com)
  * @param {number} maxWaitTime - Max wait time in ms (default 60s)
- * @returns {Promise<string>} The invitation link URL
+ * @returns {Promise<{link: string, otp: string}>} The invitation link URL and OTP code
  */
-async function getInviteLinkFromGmail(aliasEmail, maxWaitTime = 60000) {
+async function getInviteDataFromGmail(aliasEmail, maxWaitTime = 60000) {
   const startTime = Date.now();
   const pollInterval = 3000;
   let client;
 
-  console.log(`[GMAIL] Waiting for invitation email...`);
+  console.log(`[GMAIL] Looking for invitation email...`);
   console.log(`   To: ${aliasEmail}`);
   console.log(`   Max wait: ${maxWaitTime / 1000} seconds`);
 
@@ -53,6 +63,7 @@ async function getInviteLinkFromGmail(aliasEmail, maxWaitTime = 60000) {
       const mailbox = await client.getMailboxLock('INBOX');
 
       try {
+        // Search by 'to' address — unread emails only
         const searchCriteria = {
           to: aliasEmail,
           seen: false,
@@ -77,14 +88,24 @@ async function getInviteLinkFromGmail(aliasEmail, maxWaitTime = 60000) {
             console.log(`      From: ${parsed.from?.text || 'unknown'}`);
             console.log(`      Subject: ${parsed.subject || 'no subject'}`);
 
-            const body = parsed.html || parsed.text || '';
-            const link = extractInviteLink(body);
+            // Only process invitation emails (subject contains "Welcome to")
+            const subject = parsed.subject || '';
+            if (!subject.includes('Welcome to') && !subject.toLowerCase().includes('invite')) {
+              continue;
+            }
+
+            const htmlBody = parsed.html || '';
+            const textBody = parsed.text || '';
+
+            const link = extractInviteLink(htmlBody, textBody);
+            const otp = extractOTPFromBody(textBody || htmlBody);
 
             if (link) {
-              // Mark as read
+              // Mark as read so we don't re-process
               await client.messageFlagsAdd({ uid: msg.uid }, ['\\Seen']);
-              console.log(`   [OK] Invite link extracted: ${link}`);
-              return link;
+              console.log(`   [OK] Invite link: ${link}`);
+              console.log(`   [OK] OTP: ${otp || 'not found'}`);
+              return { link, otp };
             } else {
               console.log(`   [WARNING] Email found but no invite link matched`);
             }
@@ -108,48 +129,101 @@ async function getInviteLinkFromGmail(aliasEmail, maxWaitTime = 60000) {
 }
 
 /**
- * Extract invitation link from email body
- * Looks for links containing invite/accept/join patterns from superconstruct.io
- * @param {string} body - Email body (HTML or text)
+ * Convenience wrapper that returns just the link (backward compat)
+ */
+async function getInviteLinkFromGmail(aliasEmail, maxWaitTime = 60000) {
+  const data = await getInviteDataFromGmail(aliasEmail, maxWaitTime);
+  return data.link;
+}
+
+/**
+ * Decode HTML entities in URLs (e.g. &#x3D; -> =)
+ */
+function decodeHtmlEntities(str) {
+  return str
+    .replace(/&#x3D;/gi, '=')
+    .replace(/&amp;/gi, '&')
+    .replace(/&#x26;/gi, '&')
+    .replace(/&#x3F;/gi, '?')
+    .replace(/&#x2F;/gi, '/');
+}
+
+/**
+ * Extract invitation link from email body.
+ * The link format is: https://beta.superconstruct.io/auth/register/otp?token=<token>
+ * HTML emails may have HTML-encoded entities (&#x3D; for =).
+ *
+ * @param {string} htmlBody - Email HTML body
+ * @param {string} textBody - Email text body
  * @returns {string|null} The invite link URL or null
  */
-function extractInviteLink(body) {
-  // Look for href links in HTML
-  const hrefPattern = /href=["'](https?:\/\/[^"']*(?:invite|accept|join|register|signup)[^"']*?)["']/gi;
-  let match;
-  while ((match = hrefPattern.exec(body)) !== null) {
-    const url = match[1];
-    if (url.includes('superconstruct')) {
-      console.log(`   [OK] Found invite link (href): ${url}`);
+function extractInviteLink(htmlBody, textBody) {
+  // Strategy 1: Extract from plain text body (cleanest)
+  if (textBody) {
+    const textPattern = /(https?:\/\/[^\s]*superconstruct[^\s]*token[^\s]*)/gi;
+    const match = textPattern.exec(textBody);
+    if (match) {
+      // Clean trailing brackets or punctuation
+      let url = match[1].replace(/[\]\)>]+$/, '');
+      console.log(`   [OK] Found invite link (text body): ${url}`);
       return url;
     }
   }
 
-  // Fallback: look for any superconstruct link in the body
-  const linkPattern = /(https?:\/\/[^\s"'<>]*superconstruct[^\s"'<>]*)/gi;
-  while ((match = linkPattern.exec(body)) !== null) {
-    const url = match[1];
-    // Skip unsubscribe, logo, and other non-invite links
-    if (url.includes('unsubscribe') || url.includes('logo') || url.includes('.png') || url.includes('.jpg')) continue;
-    console.log(`   [OK] Found superconstruct link: ${url}`);
+  // Strategy 2: Extract from HTML href and decode entities
+  if (htmlBody) {
+    const hrefPattern = /href=["'](https?:\/\/[^"']*token[^"']*)["']/gi;
+    let match;
+    while ((match = hrefPattern.exec(htmlBody)) !== null) {
+      let url = decodeHtmlEntities(match[1]);
+      if (url.includes('superconstruct')) {
+        console.log(`   [OK] Found invite link (html href): ${url}`);
+        return url;
+      }
+    }
+  }
+
+  // Strategy 3: Look for any superconstruct register link
+  const combined = textBody || htmlBody || '';
+  const fallbackPattern = /(https?:\/\/[^\s"'<>]*superconstruct[^\s"'<>]*register[^\s"'<>]*)/gi;
+  const fbMatch = fallbackPattern.exec(combined);
+  if (fbMatch) {
+    let url = decodeHtmlEntities(fbMatch[1]);
+    console.log(`   [OK] Found invite link (fallback): ${url}`);
     return url;
   }
 
-  // Last resort: look for any link with token/invite in it
-  const tokenPattern = /href=["'](https?:\/\/[^"']*(?:token|invitation)[^"']*?)["']/gi;
-  while ((match = tokenPattern.exec(body)) !== null) {
-    console.log(`   [OK] Found token link: ${match[1]}`);
-    return match[1];
-  }
-
-  // Debug: print a preview of the body
-  const cleanBody = body.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+  // Debug
+  const cleanBody = (textBody || htmlBody || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
   console.log(`   [DEBUG] Body preview: ${cleanBody.substring(0, 500)}`);
 
   return null;
 }
 
+/**
+ * Extract OTP code from the email body.
+ * The email contains "Here's your OTP to complete the registration:\n\n<6-digit-code>"
+ *
+ * @param {string} body - Email body (text or HTML)
+ * @returns {string|null} The OTP code or null
+ */
+function extractOTPFromBody(body) {
+  // Look for 6-digit code after "OTP" keyword
+  const otpPattern = /OTP[^\d]*(\d{6})/i;
+  const match = otpPattern.exec(body);
+  if (match) return match[1];
+
+  // Fallback: look for standalone 6-digit number
+  const digitPattern = /\b(\d{6})\b/;
+  const dMatch = digitPattern.exec(body);
+  if (dMatch) return dMatch[1];
+
+  return null;
+}
+
 module.exports = {
+  getInviteDataFromGmail,
   getInviteLinkFromGmail,
   extractInviteLink,
+  extractOTPFromBody,
 };

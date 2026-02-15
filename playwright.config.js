@@ -122,6 +122,21 @@ module.exports = defineConfig({
         storageState: false,
       },
     },
+    {
+      name: 'gc-add-to-project',
+      testMatch: '**/auth/gc-add-members-to-project.spec.js',
+      dependencies: ['gc-accept'],
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: process.env.BASE_URL || 'https://beta.superconstruct.io',
+        trace: 'retain-on-failure',
+        screenshot: 'on',
+        video: 'retain-on-failure',
+        actionTimeout: 15000,
+        navigationTimeout: 30000,
+        storageState: '.auth/gc-storage-state.json',
+      },
+    },
   ],
 
   // Web server configuration for local testing
