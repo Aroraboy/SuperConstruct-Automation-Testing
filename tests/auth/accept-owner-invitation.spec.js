@@ -239,11 +239,17 @@ test.describe.serial('Owner Accepts Invitation', () => {
 
       console.log('\n[OK] Owner accepted invitation and joined the project!');
 
+      // ---- Save owner storageState for later reuse ----
+      const ownerStoragePath = path.join(__dirname, '..', '..', '.auth', 'owner-storage-state.json');
+      await context.storageState({ path: ownerStoragePath });
+      console.log(`\n[SAVED] Owner StorageState -> .auth/owner-storage-state.json`);
+
       // ---- Save accepted owner data ----
       const acceptedOwner = {
         ...owner,
         status: 'accepted',
         password: DEFAULT_PASSWORD,
+        storagePath: '.auth/owner-storage-state.json',
         acceptedAt: new Date().toISOString(),
       };
 

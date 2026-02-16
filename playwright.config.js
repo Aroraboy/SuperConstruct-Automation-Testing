@@ -182,6 +182,67 @@ module.exports = defineConfig({
         storageState: false,
       },
     },
+    // ========== SOV Flow: GC Login -> Create SOV -> Owner Login -> Approve SOV ==========
+    // Run with: npm run test:sov-flow
+    {
+      name: 'sov-gc-login',
+      testMatch: '**/modules/gc-login.spec.js',
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: process.env.BASE_URL || 'https://beta.superconstruct.io',
+        trace: 'retain-on-failure',
+        screenshot: 'on',
+        video: 'retain-on-failure',
+        actionTimeout: 15000,
+        navigationTimeout: 30000,
+        storageState: false,
+      },
+    },
+    {
+      name: 'sov-create',
+      testMatch: '**/modules/create-sov.spec.js',
+      dependencies: ['sov-gc-login'],
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: process.env.BASE_URL || 'https://beta.superconstruct.io',
+        trace: 'retain-on-failure',
+        screenshot: 'on',
+        video: 'retain-on-failure',
+        actionTimeout: 15000,
+        navigationTimeout: 30000,
+        storageState: '.auth/gc-login-state.json',
+      },
+    },
+    {
+      name: 'sov-owner-login',
+      testMatch: '**/modules/owner-login.spec.js',
+      dependencies: ['sov-create'],
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: process.env.BASE_URL || 'https://beta.superconstruct.io',
+        trace: 'retain-on-failure',
+        screenshot: 'on',
+        video: 'retain-on-failure',
+        actionTimeout: 15000,
+        navigationTimeout: 30000,
+        storageState: false,
+      },
+    },
+    {
+      name: 'sov-approve',
+      testMatch: '**/modules/approve-sov.spec.js',
+      dependencies: ['sov-owner-login'],
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: process.env.BASE_URL || 'https://beta.superconstruct.io',
+        trace: 'retain-on-failure',
+        screenshot: 'on',
+        video: 'retain-on-failure',
+        actionTimeout: 15000,
+        navigationTimeout: 30000,
+        storageState: '.auth/owner-login-state.json',
+      },
+    },
   ],
 
   // Web server configuration for local testing
