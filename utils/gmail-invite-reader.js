@@ -63,10 +63,9 @@ async function getInviteDataFromGmail(aliasEmail, maxWaitTime = 60000) {
       const mailbox = await client.getMailboxLock('INBOX');
 
       try {
-        // Search by 'to' address — unread emails only
+        // Search by 'to' address — read or unread
         const searchCriteria = {
           to: aliasEmail,
-          seen: false,
         };
 
         const messages = [];
@@ -88,9 +87,9 @@ async function getInviteDataFromGmail(aliasEmail, maxWaitTime = 60000) {
             console.log(`      From: ${parsed.from?.text || 'unknown'}`);
             console.log(`      Subject: ${parsed.subject || 'no subject'}`);
 
-            // Only process invitation emails (subject contains "Welcome to")
+            // Only process invitation emails
             const subject = parsed.subject || '';
-            if (!subject.includes('Welcome to') && !subject.toLowerCase().includes('invite')) {
+            if (!subject.includes('Welcome to') && !subject.toLowerCase().includes('invit')) {
               continue;
             }
 

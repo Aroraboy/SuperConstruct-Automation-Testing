@@ -35,7 +35,7 @@ function loadAcceptedMembers() {
 
 // Role assignments for each member (by name matching)
 const MEMBER_ROLES = {
-  'Project Owner': 'Project Manager',
+  'Project Manager': 'Project Manager',
   'Sub Contractor': 'GC Member',
   'Project Developer': 'GC Member',
 };
@@ -124,13 +124,8 @@ test.describe.serial('GC Adds Members to Project', () => {
       }
       await page.waitForTimeout(1000);
 
-      // Click the role option
-      if (idx === 0) {
-        // First dropdown: click by text (not in option role yet)
-        await page.getByText(role, { exact: true }).click();
-      } else {
-        await page.getByRole('option', { name: role }).click();
-      }
+      // Click the role option (scoped to react-select dropdown to avoid matching member names)
+      await page.getByRole('option', { name: role }).click();
       console.log(`   [DONE] Role selected: ${role}`);
       await page.waitForTimeout(1000);
 
@@ -150,7 +145,11 @@ test.describe.serial('GC Adds Members to Project', () => {
     console.log('\n[STEP 5] Adding all members to project...');
     await page.screenshot({ path: `test-results/gc-add-before-confirm-${Date.now()}.png` }).catch(() => {});
 
-    await page.getByRole('button', { name: 'Add To Project' }).click();
+    // Each row has its own "Add To Project" button. Click the active (non-disabled) one
+    // which is on the last member's row.
+    const lastMember = acceptedMembers[acceptedMembers.length - 1];
+    const lastFullName = `${lastMember.firstName} ${lastMember.lastName}`;
+    await page.getByRole('row', { name: lastFullName }).getByRole('button').click();
     console.log('   [DONE] Add To Project clicked');
     await page.waitForTimeout(5000);
 

@@ -36,7 +36,7 @@ function loadGCCredentials() {
 
 // 3 members to invite
 const membersToInvite = [
-  { alias: 'projectmgr', firstName: 'Project', lastName: 'Owner' },
+  { alias: 'projectmgr', firstName: 'Project', lastName: 'Manager' },
   { alias: 'siteengineer', firstName: 'Sub', lastName: 'Contractor' },
   { alias: 'safety', firstName: 'Project', lastName: 'Developer' },
 ];

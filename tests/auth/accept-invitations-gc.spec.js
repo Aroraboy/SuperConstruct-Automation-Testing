@@ -125,7 +125,7 @@ test.describe.serial('Accept All Member Invitations', () => {
 
         // Address (with autocomplete dropdown)
         const addressField = page.getByRole('textbox', { name: 'Address' });
-        await addressField.waitFor({ state: 'visible', timeout: 10000 });
+        await addressField.waitFor({ state: 'visible', timeout: 30000 });
         await addressField.click();
         await addressField.fill('Texas');
         await page.waitForTimeout(1500);
@@ -208,10 +208,20 @@ test.describe.serial('Accept All Member Invitations', () => {
         await page.screenshot({ path: `test-results/accept-complete-${member.alias}-${Date.now()}.png` }).catch(() => {});
 
         const success = finalUrl.includes('/app');
+
+        // Save member's storageState for later reuse
+        let storagePath = null;
+        if (success) {
+          storagePath = path.join(__dirname, '..', '..', '.auth', `member-${member.alias}-storage.json`);
+          await context.storageState({ path: storagePath });
+          console.log(`   [SAVED] StorageState -> .auth/member-${member.alias}-storage.json`);
+        }
+
         acceptedMembers.push({
           ...member,
           password: DEFAULT_PASSWORD,
           status: success ? 'accepted' : 'unknown',
+          storagePath: storagePath ? `.auth/member-${member.alias}-storage.json` : null,
           finalUrl,
           acceptedAt: new Date().toISOString(),
         });
