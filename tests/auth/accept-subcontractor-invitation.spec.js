@@ -49,6 +49,38 @@ function loadSubContractorData() {
   return JSON.parse(fs.readFileSync(SUBCONTRACTOR_PATH, 'utf-8'));
 }
 
+/**
+ * Clean up old .auth files from previous runs.
+ * Keeps: run-counter.json, sov-counter.json, and files matching the current run number.
+ * Only called after the entire GC flow completes successfully.
+ */
+function cleanupOldAuthFiles(authDir, currentRun) {
+  const keepFiles = ['run-counter.json', 'sov-counter.json'];
+  const currentRunStr = String(currentRun);
+  try {
+    const files = fs.readdirSync(authDir);
+    let removed = 0;
+    for (const file of files) {
+      if (keepFiles.includes(file)) continue;
+      // Keep files that belong to the current run (contain the run number)
+      if (file.includes(currentRunStr)) continue;
+      // Keep files without a run number (generic state files created this run)
+      const hasRunNumber = /\d{2,}/.test(file);
+      if (!hasRunNumber) continue;
+      const filePath = path.join(authDir, file);
+      if (fs.statSync(filePath).isFile()) {
+        fs.unlinkSync(filePath);
+        removed++;
+      }
+    }
+    if (removed > 0) {
+      console.log(`[CLEANUP] Removed ${removed} old .auth files from previous runs (kept run #${currentRun})`);
+    }
+  } catch (e) {
+    console.log(`[CLEANUP] Warning: ${e.message}`);
+  }
+}
+
 test.describe.serial('Sub Contractor Accepts Invitation', () => {
   let sub;
 
@@ -257,6 +289,10 @@ test.describe.serial('Sub Contractor Accepts Invitation', () => {
       if (!fs.existsSync(authDir)) fs.mkdirSync(authDir, { recursive: true });
       fs.writeFileSync(ACCEPTED_SUBCONTRACTOR_PATH, JSON.stringify(acceptedSub, null, 2));
       console.log(`\n[SAVED] Accepted sub contractor -> .auth/gc-accepted-subcontractor.json`);
+
+      // ---- Cleanup old .auth files from previous runs (only on successful completion) ----
+      cleanupOldAuthFiles(path.dirname(ACCEPTED_SUBCONTRACTOR_PATH), sub.runNumber);
+
       console.log('\n[COMPLETE] Sub Contractor onboarded + accepted project invitation!\n');
 
     } finally {
