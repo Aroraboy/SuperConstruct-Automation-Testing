@@ -1,5 +1,5 @@
 /**
- * GC Invites 3 Members via "Add From Company"
+ * GC Invites 2 Members via "Add From Company"
  * 
  * Prerequisites: Run "npm run test:beta-register" first (registers the GC).
  * Reads GC credentials from .auth/gc-account.json.
@@ -12,7 +12,8 @@
  *      - Fill Email, FirstName, Last Name
  *      - Send Invitation
  * 
- * All 3 invited emails are serialized using the same run number as the GC.
+ * All 2 invited emails are serialized using the same run number as the GC.
+ * Sub Contractor is invited separately (like Owner).
  * 
  * Usage: npm run test:gc-invite
  */
@@ -34,10 +35,9 @@ function loadGCCredentials() {
   return JSON.parse(fs.readFileSync(GC_CREDS_PATH, 'utf-8'));
 }
 
-// 3 members to invite
+// 2 members to invite (Sub Contractor is invited separately like Owner)
 const membersToInvite = [
   { alias: 'projectmgr', firstName: 'Project', lastName: 'Manager' },
-  { alias: 'siteengineer', firstName: 'Sub', lastName: 'Contractor' },
   { alias: 'safety', firstName: 'Project', lastName: 'Developer' },
 ];
 
@@ -46,7 +46,7 @@ if (fs.existsSync(STORAGE_STATE_PATH)) {
   test.use({ storageState: STORAGE_STATE_PATH });
 }
 
-test.describe.serial('GC Invites 3 Members via Add From Company', () => {
+test.describe.serial('GC Invites 2 Members via Add From Company', () => {
   let gc;
   let runNumber;
   let invitedMembers;
@@ -68,7 +68,7 @@ test.describe.serial('GC Invites 3 Members via Add From Company', () => {
     invitedMembers.forEach(m => console.log(`   - ${m.firstName} ${m.lastName}: ${m.email}`));
   });
 
-  test('GC invites 3 members from company', async ({ page }) => {
+  test('GC invites 2 members from company', async ({ page }) => {
     test.setTimeout(180000);
 
     // ---- Navigate (session restored via storageState) ----
@@ -223,6 +223,6 @@ test.describe.serial('GC Invites 3 Members via Add From Company', () => {
     console.log(`[SAVED] gc-invited-members.json with ${invitedMembers.length} members`);
 
     await page.screenshot({ path: `test-results/gc-invite-complete-${Date.now()}.png` }).catch(() => {});
-    console.log('\n[COMPLETE] GC invited all 3 members!\n');
+    console.log('\n[COMPLETE] GC invited all 2 members!\n');
   });
 });

@@ -54,7 +54,7 @@ test.describe.serial('Accept All Member Invitations', () => {
     console.log(`\n[SAVED] ${acceptedMembers.length} accepted members -> .auth/gc-accepted-members.json`);
   });
 
-  test('Accept invitations for all 3 members', async ({ browser }) => {
+  test('Accept invitations for all members', async ({ browser }) => {
     test.setTimeout(360000); // 6 minutes total
 
     for (let idx = 0; idx < members.length; idx++) {

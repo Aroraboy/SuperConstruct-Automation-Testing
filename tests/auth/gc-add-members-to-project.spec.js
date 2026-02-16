@@ -13,9 +13,9 @@
  *   5. Click "Add To Project"
  *
  * Member roles:
- *   - Project Owner  → Project Manager
- *   - Sub Contractor → GC Member
+ *   - Project Manager → Project Manager
  *   - Project Developer → GC Member
+ *   (Sub Contractor is invited separately like Owner)
  *
  * Usage: npm run test:gc-add-to-project
  */
@@ -34,9 +34,9 @@ function loadAcceptedMembers() {
 }
 
 // Role assignments for each member (by name matching)
+// Sub Contractor is invited separately (like Owner)
 const MEMBER_ROLES = {
   'Project Manager': 'Project Manager',
-  'Sub Contractor': 'GC Member',
   'Project Developer': 'GC Member',
 };
 

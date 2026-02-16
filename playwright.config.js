@@ -182,6 +182,36 @@ module.exports = defineConfig({
         storageState: false,
       },
     },
+    {
+      name: 'gc-invite-subcontractor',
+      testMatch: '**/auth/gc-invite-subcontractor.spec.js',
+      dependencies: ['gc-owner-accept'],
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: process.env.BASE_URL || 'https://beta.superconstruct.io',
+        trace: 'retain-on-failure',
+        screenshot: 'on',
+        video: 'retain-on-failure',
+        actionTimeout: 15000,
+        navigationTimeout: 30000,
+        storageState: '.auth/gc-storage-state.json',
+      },
+    },
+    {
+      name: 'gc-subcontractor-accept',
+      testMatch: '**/auth/accept-subcontractor-invitation.spec.js',
+      dependencies: ['gc-invite-subcontractor'],
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: process.env.BASE_URL || 'https://beta.superconstruct.io',
+        trace: 'retain-on-failure',
+        screenshot: 'on',
+        video: 'retain-on-failure',
+        actionTimeout: 15000,
+        navigationTimeout: 30000,
+        storageState: false,
+      },
+    },
     // ========== SOV Flow: GC Login -> Create SOV -> Owner Login -> Approve SOV ==========
     // Run with: npm run test:sov-flow
     {
