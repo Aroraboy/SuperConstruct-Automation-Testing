@@ -28,41 +28,7 @@ module.exports = defineConfig({
   },
 
   projects: [
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
-    },
-    // Auth tests don't use global setup - they test login itself
-    // IMPORTANT: This project must NOT load ANY authentication state
-    {
-      name: 'auth',
-      testMatch: '**/auth/**',
-      globalSetup: undefined, // Don't run global setup for auth tests
-      use: { 
-        baseURL: process.env.BASE_URL || 'https://beta.superconstruct.io',
-        trace: 'retain-on-failure',
-        screenshot: 'on',
-        video: 'retain-on-failure',
-        actionTimeout: 15000,
-        navigationTimeout: 30000,
-        ...devices['Desktop Chrome'],
-        // CRITICAL: Explicitly set storageState to false to prevent any auth loading
-        storageState: false,
-        httpCredentials: undefined,
-      },
-    },
-    // Uncomment for mobile testing
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
-
-    // ========== GC Flow: Register -> Create Project -> Invite Members ==========
-    // Run with: npm run test:gc-flow (triggers gc-invite which pulls in dependencies)
+    // ========== GC Flow: Register -> Create Project -> Invite Members -> Accept -> Add to Project -> Members Accept -> Invite Owner -> Owner Accept -> Invite Subcontractor -> Subcontractor Accept ==========
     {
       name: 'gc-register',
       testMatch: '**/auth/beta-registration-onboarding.spec.js',
@@ -274,11 +240,4 @@ module.exports = defineConfig({
       },
     },
   ],
-
-  // Web server configuration for local testing
-  // webServer: {
-  //   command: 'npm run start',
-  //   url: 'http://localhost:3000',
-  //   reuseExistingServer: !process.env.CI,
-  // },
 });
